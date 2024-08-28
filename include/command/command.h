@@ -11,8 +11,8 @@ enum class CommandCancelBehavior {
 // Like WPILib's Command class
 class Command {
 public:
-    virtual void initialize() {};
-    virtual void execute() {};
+    virtual void initialize() {}
+    virtual void execute() {}
     virtual bool isFinished() { return false; };
     virtual void end(bool interrupted) {};
     virtual std::vector<Subsystem*> getRequirements() { return {}; };

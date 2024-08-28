@@ -78,7 +78,7 @@
                 "version": "4.1.0"
             },
             "libcommand": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.0.1",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.0.2",
                 "metadata": {
                     "origin": "local"
                 },
@@ -86,14 +86,21 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.1.0",
                 "system_files": [
+                    "include/command/parallelCommandGroup.h",
+                    "include/command/repeatCommand.h",
+                    "include/command/functionalCommand.h",
+                    "include/command/runCommand.h",
+                    "include/command/instantCommand.h",
                     "include/command/subsystem.h",
-                    "include/command/command_scheduler.h",
-                    "firmware/libcommand.a",
-                    "include/command/command.h"
+                    "include/command/command.h",
+                    "include/command/commandScheduler.h",
+                    "include/command/parallelRaceGroup.h",
+                    "include/command/sequence.h",
+                    "firmware/libcommand.a"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.1"
+                "version": "0.0.2"
             },
             "libjson": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/libjson@3.11.3",
@@ -489,6 +496,22 @@
                 "target": "v5",
                 "user_files": [],
                 "version": "8.3.8"
+            },
+            "libunit": {
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libunit@1.0.0",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "libunit",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^4.1.0",
+                "system_files": [
+                    "firmware/libunit.a",
+                    "include/units/units.hpp"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "1.0.0"
             }
         },
         "upload_options": {},
