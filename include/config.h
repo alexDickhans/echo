@@ -7,4 +7,5 @@ namespace CONFIG {
 	constexpr QLength DRIVE_RADIUS = 3.25_in/2.0;
 	constexpr double DRIVE_RATIO = 4.0; // TODO: Actual value
 	constexpr double LIFT_RATIO = 8.0;
+	constexpr QLength TRACK_WIDTH = 13_in;
 }

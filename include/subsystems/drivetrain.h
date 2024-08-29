@@ -20,9 +20,14 @@ public:
 
 		left11W.set_gearing_all(pros::MotorGears::blue);
 		right11W.set_gearing_all(pros::MotorGears::blue);
+		left5W.set_gearing_all(pros::MotorGears::green);
+		right5W.set_gearing_all(pros::MotorGears::green);
 
 		left11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 		right11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
+
+		left5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
+		right5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
 		imu.reset(true);
 	}
@@ -43,6 +48,10 @@ public:
 		this->right11W.move_voltage(right * 12000.0);
 		this->left5W.move_voltage(left * 8000.0); // 5.5W have a lower max voltage then the 11W motors
 		this->right5W.move_voltage(right * 8000.0);
+	}
+
+	void setVelocity(QVelocity left, QVelocity right) {
+		// TODO
 	}
 
 	RunCommand* tank(pros::Controller& controller) {
