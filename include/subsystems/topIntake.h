@@ -6,6 +6,7 @@
 
 class TopIntake : public Subsystem {
 	pros::Motor intakeMotor;
+
 public:
 	explicit TopIntake(pros::Motor intake_motor)
 		: intakeMotor(std::move(intake_motor)) {
@@ -15,7 +16,6 @@ public:
 
 	void periodic() override {
 		// No-op
-		std::cout << this->getPosition() << std::endl;
 	}
 
 	void setPosition(double position) const {
@@ -30,22 +30,32 @@ public:
 		return this->intakeMotor.get_position() / CONFIG::INTAKE_RATIO;
 	}
 
-	RunCommand* stopIntake() {
-		return new RunCommand([&]() {this->setPct(0.0);}, {this});
+	double error() {
+		return this->getPosition() - this->intakeMotor.get_target_position() / CONFIG::INTAKE_RATIO;
 	}
 
-	RunCommand* positionCommand(double position) {
-		double position2 = position;
-		return new RunCommand([this, position2]() {this->setPosition(position2);}, {this});
+	RunCommand *stopIntake() {
+		return new RunCommand([&]() { this->setPct(0.0); }, {this});
 	}
 
-	FunctionalCommand* moveToPosition(double position) {
-		double position2 = fmod(getPosition(), 1.0) + position;
-		return new FunctionalCommand([]() {}, [this, position2]() {this->setPosition(position2);}, [](bool _) {}, [this, position2]() { return abs(this->getPosition() - position2) < 0.1; }, {this});
+	FunctionalCommand *positionCommand(double position) {
+		return new FunctionalCommand(
+			[this, position]() mutable {
+				this->setPosition(static_cast<double>(static_cast<int>(this->getPosition()) / 1) + position);
+			}, [this]() {  }, [](bool _) {
+			}, [this]() { return false; }, {this});
 	}
 
-	RunCommand* movePct(double pct) {
-		return new RunCommand([this, pct]() {this->setPct(pct);}, {this});
+	FunctionalCommand *moveToPosition(double position) {
+		return new FunctionalCommand(
+			[this, position]() mutable {
+				this->setPosition(static_cast<double>(static_cast<int>(this->getPosition()) / 1) + position);
+			}, [this]() {  }, [](bool _) {
+			}, [this]() { return this->error() < 0.02; }, {this});
+	}
+
+	RunCommand *movePct(double pct) {
+		return new RunCommand([this, pct]() { this->setPct(pct); }, {this});
 	}
 
 	~TopIntake() override = default;
