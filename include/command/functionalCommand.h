@@ -1,5 +1,7 @@
 #pragma once
 
+#include "command.h"
+
 class FunctionalCommand : public Command {
 private:
 

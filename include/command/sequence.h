@@ -1,5 +1,7 @@
 #pragma once
 
+#include "command.h"
+
 class Sequence : public Command {
 private:
 	size_t index = 0;

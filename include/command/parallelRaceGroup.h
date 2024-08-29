@@ -1,5 +1,7 @@
 #pragma once
 
+#include "command.h"
+
 class ParallelRaceGroup : public Command {
 private:
 	std::vector<Command*> commands;
