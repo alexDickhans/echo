@@ -36,6 +36,7 @@
 
 #include "api.h"
 #include "subsystems/subsystems.h"
+#include "command/commandScheduler.h"
 #include "feedback/feedback.h"
 #include "config.h"
 

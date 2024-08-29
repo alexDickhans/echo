@@ -38,6 +38,8 @@ public:
 	std::vector<Subsystem *> getRequirements() override {
 		return requirements;
 	}
+
+	virtual ~FunctionalCommand() = default;
 };
 
 

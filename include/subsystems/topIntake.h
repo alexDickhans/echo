@@ -1,5 +1,5 @@
 #pragma once
-#include <config.h>
+#include "config.h"
 
 #include "command/command.h"
 #include "command/runCommand.h"
@@ -26,6 +26,10 @@ public:
 
 	RunCommand* stopIntake() {
 		return new RunCommand([&]() {this->setPct(0.0);}, {this});
+	}
+
+	RunCommand* movePct(double pct) {
+		return new RunCommand([this, pct]() {this->setPct(pct);}, {this});
 	}
 
 	~TopIntake() override = default;

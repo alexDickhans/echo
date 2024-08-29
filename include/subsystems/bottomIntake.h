@@ -1,23 +1,18 @@
 #pragma once
-#include <config.h>
+#include "config.h"
 
 #include "command/command.h"
 #include "command/runCommand.h"
 
-class TopIntake : public Subsystem {
+class BottomIntake : public Subsystem {
 	pros::Motor intakeMotor;
 public:
-	explicit TopIntake(pros::Motor intake_motor)
+	explicit BottomIntake(pros::Motor intake_motor)
 		: intakeMotor(std::move(intake_motor)) {
-		intakeMotor.set_encoder_units(pros::MotorEncoderUnits::rotations);
 	}
 
 	void periodic() override {
 		// No-op
-	}
-
-	void setPosition(double position) const {
-		this->intakeMotor.move_absolute(position * CONFIG::INTAKE_RATIO, 600);
 	}
 
 	void setPct(double pct) const {
@@ -25,8 +20,12 @@ public:
 	}
 
 	RunCommand* stopIntake() {
-		return new RunCommand([&]() {this->setPct(0.0);}, {this});
+		return new RunCommand([this]() {this->setPct(0.0);}, {this});
 	}
 
-	~TopIntake() override = default;
+	RunCommand* movePct(double pct) {
+		return new RunCommand([this, pct]() {this->setPct(pct);}, {this});
+	}
+
+	~BottomIntake() override = default;
 };

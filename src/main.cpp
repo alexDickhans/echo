@@ -16,6 +16,16 @@ void on_center_button() {
 	}
 }
 
+[[noreturn]] void update_loop() {
+	while (true) {
+		auto start_time = pros::millis();
+
+		CommandScheduler::run();
+
+		pros::c::task_delay_until(&start_time, 10);
+	}
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -26,6 +36,8 @@ void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");  // Prints "Hello PROS User!" to line 1 of the LCD
 	pros::lcd::register_btn1_cb(on_center_button);
+
+	pros::Task commandScheduler(update_loop);
 }
 
 /**
