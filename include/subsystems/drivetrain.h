@@ -25,8 +25,8 @@ public:
 	}
 
 	void periodic() override {
-		const QLength leftLength = left11W.get_position() * 2.0 * M_PI * CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
-		const QLength rightLength = left11W.get_position() * 2.0 * M_PI * CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
+		const QLength leftLength = left11W.get_position() * 2.0 * M_PI / CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
+		const QLength rightLength = left11W.get_position() * 2.0 * M_PI / CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
 
 		leftChange = leftLength - lastLeft;
 		rightChange = rightLength - lastRight;
