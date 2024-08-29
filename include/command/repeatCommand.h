@@ -1,7 +1,7 @@
 #pragma once
 #include "command.h"
 
-class RepeatCommand : Command {
+class RepeatCommand : public Command {
 private:
 	Command* command;
 public:

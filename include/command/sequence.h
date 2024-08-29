@@ -23,7 +23,9 @@ public:
 		if (commands[index]->isFinished()) {
 			commands[index]->end(false);
 			index++;
-			commands[index]->initialize();
+			if (index < commands.size()) {
+				commands[index]->initialize();
+			}
 		}
 	}
 

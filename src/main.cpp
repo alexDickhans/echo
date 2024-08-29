@@ -37,7 +37,7 @@ void initialize() {
 	pros::lcd::set_text(1, "Hello PROS User!");  // Prints "Hello PROS User!" to line 1 of the LCD
 	pros::lcd::register_btn1_cb(on_center_button);
 
-	subsytemInit();
+	subsystemInit();
 
 	pros::Task commandScheduler(update_loop);
 }

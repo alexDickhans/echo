@@ -1,5 +1,7 @@
 #pragma once
 
+#include "trigger.h"
+
 class CommandController : public pros::Controller {
 public:
 	explicit CommandController(const pros::controller_id_e_t id)

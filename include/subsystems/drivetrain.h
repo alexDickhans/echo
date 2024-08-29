@@ -18,6 +18,9 @@ public:
 		this->leftChange = 0.0;
 		this->rightChange = 0.0;
 
+		left11W.set_gearing_all(pros::MotorGears::blue);
+		right11W.set_gearing_all(pros::MotorGears::blue);
+
 		left11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 		right11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 

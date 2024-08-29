@@ -1,8 +1,25 @@
-//
-// Created by Alex Dickhans on 8/28/24.
-//
+#pragma once
 
-#ifndef GOALCLAMP_H
-#define GOALCLAMP_H
+#include "command/subsystem.h"
 
-#endif //GOALCLAMP_H
+class GoalClamp : public Subsystem {
+	pros::adi::DigitalOut solenoid;
+public:
+	explicit GoalClamp(pros::adi::DigitalOut solenoid)
+		: solenoid(std::move(solenoid)) {
+	}
+
+	void periodic() override {
+		// no - op
+	}
+
+	void setLevel(bool value) {
+		solenoid.set_value(value);
+	}
+
+	RunCommand* levelCommand(bool value) {
+		return new RunCommand([this, value]() { this->setLevel(value); }, {this});
+	}
+
+	~GoalClamp() override = default;
+};

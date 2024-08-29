@@ -63,6 +63,7 @@ public:
 		if (all_interruptible) {
 			for (auto intersect : intersection) {
 				intersect->end(true);
+				std::erase(instance.scheduledCommands, intersect);
 			}
 
 			for (auto requirement : requirements) {
