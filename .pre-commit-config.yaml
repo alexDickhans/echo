@@ -1,0 +1,8 @@
+repos:
+  -   repo: local
+      hooks:
+          - id: pros-make
+            name: Run pros
+            entry: pros make
+            language: system
+            types: [ c++ ]

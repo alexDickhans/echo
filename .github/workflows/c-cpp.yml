@@ -1,0 +1,21 @@
+name: PROS Make
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  make:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install toolchain
+      run: sudo apt install gcc-arm-none-eabi
+    - name: Download PROS
+      run: python3 -m pip install --user pros-cli
+
+    - name: Build PROS
+      run: pros make
