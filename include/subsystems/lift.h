@@ -29,5 +29,5 @@ public:
 		return new RunCommand([this, angle]() { this->setTarget(angle); }, {this});
 	}
 
-	~LiftSubsystem() override;
+	~LiftSubsystem() override = default;
 };

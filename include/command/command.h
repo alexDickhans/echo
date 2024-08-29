@@ -17,5 +17,10 @@ public:
     virtual void end(bool interrupted) {};
     virtual std::vector<Subsystem*> getRequirements() { return {}; };
     virtual CommandCancelBehavior getCancelBehavior() { return CommandCancelBehavior::CancelRunning; };
+
+    void schedule();
+    void cancel();
+    [[nodiscard]] bool scheduled() const;
+
     virtual ~Command() = default;
 };

@@ -42,7 +42,7 @@ public:
 		this->right5W.move_voltage(right * 8000.0);
 	}
 
-	RunCommand* joystick(pros::Controller& controller) {
+	RunCommand* tank(pros::Controller& controller) {
 		return new RunCommand([this, controller]() mutable {
 			this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0, controller.get_analog(ANALOG_RIGHT_Y) / 127.0);
 		}, {this});

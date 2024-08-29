@@ -78,7 +78,7 @@
                 "version": "4.1.0"
             },
             "libcommand": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.0.3",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.1.0",
                 "metadata": {
                     "origin": "local"
                 },
@@ -86,22 +86,24 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.1.0",
                 "system_files": [
-                    "firmware/libcommand.a",
-                    "include/command/subsystem.h",
-                    "include/command/command.h",
-                    "include/command/repeatCommand.h",
-                    "include/command/sequence.h",
-                    "include/command/instantCommand.h",
-                    "include/command/parallelRaceGroup.h",
                     "include/command/commandScheduler.h",
+                    "include/command/commandController.h",
+                    "include/command/parallelRaceGroup.h",
+                    "include/command/trigger.h",
+                    "include/command/command.h",
+                    "include/command/subsystem.h",
+                    "include/command/runCommand.h",
                     "include/command/functionalCommand.h",
-                    "include/command/parallelCommandGroup.h",
+                    "include/command/sequence.h",
                     "include/command/eventLoop.h",
-                    "include/command/runCommand.h"
+                    "include/command/repeatCommand.h",
+                    "include/command/instantCommand.h",
+                    "firmware/libcommand.a",
+                    "include/command/parallelCommandGroup.h"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.3"
+                "version": "0.1.0"
             },
             "libjson": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/libjson@3.11.3",

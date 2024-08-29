@@ -49,10 +49,23 @@ private:
 		}
 
 public:
-	PID();
-	PID(double kP, double kI, double kD, double target = 0, double position = 0, bool turnPid = false);
+	PID() {
+		this->kP = 0.0;
+		this->kI = 0.0;
+		this->kD = 0.0;
+		this->target = 0.0;
+	}
 
-	double update(double input);
+	PID(double kP, double kI, double kD, double target = 0, double position = 0, bool turnPid = false) {
+		this->kP = kP;
+		this->kI = kI;
+		this->kD = kD;
+		this->target = target;
+	}
+
+	double update(double input) {
+		return calculatePidValues(input);
+	}
 
 	void operator=(PID pid) {
 		this->kP = pid.getKP();
@@ -124,5 +137,5 @@ public:
 		this->derivitive = 0;
 	}
 
-	~PID() override;
+	~PID() override = default;
 };

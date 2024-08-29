@@ -39,7 +39,7 @@ public:
 		CommandScheduler& instance = getInstance();
 
 		// Return if the command is already scheduled
-		if (std::find(instance.scheduledCommands.begin(), instance.scheduledCommands.end(), command) != instance.scheduledCommands.end()) {
+		if (scheduled(command)) {
 			return;
 		}
 
@@ -92,7 +92,7 @@ public:
 			key->periodic();
 		}
 
-		// TODO: Poll buttons
+		instance.eventLoop.poll();
 
 		for (auto command : instance.scheduledCommands) {
 			command->execute();
@@ -142,3 +142,15 @@ public:
 		}
 	}
 };
+
+inline void Command::schedule() {
+	CommandScheduler::schedule(this);
+}
+
+inline void Command::cancel() {
+	CommandScheduler::cancel(this);
+}
+
+inline bool Command::scheduled() const {
+	return CommandScheduler::scheduled(this);
+}
