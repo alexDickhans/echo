@@ -14,6 +14,7 @@
 #include "hook.h"
 #include "command/repeatCommand.h"
 #include "command/waitCommand.h"
+#include "commands/ramsete.h"
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;
@@ -21,6 +22,10 @@ BottomIntake *bottomIntake;
 LiftSubsystem *lift;
 GoalClamp *goalClamp;
 Hook *hook;
+
+Command* loadOneRingHigh;
+Command* loadOneRingLow;
+Command* intakeOntoGoal;
 
 CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
@@ -42,33 +47,7 @@ inline void subsystemInit() {
 	CommandScheduler::registerSubsystem(goalClamp, goalClamp->levelCommand(false));
 	CommandScheduler::registerSubsystem(hook, hook->positionCommand(0.0));
 
-	primary.getTrigger(DIGITAL_L1)->toggleOnTrue(
-		new RepeatCommand(
-			new Sequence({
-				new ParallelRaceGroup({
-					bottomIntake->movePct(1.0),
-					lift->positionCommand(10.0_deg),
-					topIntake->positionCommand(-0.1),
-					new WaitUntilCommand([&]() { return intakeDistance.get() < 100; })
-				}),
-				new ParallelRaceGroup({
-					bottomIntake->movePct(1.0),
-					lift->positionCommand(10.0_deg),
-					topIntake->positionCommand(-0.1),
-					new WaitCommand(0.1_s)
-				}),
-				new ParallelRaceGroup({
-					bottomIntake->movePct(1.0),
-					lift->positionCommand(10.0_deg),
-					new ParallelCommandGroup({topIntake->moveToPosition(-1.1), new WaitCommand(1.0_s)}),
-				}),
-			})
-		)
-	);
-
-	primary.getTrigger(DIGITAL_L2)->toggleOnTrue(
-		new RepeatCommand(
-			new Sequence({
+	loadOneRingHigh = new Sequence({
 				new ParallelRaceGroup({
 					bottomIntake->movePct(1.0),
 					lift->positionCommand(0.0_deg),
@@ -86,15 +65,45 @@ inline void subsystemInit() {
 					lift->positionCommand(0.0_deg),
 					new ParallelCommandGroup({topIntake->moveToPosition(1.3), new WaitCommand(1.0_s)}),
 				}),
-			})
-		)
-	);
-
-	primary.getTrigger(DIGITAL_R2)->toggleOnTrue(new ParallelCommandGroup({
+			});
+	loadOneRingLow = new Sequence({
+				new ParallelRaceGroup({
+					bottomIntake->movePct(1.0),
+					lift->positionCommand(10.0_deg),
+					topIntake->positionCommand(-0.1),
+					new WaitUntilCommand([&]() { return intakeDistance.get() < 100; })
+				}),
+				new ParallelRaceGroup({
+					bottomIntake->movePct(1.0),
+					lift->positionCommand(10.0_deg),
+					topIntake->positionCommand(-0.1),
+					new WaitCommand(0.1_s)
+				}),
+				new ParallelRaceGroup({
+					bottomIntake->movePct(1.0),
+					lift->positionCommand(10.0_deg),
+					new ParallelCommandGroup({topIntake->moveToPosition(-1.1), new WaitCommand(1.0_s)}),
+				}),
+			});
+	intakeOntoGoal = new ParallelCommandGroup({
 		bottomIntake->movePct(1.0),
 		lift->positionCommand(0.0_deg),
 		topIntake->movePct(1.0)
-	}));
+	});
+
+	primary.getTrigger(DIGITAL_L1)->toggleOnTrue(
+		new RepeatCommand(
+			loadOneRingHigh
+		)
+	);
+
+	primary.getTrigger(DIGITAL_L2)->toggleOnTrue(
+		new RepeatCommand(
+			loadOneRingLow
+		)
+	);
+
+	primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
 	primary.getTrigger(DIGITAL_R1)->onTrue(new Sequence({
 		new ParallelRaceGroup({
 			bottomIntake->movePct(0.0),
@@ -115,6 +124,5 @@ inline void subsystemInit() {
 		hook->positionCommand(5_deg),
 	}));
 
-	primary.getTrigger(DIGITAL_A)->toggleOnTrue(hook->positionCommand(20.0_deg));
 	primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClamp->levelCommand(true));
 }
