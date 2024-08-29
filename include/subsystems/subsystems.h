@@ -15,6 +15,7 @@
 #include "command/repeatCommand.h"
 #include "command/waitCommand.h"
 #include "commands/ramsete.h"
+#include "commands/driveMove.h"
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;

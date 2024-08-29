@@ -8,4 +8,12 @@ namespace CONFIG {
 	constexpr double DRIVE_RATIO = 4.0; // TODO: Actual value
 	constexpr double LIFT_RATIO = 8.0;
 	constexpr QLength TRACK_WIDTH = 13_in;
+
+	constexpr QVelocity MAX_SPEED = 65_in/second;
+
+	inline PID* TURN_PID = new PID(0.0, 0.0, 0.0);
+
+	double DRIVETRAIN_FEEDFORWARD(QVelocity velocity, QAcceleration _accel) {
+		return (velocity / MAX_SPEED).getValue();
+	}
 }

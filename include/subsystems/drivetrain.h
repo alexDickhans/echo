@@ -1,4 +1,6 @@
 #pragma once
+#include "Eigen/Eigen"
+
 #include "config.h"
 
 class Drivetrain : public Subsystem {
@@ -50,8 +52,24 @@ public:
 		this->right5W.move_voltage(right * 8000.0);
 	}
 
+	QLength getLeftDistance() const {
+		assert(false);
+	}
+
+	QLength getRightDistance() const {
+		assert(false);
+	}
+
+	QLength getDistance() const {
+		return (this->getLeftDistance() + this->getRightDistance()) / 2.0;
+	}
+
 	void setVelocity(QVelocity left, QVelocity right) {
-		// TODO
+		assert(false);
+	}
+
+	Eigen::Vector3d getPose() const {
+		assert(false);
 	}
 
 	RunCommand* tank(pros::Controller& controller) {
