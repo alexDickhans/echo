@@ -37,6 +37,7 @@
 #include "api.h"
 #include "subsystems/subsystems.h"
 #include "feedback/feedback.h"
+#include "config.h"
 
 /**
  * You should add more #includes here

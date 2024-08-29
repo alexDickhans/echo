@@ -4,13 +4,16 @@
 #include <unordered_map>
 #include "command.h"
 #include "subsystem.h"
+#include "eventLoop.h"
 
 // Like WPILib's CommandScheduler class
 class CommandScheduler {
 private:
 	std::unordered_map<Subsystem*, Command*> subsystems;
 	std::unordered_map<Subsystem*, Command*> requirements;
-	std::vector<Command*> scheduled_commands;
+	std::vector<Command*> scheduledCommands;
+
+	EventLoop eventLoop{};
 
 	CommandScheduler() = default;
 public:
@@ -36,7 +39,7 @@ public:
 		CommandScheduler& instance = getInstance();
 
 		// Return if the command is already scheduled
-		if (std::find(instance.scheduled_commands.begin(), instance.scheduled_commands.end(), command) != instance.scheduled_commands.end()) {
+		if (std::find(instance.scheduledCommands.begin(), instance.scheduledCommands.end(), command) != instance.scheduledCommands.end()) {
 			return;
 		}
 
@@ -68,7 +71,7 @@ public:
 
 			command->initialize();
 
-			instance.scheduled_commands.push_back(command);
+			instance.scheduledCommands.push_back(command);
 		}
 	}
 
@@ -91,7 +94,7 @@ public:
 
 		// TODO: Poll buttons
 
-		for (auto command : instance.scheduled_commands) {
+		for (auto command : instance.scheduledCommands) {
 			command->execute();
 
 			if (command->isFinished()) {
@@ -101,7 +104,7 @@ public:
 					instance.requirements.erase(requirement);
 				}
 
-				std::erase(instance.scheduled_commands, command);
+				std::erase(instance.scheduledCommands, command);
 			}
 		}
 
@@ -115,8 +118,14 @@ public:
 	static bool scheduled(const Command* command) {
 		CommandScheduler& instance = getInstance();
 
-		return std::find(instance.scheduled_commands.begin(), instance.scheduled_commands.end(), command) != instance.
-		       scheduled_commands.end();
+		return std::find(instance.scheduledCommands.begin(), instance.scheduledCommands.end(), command) != instance.
+		       scheduledCommands.end();
+	}
+
+	static EventLoop* getEventLoop() {
+		CommandScheduler& instance = getInstance();
+
+		return &instance.eventLoop;
 	}
 
 	static void cancel(Command* command) {
@@ -125,7 +134,7 @@ public:
 		if (scheduled(command)) {
 			command->end(true);
 
-			std::erase(instance.scheduled_commands, command);
+			std::erase(instance.scheduledCommands, command);
 
 			for (auto requirement : command->getRequirements()) {
 				instance.requirements.erase(requirement);

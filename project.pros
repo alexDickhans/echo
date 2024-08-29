@@ -78,7 +78,7 @@
                 "version": "4.1.0"
             },
             "libcommand": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.0.2",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.0.3",
                 "metadata": {
                     "origin": "local"
                 },
@@ -86,21 +86,22 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.1.0",
                 "system_files": [
-                    "include/command/parallelCommandGroup.h",
-                    "include/command/repeatCommand.h",
-                    "include/command/functionalCommand.h",
-                    "include/command/runCommand.h",
-                    "include/command/instantCommand.h",
-                    "include/command/subsystem.h",
-                    "include/command/command.h",
-                    "include/command/commandScheduler.h",
                     "include/command/parallelRaceGroup.h",
+                    "include/command/runCommand.h",
+                    "include/command/subsystem.h",
+                    "include/command/instantCommand.h",
+                    "include/command/repeatCommand.h",
+                    "firmware/libcommand.a",
+                    "include/command/commandScheduler.h",
+                    "include/command/eventLoop.h",
                     "include/command/sequence.h",
-                    "firmware/libcommand.a"
+                    "include/command/parallelCommandGroup.h",
+                    "include/command/functionalCommand.h",
+                    "include/command/command.h"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.2"
+                "version": "0.0.3"
             },
             "libjson": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/libjson@3.11.3",

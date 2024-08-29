@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <command/runCommand.h>
 
 #include "command/subsystem.h"
 #include "units/units.hpp"
@@ -22,6 +23,10 @@ public:
 
 	void setTarget(Angle angle) {
 		pid.setTarget(angle.Convert(radian));
+	}
+
+	RunCommand* positionCommand(Angle angle) {
+		return new RunCommand([this, angle]() { this->setTarget(angle); }, {this});
 	}
 
 	~LiftSubsystem() override;
