@@ -8,6 +8,7 @@ namespace CONFIG {
 	constexpr double DRIVE_RATIO = 36.0/48.0;
 	constexpr double LIFT_RATIO = 8.0;
 	constexpr QLength TRACK_WIDTH = 13_in;
+	constexpr size_t NUM_PARTICLES = 100;
 
 	constexpr QVelocity MAX_SPEED = 65_in/second;
 

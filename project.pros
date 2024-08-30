@@ -715,6 +715,24 @@
                 "user_files": [],
                 "version": "3.11.3"
             },
+            "libloco": {
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libloco@0.0.1",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "libloco",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^4.1.0",
+                "system_files": [
+                    "include/localization/particleFilter.h",
+                    "firmware/libloco.a",
+                    "include/localization/sensor.h",
+                    "include/localization/gps.h"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "0.0.1"
+            },
             "liblvgl": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/liblvgl@8.3.8",
                 "metadata": {
@@ -902,6 +920,22 @@
                 "system_files": [
                     "firmware/libunit.a",
                     "include/units/units.hpp"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "1.0.0"
+            },
+            "telemetry": {
+                "location": "/Users/alex/Library/Application Support/PROS/templates/telemetry@1.0.0",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "telemetry",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^4.1.0",
+                "system_files": [
+                    "include/telemetry/telemetry.h",
+                    "firmware/telemetry.a"
                 ],
                 "target": "v5",
                 "user_files": [],

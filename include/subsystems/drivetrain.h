@@ -1,7 +1,8 @@
 #pragma once
-#include "Eigen/Eigen"
 
+#include "Eigen/Eigen"
 #include "config.h"
+#include "localization/particleFilter.h"
 
 class Drivetrain : public Subsystem {
 private:
@@ -10,6 +11,8 @@ private:
 
 	QLength leftChange, rightChange;
 	QLength lastLeft, lastRight;
+
+	ParticleFilter<CONFIG::NUM_PARTICLES> particleFilter;
 public:
 	Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w, const std::initializer_list<int8_t> &left5_w,
 	           const std::initializer_list<int8_t> &right5_w, pros::Imu imu)
@@ -53,11 +56,11 @@ public:
 	}
 
 	QLength getLeftDistance() const {
-		assert(false);
+		return this->left11W.get_position() * 2.0 * M_PI * CONFIG::DRIVE_RADIUS;
 	}
 
 	QLength getRightDistance() const {
-		assert(false);
+		return this->right11W.get_position() * 2.0 * M_PI * CONFIG::DRIVE_RADIUS;
 	}
 
 	QLength getDistance() const {
@@ -65,11 +68,14 @@ public:
 	}
 
 	void setVelocity(QVelocity left, QVelocity right) {
-		assert(false);
+		this->left11W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 600.0);
+		this->right11W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 600.0);
+		this->left5W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 200.0);
+		this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
 	}
 
-	Eigen::Vector3d getPose() const {
-		assert(false);
+	Eigen::Vector3d getPose() {
+		return this->particleFilter.getPrediction();
 	}
 
 	RunCommand* tank(pros::Controller& controller) {
