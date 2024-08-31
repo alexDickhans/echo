@@ -13,13 +13,16 @@ private:
 	QLength lastLeft, lastRight;
 
 	ParticleFilter<CONFIG::NUM_PARTICLES> particleFilter;
+
 public:
-	Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w, const std::initializer_list<int8_t> &left5_w,
+	Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
+	           const std::initializer_list<int8_t> &left5_w,
 	           const std::initializer_list<int8_t> &right5_w, pros::Imu imu)
 		: left11W(left11_w),
 		  right11W(right11_w),
 		  left5W(left5_w),
-		  right5W(right5_w), imu(std::move(imu)) {
+		  right5W(right5_w),
+		  imu(std::move(imu)) {
 		this->leftChange = 0.0;
 		this->rightChange = 0.0;
 
@@ -34,7 +37,7 @@ public:
 		left5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 		right5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
-		imu.reset(true);
+		imu.reset(false);
 	}
 
 	void periodic() override {
@@ -46,9 +49,12 @@ public:
 
 		lastLeft = leftLength;
 		lastRight = rightLength;
+
+		// TODO: update particle filter
+		particleFilter.update([]() { return Eigen::Vector2d(); });
 	}
 
-	void setPct(double left, double right) {
+	void setPct(const double left, const double right) {
 		this->left11W.move_voltage(left * 12000.0);
 		this->right11W.move_voltage(right * 12000.0);
 		this->left5W.move_voltage(left * 8000.0); // 5.5W have a lower max voltage then the 11W motors
@@ -78,14 +84,14 @@ public:
 		return this->particleFilter.getPrediction();
 	}
 
-	RunCommand* tank(pros::Controller& controller) {
+	RunCommand *tank(pros::Controller &controller) {
 		return new RunCommand([this, controller]() mutable {
 			this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0, controller.get_analog(ANALOG_RIGHT_Y) / 127.0);
 		}, {this});
 	}
 
 	RunCommand *pct(double left, double right) {
-		return new RunCommand([this, left, right] () { this->setPct(left, right); }, {this});
+		return new RunCommand([this, left, right]() { this->setPct(left, right); }, {this});
 	}
 
 	~Drivetrain() override = default;

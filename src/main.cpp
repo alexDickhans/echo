@@ -26,6 +26,17 @@ void on_center_button() {
 	}
 }
 
+
+[[noreturn]] void screen_update_loop() {
+	while (true) {
+		auto start_time = pros::millis();
+
+		CommandScheduler::run();
+
+		pros::c::task_delay_until(&start_time, 50);
+	}
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
