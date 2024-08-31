@@ -22,7 +22,9 @@ private:
 	std::function<Angle()> angleFunction;
 	std::default_random_engine de;
 public:
-	ParticleFilter() = default;
+	explicit ParticleFilter(std::function<Angle()> angle_function)
+		: angleFunction(std::move(angle_function)) {
+	}
 
 	Eigen::Vector3d getPrediction() {
 		auto totalX = 0.0;
@@ -39,7 +41,7 @@ public:
 	void update(const std::function<Eigen::Vector2d()>& predictionFunction) {
 		for (auto& particle : particles) {
 			auto prediction = predictionFunction();
-			particle = Eigen::Vector3d(particle.x + prediction.x, particle.y + prediction.y, angleFunction().Convert(radian));
+			particle = Eigen::Vector3d(particle.x() + prediction.x(), particle.y() + prediction.y(), angleFunction().Convert(radian));
 		}
 
 		distanceSinceUpdate += predictionFunction().norm() * metre;
@@ -54,15 +56,19 @@ public:
 		for (size_t i = 0; i < particles.size(); i++) {
 			weights[i] = 0.0;
 
-			// TODO: if sensor produces none, don't make it weigh poorly
+			size_t num_readings = 0;
 
 			for (auto sensor : sensors) {
 				if (auto weight = sensor->p(particles[i]); weight.has_value()) {
 					if (isfinite(weight.value())) {
-						weights[i] += weight;
-						totalWeight += weight;
+						weights[i] += weight.value();
+						num_readings ++;
 					}
 				}
+
+				weights[i] = weights[i] / static_cast<double>(num_readings);
+
+				totalWeight += weights[i];
 			}
 		}
 
@@ -91,5 +97,15 @@ public:
 
 		lastUpdateTime = pros::millis() * millisecond;
 		distanceSinceUpdate = 0.0;
+	}
+
+	void initNormal(const Eigen::Vector3d& mean, const Eigen::Matrix3d& covariance) {
+		std::normal_distribution distribution(0.0, 1.0);
+
+		for (auto && particle : this->particles) {
+			particle = mean + covariance * Eigen::Vector3d({distribution(de), distribution(de), distribution(de)});
+
+			particle.z() = this->angleFunction().getValue();
+		}
 	}
 };

@@ -3,6 +3,7 @@
 #include "Eigen/Eigen"
 #include "config.h"
 #include "localization/particleFilter.h"
+#include "command/instantCommand.h"
 
 class Drivetrain : public Subsystem {
 private:
@@ -24,7 +25,7 @@ public:
 		  right11W(right11_w),
 		  left5W(left5_w),
 		  right5W(right5_w),
-		  imu(std::move(imu)) {
+		  imu(std::move(imu)), particleFilter([this]() {return this->getAngle();}) {
 		this->leftChange = 0.0;
 		this->rightChange = 0.0;
 
@@ -43,8 +44,8 @@ public:
 	}
 
 	void periodic() override {
-		const QLength leftLength = left11W.get_position() * 2.0 * M_PI / CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
-		const QLength rightLength = left11W.get_position() * 2.0 * M_PI / CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
+		const QLength leftLength = this->getLeftDistance();
+		const QLength rightLength = this->getRightDistance();
 
 		leftChange = leftLength - lastLeft;
 		rightChange = rightLength - lastRight;
@@ -54,15 +55,15 @@ public:
 
 		std::normal_distribution leftDistribution(leftChange.getValue(), CONFIG::DRIVE_NOISE * leftChange.getValue());
 		std::normal_distribution rightDistribution(rightChange.getValue(), CONFIG::DRIVE_NOISE * rightChange.getValue());
+		std::normal_distribution angleDistribution(0.0, CONFIG::ANGLE_NOISE.getValue());
 
-		particleFilter.update([this, leftDistribution]() mutable {
+		particleFilter.update([this, leftDistribution, angleDistribution, rightDistribution]() mutable {
+			const auto leftNoisy = leftDistribution(de);
+			const auto rightNoisy = rightDistribution(de);
 
-			auto leftNoisy = leftDistribution(de);
-			auto rightNoisy = leftDistribution(de);
+			const Eigen::Vector2d localVector({(leftNoisy + rightNoisy) / 2.0, 0.0});
 
-			Eigen::Vector2d localVector({(leftNoisy + rightNoisy) / 2.0, 0.0});
-
-			return this->getRotation() * localVector;
+			return Eigen::Rotation2Dd(this->getAngle().getValue() + angleDistribution(de)) * localVector;
 		});
 	}
 
@@ -82,22 +83,30 @@ public:
 	}
 
 	QLength getLeftDistance() const {
-		return this->left11W.get_position() * 2.0 * M_PI * CONFIG::DRIVE_RADIUS;
+		return this->left11W.get_position() * 2.0 * M_PI / CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
 	}
 
 	QLength getRightDistance() const {
-		return this->right11W.get_position() * 2.0 * M_PI * CONFIG::DRIVE_RADIUS;
+		return this->right11W.get_position() * 2.0 * M_PI / CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
 	}
 
 	QLength getDistance() const {
 		return (this->getLeftDistance() + this->getRightDistance()) / 2.0;
 	}
 
-	void setVelocity(QVelocity left, QVelocity right) {
+	void setVelocity(const QVelocity left, const QVelocity right) {
 		this->left11W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 600.0);
 		this->right11W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 600.0);
 		this->left5W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 200.0);
 		this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
+	}
+
+	void initNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance) {
+		this->particleFilter.initNormal(mean, covariance);
+	}
+
+	InstantCommand* setNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance) {
+		return new InstantCommand([this, mean, covariance] () { this->initNorm(mean, covariance); }, {this});
 	}
 
 	Eigen::Vector3d getPose() {

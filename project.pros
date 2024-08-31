@@ -716,7 +716,7 @@
                 "version": "3.11.3"
             },
             "libloco": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libloco@0.0.1",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libloco@0.0.2",
                 "metadata": {
                     "origin": "local"
                 },
@@ -725,13 +725,13 @@
                 "supported_kernels": "^4.1.0",
                 "system_files": [
                     "include/localization/particleFilter.h",
-                    "firmware/libloco.a",
                     "include/localization/sensor.h",
-                    "include/localization/gps.h"
+                    "include/localization/gps.h",
+                    "firmware/libloco.a"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.0.1"
+                "version": "0.0.2"
             },
             "liblvgl": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/liblvgl@8.3.8",
