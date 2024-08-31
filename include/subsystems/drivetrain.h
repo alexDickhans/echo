@@ -14,6 +14,8 @@ private:
 
 	ParticleFilter<CONFIG::NUM_PARTICLES> particleFilter;
 
+	std::default_random_engine de;
+
 public:
 	Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
 	           const std::initializer_list<int8_t> &left5_w,
@@ -50,8 +52,26 @@ public:
 		lastLeft = leftLength;
 		lastRight = rightLength;
 
-		// TODO: update particle filter
-		particleFilter.update([]() { return Eigen::Vector2d(); });
+		std::normal_distribution leftDistribution(leftChange.getValue(), CONFIG::DRIVE_NOISE * leftChange.getValue());
+		std::normal_distribution rightDistribution(rightChange.getValue(), CONFIG::DRIVE_NOISE * rightChange.getValue());
+
+		particleFilter.update([this, leftDistribution]() mutable {
+
+			auto leftNoisy = leftDistribution(de);
+			auto rightNoisy = leftDistribution(de);
+
+			Eigen::Vector2d localVector({(leftNoisy + rightNoisy) / 2.0, 0.0});
+
+			return this->getRotation() * localVector;
+		});
+	}
+
+	Angle getAngle() const {
+		return -imu.get_rotation() * degree;
+	}
+
+	Eigen::Rotation2Dd getRotation() const {
+		return Eigen::Rotation2Dd(this->getAngle().getValue());
 	}
 
 	void setPct(const double left, const double right) {
