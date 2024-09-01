@@ -6,7 +6,6 @@
 struct ProfileConstraints {
 	QVelocity maxVelocity;
 	QAcceleration maxAcceleration;
-	QJerk maxJerk;
 };
 
 class TrapezoidalVelocityProfile {

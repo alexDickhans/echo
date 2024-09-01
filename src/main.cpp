@@ -10,7 +10,6 @@ void on_center_button() {
 	static bool pressed = false;
 	pressed = !pressed;
 	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
 	} else {
 		pros::lcd::clear_line(2);
 	}
@@ -31,6 +30,8 @@ void on_center_button() {
 	while (true) {
 		auto start_time = pros::millis();
 
+		pros::lcd::set_text(2, std::to_string(drivetrain->getDistance().Convert(inch)));
+
 		pros::c::task_delay_until(&start_time, 50);
 	}
 }
@@ -44,7 +45,6 @@ void on_center_button() {
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");  // Prints "Hello PROS User!" to line 1 of the LCD
-	pros::lcd::register_btn1_cb(on_center_button);
 
 	subsystemInit();
 
@@ -83,8 +83,8 @@ void competition_initialize() {}
  */
 void autonomous() {
 	CommandScheduler::schedule(
-		new Sequence({new TankMotionProfiling(drivetrain, )})
-		);
+		new TankMotionProfiling(drivetrain, {65_in/second, 100_in/second/second}, 70_in)
+	);
 }
 
 /**

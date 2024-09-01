@@ -18,8 +18,6 @@ private:
 
 	Angle targetAngle = 0.0;
 
-	FeedbackController* distancePid;
-
 	QLength distance;
 	QCurvature curvature;
 
@@ -27,15 +25,15 @@ private:
 
 	bool useTurnPID = true;
 
-	PID pid = CONFIG::TURN_PID;
+	PID distancePid = CONFIG::DISTANCE_PID;
+	PID anglePid = CONFIG::TURN_PID;
 
 public:
 	TankMotionProfiling(Drivetrain *drivetrain, ProfileConstraints profile_constraints,
-		const QLength &distance, const QCurvature &curvature, const bool useTurnPID = true, const QVelocity initialVelocity, const QVelocity endVelocity, const Angle &target_angle = 0.0)
+		const QLength &distance, const QCurvature &curvature = 0.0, const bool useTurnPID = true, const QVelocity initialVelocity = 0.0, const QVelocity endVelocity = 0.0, const Angle &target_angle = 0.0)
 		: drivetrain(drivetrain),
 		  velocityProfile(distance, profile_constraints, initialVelocity, endVelocity),
 		  targetAngle(target_angle),
-		  distance(distance),
 		  curvature(curvature) {
 		this->useTurnPID = useTurnPID;
 	}
@@ -55,8 +53,7 @@ public:
 
 		QVelocity adjustedSpeed = this->getSpeedMultiplier() * this->velocityProfile.getProfileConstraints().maxVelocity.getValue();
 
-		this->velocityProfile.setDistance(this->distance);
-		this->velocityProfile.setProfileConstraints({adjustedSpeed, velocityProfile.getProfileConstraints().maxAcceleration, velocityProfile.getProfileConstraints().maxJerk});
+		this->velocityProfile.setProfileConstraints({adjustedSpeed, velocityProfile.getProfileConstraints().maxAcceleration});
 
 		this->velocityProfile.calculate();
 	}
@@ -70,13 +67,13 @@ public:
 
 		QLength currentDistance = (drivetrain->getDistance()-startDistance);
 
-		distancePid->setTarget(targetDistance.getValue());
+		distancePid.setTarget(targetDistance.getValue());
 
-		double wheelVoltage = distancePid->update(currentDistance.getValue()) + CONFIG::DRIVETRAIN_FEEDFORWARD(speed, acceleration);
+		const double wheelVoltage = distancePid.update(currentDistance.getValue()) + CONFIG::DRIVETRAIN_FEEDFORWARD(speed, acceleration);
 
 		// add curvature
-		double leftCurvatureAdjustment = (2.0 + curvature.getValue() * CONFIG::TRACK_WIDTH.getValue()) / 2.0;
-		double rightCurvatureAdjustment = (2.0 - curvature.getValue() * CONFIG::TRACK_WIDTH.getValue()) / 2.0;
+		const double leftCurvatureAdjustment = (2.0 + curvature.getValue() * CONFIG::TRACK_WIDTH.getValue()) / 2.0;
+		const double rightCurvatureAdjustment = (2.0 - curvature.getValue() * CONFIG::TRACK_WIDTH.getValue()) / 2.0;
 
 		double leftVoltage = leftCurvatureAdjustment * wheelVoltage;
 		double rightVoltage = rightCurvatureAdjustment * wheelVoltage;
@@ -95,12 +92,18 @@ public:
 			rightVoltage += turnPower;
 		}
 
+		std::cout << "Left: " << leftVoltage << ", right: " << rightVoltage << std::endl;
+
 		// send to motors
 		drivetrain->setPct(leftVoltage, rightVoltage);
 	}
 
 	void end(bool interrupted) override {
 
+	}
+
+	std::vector<Subsystem *> getRequirements() override {
+		return {drivetrain};
 	}
 
 	bool isFinished() override {

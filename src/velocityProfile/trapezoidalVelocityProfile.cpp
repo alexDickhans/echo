@@ -77,3 +77,28 @@ void TrapezoidalVelocityProfile::calculate() {
 		}
 	}
 }
+
+const QVelocity &TrapezoidalVelocityProfile::getInitialSpeed() const {
+	return initialSpeed;
+}
+void TrapezoidalVelocityProfile::setInitialSpeed(const QVelocity &initialSpeed) {
+	this->initialSpeed = initialSpeed;
+}
+const QVelocity &TrapezoidalVelocityProfile::getEndSpeed() const {
+	return endSpeed;
+}
+void TrapezoidalVelocityProfile::setEndSpeed(const QVelocity &endSpeed) {
+	this->endSpeed = endSpeed;
+}
+const QLength &TrapezoidalVelocityProfile::getDistance() const {
+	return distance;
+}
+void TrapezoidalVelocityProfile::setDistance(const QLength &distance) {
+	this->distance = distance;
+}
+const ProfileConstraints &TrapezoidalVelocityProfile::getProfileConstraints() const {
+	return profileConstraints;
+}
+void TrapezoidalVelocityProfile::setProfileConstraints(const ProfileConstraints &profileConstraints) {
+	this->profileConstraints = profileConstraints;
+}

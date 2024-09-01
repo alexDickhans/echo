@@ -83,11 +83,11 @@ public:
 	}
 
 	QLength getLeftDistance() const {
-		return this->left11W.get_position() * 2.0 * M_PI / CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
+		return (this->left11W.get_position(0) + this->left11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 * M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
 	}
 
 	QLength getRightDistance() const {
-		return this->right11W.get_position() * 2.0 * M_PI / CONFIG::DRIVE_RATIO * CONFIG::DRIVE_RADIUS;
+		return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 * M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
 	}
 
 	QLength getDistance() const {
