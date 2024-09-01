@@ -9,10 +9,11 @@ namespace CONFIG {
 	constexpr double LIFT_RATIO = 8.0;
 	constexpr QLength TRACK_WIDTH = 13_in;
 	constexpr size_t NUM_PARTICLES = 100;
+	constexpr Angle ANGLE_FINISH_THRESHOLD = 0.5_deg;
 
 	constexpr QVelocity MAX_SPEED = 65_in/second;
 
-	inline PID* TURN_PID = new PID(0.0, 0.0, 0.0);
+	inline PID TURN_PID = PID(1.0, 0.0, 0.0);
 
 	inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration _accel) {
 		return (velocity / MAX_SPEED).getValue();

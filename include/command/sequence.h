@@ -30,10 +30,14 @@ public:
 	}
 
 	bool isFinished() override {
-		return index >= commands.size();
+		if (index < commands.size()) {
+			return commands[index]->isFinished();
+		} else {
+			return true;
+		}
 	}
 
-	void end(bool interrupted) override {
+	void end(const bool interrupted) override {
 		if (index < commands.size()) {
 			commands[index]->end(interrupted);
 		}
@@ -44,7 +48,9 @@ public:
 
 		for (auto* command : commands) {
 			for (auto subsystem : command->getRequirements()) {
-				requirements.emplace_back(subsystem);
+				if (std::ranges::find(requirements, subsystem) == requirements.end()) {
+					requirements.emplace_back(subsystem);
+				}
 			}
 		}
 

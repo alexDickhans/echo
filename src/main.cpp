@@ -31,8 +31,6 @@ void on_center_button() {
 	while (true) {
 		auto start_time = pros::millis();
 
-		CommandScheduler::run();
-
 		pros::c::task_delay_until(&start_time, 50);
 	}
 }
@@ -51,6 +49,7 @@ void initialize() {
 	subsystemInit();
 
 	pros::Task commandScheduler(update_loop);
+	pros::Task screenUpdate(screen_update_loop);
 }
 
 /**
@@ -82,7 +81,11 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+	CommandScheduler::schedule(
+		new Sequence({new Rotate(drivetrain, CONFIG::TURN_PID, 180_deg), new Rotate(drivetrain, CONFIG::TURN_PID, 0_deg)})
+		);
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task

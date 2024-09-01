@@ -27,6 +27,8 @@ private:
 
 	bool useTurnPID = true;
 
+	PID pid = CONFIG::TURN_PID;
+
 public:
 	TankMotionProfiling(Drivetrain *drivetrain, TrapezoidalVelocityProfile velocity_profile,
 		const Angle &target_angle, const QLength &distance, const QCurvature &curvature, bool useTurnPID = true)
@@ -66,8 +68,6 @@ public:
 		QVelocity speed = velocityProfile.getVelocityByTime(duration);
 		QLength targetDistance = velocityProfile.getDistanceByTime(duration);
 
-		double turnPower;
-
 		QLength currentDistance = (drivetrain->getDistance()-startDistance);
 
 		distancePid->setTarget(targetDistance.getValue());
@@ -87,9 +87,9 @@ public:
 
 			Angle targetAngleWithOffset = targetAngle + offset;
 
-			CONFIG::TURN_PID->setTarget(targetAngleWithOffset.getValue());
+			CONFIG::TURN_PID.setTarget(targetAngleWithOffset.getValue());
 
-			turnPower = CONFIG::TURN_PID->update(drivetrain->getPose().z());
+			const double turnPower = CONFIG::TURN_PID.update(drivetrain->getPose().z());
 
 			leftVoltage -= turnPower;
 			rightVoltage += turnPower;

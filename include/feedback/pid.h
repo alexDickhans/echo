@@ -1,6 +1,7 @@
 #pragma once
 #include "feedback.h"
 #include <cmath>
+#include "utils/utils.h"
 
 
 class PID final : public FeedbackController {
@@ -19,16 +20,16 @@ private:
 
 		double power;
 
-		// bool turnPid = false;
+		bool turnPid = false;
 
 	protected:
 		double calculatePidValues(double input) {
 
 			this->error = target - input;
 
-			// if (turnPid) {
-			// 	this->error = angleDifference(target, input);
-			// }
+			if (turnPid) {
+				this->error = angleDifference(target, input).getValue();
+			}
 
 			this->derivitive = this->error - this->prevError;
 
@@ -56,11 +57,12 @@ public:
 		this->target = 0.0;
 	}
 
-	PID(double kP, double kI, double kD, double target = 0, double position = 0, bool turnPid = false) {
+	PID(const double kP, const double kI, const double kD, const double target = 0, const bool turnPid = false) {
 		this->kP = kP;
 		this->kI = kI;
 		this->kD = kD;
 		this->target = target;
+		this->turnPid = turnPid;
 	}
 
 	double update(double input) {
@@ -131,10 +133,20 @@ public:
 		this->maxIntegral = maxIntegral;
 	}
 
+
+
 	void reset() {
 		this->prevError = 0;
 		this->error = 0;
 		this->derivitive = 0;
+	}
+
+	[[nodiscard]] bool getTurnPid() const {
+		return turnPid;
+	}
+
+	void setTurnPid(const bool turn_pid) {
+		turnPid = turn_pid;
 	}
 
 	~PID() override = default;

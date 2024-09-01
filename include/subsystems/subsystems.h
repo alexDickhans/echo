@@ -17,6 +17,7 @@
 #include "commands/ramsete.h"
 #include "commands/driveMove.h"
 #include "command/conditionalCommand.h"
+#include "commands/rotate.h"
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;
