@@ -56,38 +56,26 @@ inline void subsystemInit() {
 		new ParallelRaceGroup({
 			bottomIntake->movePct(1.0),
 			lift->positionCommand(0.0_deg),
-			topIntake->positionCommand(0.3),
+			topIntake->positionCommandFwd(0.3),
 			new WaitUntilCommand([&]() { return intakeDistance.get() < 100; })
 		}),
-		// new ParallelRaceGroup({
-		// 	bottomIntake->movePct(1.0),
-		// 	lift->positionCommand(0.0_deg),
-		// 	topIntake->positionCommand(0.3),
-		// 	new WaitCommand(0.1_s)
-		// }),
 		new ParallelRaceGroup({
 			bottomIntake->movePct(1.0),
 			lift->positionCommand(0.0_deg),
-			new ParallelCommandGroup({topIntake->moveToPosition(1.3), new WaitCommand(0.5_s)}),
+			new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s)}),
 		}),
 	});
 	loadOneRingHigh = new Sequence({
 		new ParallelRaceGroup({
 			bottomIntake->movePct(1.0),
 			lift->positionCommand(6.0_deg),
-			topIntake->positionCommand(-0.1),
+			topIntake->positionCommandRwd(-0.1),
 			new WaitUntilCommand([&]() { return intakeDistance.get() < 100; })
 		}),
-		// new ParallelRaceGroup({
-		// 	bottomIntake->movePct(1.0),
-		// 	lift->positionCommand(6.0_deg),
-		// 	topIntake->positionCommand(-0.1),
-		// 	new WaitCommand(0.1_s)
-		// }),
 		new ParallelRaceGroup({
 			bottomIntake->movePct(1.0),
 			lift->positionCommand(6.0_deg),
-			new ParallelCommandGroup({topIntake->moveToPosition(-1.1), new WaitCommand(0.5_s)}),
+			new ParallelCommandGroup({topIntake->moveToPositionRwd(-1.1), new WaitCommand(0.5_s)}),
 		}),
 	});
 	intakeOntoGoal = new ParallelCommandGroup({
@@ -117,7 +105,13 @@ inline void subsystemInit() {
 		new InstantCommand([&]() { outtakeWallStake = false; }, {}),
 		new ParallelRaceGroup({
 			bottomIntake->movePct(0.0),
-			lift->positionCommand(30_deg),
+			lift->moveToPosition(33_deg, 0.3_deg),
+			topIntake->movePct(0.0),
+			hook->positionCommand(5_deg),
+		}),
+		new ParallelRaceGroup({
+			bottomIntake->movePct(0.0),
+			lift->positionCommand(33_deg),
 			topIntake->movePct(0.0),
 			hook->positionCommand(5_deg),
 			new WaitUntilCommand([&]() { return primary.get_digital(DIGITAL_Y); })
@@ -125,7 +119,7 @@ inline void subsystemInit() {
 		new InstantCommand([&]() { outtakeWallStake = true; }, {}),
 		new ParallelCommandGroup({
 			bottomIntake->movePct(0.0),
-			lift->positionCommand(30_deg),
+			lift->positionCommand(33_deg),
 			topIntake->movePct(-1.0)
 		})
 	}))->onFalse(new ParallelRaceGroup({

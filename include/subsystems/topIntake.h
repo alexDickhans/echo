@@ -38,18 +38,34 @@ public:
 		return new RunCommand([&]() { this->setPct(0.0); }, {this});
 	}
 
-	FunctionalCommand *positionCommand(double position) {
+	FunctionalCommand *positionCommandRwd(double position) {
 		return new FunctionalCommand(
 			[this, position]() mutable {
-				this->setPosition(static_cast<double>(static_cast<int>(this->getPosition()) / 1) + position);
+				this->setPosition(std::ceil(this->getPosition()) + position);
 			}, [this]() {  }, [](bool _) {
 			}, [this]() { return false; }, {this});
 	}
 
-	FunctionalCommand *moveToPosition(double position) {
+	FunctionalCommand *moveToPositionRwd(double position) {
 		return new FunctionalCommand(
 			[this, position]() mutable {
-				this->setPosition(static_cast<double>(static_cast<int>(this->getPosition()) / 1) + position);
+				this->setPosition(std::ceil(this->getPosition()) + position);
+			}, [this]() {  }, [](bool _) {
+			}, [this]() { return this->error() < 0.02; }, {this});
+	}
+
+	FunctionalCommand *positionCommandFwd(double position) {
+		return new FunctionalCommand(
+			[this, position]() mutable {
+				this->setPosition(std::floor(this->getPosition()) + position);
+			}, [this]() {  }, [](bool _) {
+			}, [this]() { return false; }, {this});
+	}
+
+	FunctionalCommand *moveToPositionFwd(double position) {
+		return new FunctionalCommand(
+			[this, position]() mutable {
+				this->setPosition(std::floor(this->getPosition()) + position);
 			}, [this]() {  }, [](bool _) {
 			}, [this]() { return this->error() < 0.02; }, {this});
 	}
