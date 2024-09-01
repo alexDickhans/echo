@@ -119,6 +119,12 @@ public:
 		}, {this});
 	}
 
+	RunCommand *arcade(pros::Controller &controller) {
+		return new RunCommand([this, controller]() mutable {
+			this->setPct((controller.get_analog(ANALOG_LEFT_Y) + controller.get_analog(ANALOG_RIGHT_X))/127.0, (controller.get_analog(ANALOG_LEFT_Y) - controller.get_analog(ANALOG_RIGHT_X)) / 127.0);
+		}, {this});
+	}
+
 	RunCommand *pct(double left, double right) {
 		return new RunCommand([this, left, right]() { this->setPct(left, right); }, {this});
 	}

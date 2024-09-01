@@ -467,7 +467,7 @@
                 "version": "4.1.0"
             },
             "libcommand": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.1.2",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.1.3",
                 "metadata": {
                     "origin": "local"
                 },
@@ -475,26 +475,27 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.1.0",
                 "system_files": [
-                    "include/command/waitUntilCommand.h",
-                    "include/command/waitCommand.h",
-                    "include/command/parallelCommandGroup.h",
+                    "include/command/commandScheduler.h",
                     "include/command/parallelRaceGroup.h",
-                    "include/command/sequence.h",
+                    "include/command/subsystem.h",
+                    "firmware/libcommand.a",
                     "include/command/eventLoop.h",
                     "include/command/commandController.h",
-                    "firmware/libcommand.a",
-                    "include/command/commandScheduler.h",
-                    "include/command/subsystem.h",
-                    "include/command/functionalCommand.h",
-                    "include/command/command.h",
-                    "include/command/repeatCommand.h",
-                    "include/command/runCommand.h",
                     "include/command/trigger.h",
-                    "include/command/instantCommand.h"
+                    "include/command/runCommand.h",
+                    "include/command/functionalCommand.h",
+                    "include/command/sequence.h",
+                    "include/command/waitUntilCommand.h",
+                    "include/command/repeatCommand.h",
+                    "include/command/command.h",
+                    "include/command/instantCommand.h",
+                    "include/command/waitCommand.h",
+                    "include/command/conditionalCommand.h",
+                    "include/command/parallelCommandGroup.h"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.1.2"
+                "version": "0.1.3"
             },
             "libjson": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/libjson@3.11.3",

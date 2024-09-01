@@ -1,7 +1,7 @@
 #pragma once
 
 namespace CONFIG {
-	constexpr double INTAKE_RATIO = 66.0/24.0; // 66 chain links
+	constexpr double INTAKE_RATIO = 66.0/96.0; // 66 chain links
 	constexpr double DRIVE_NOISE = 0.1;
 	constexpr Angle ANGLE_NOISE = 0.05_rad;
 	constexpr QLength DRIVE_RADIUS = 3.25_in/2.0;

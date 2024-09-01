@@ -11,7 +11,7 @@ public:
 	explicit TopIntake(pros::Motor intake_motor)
 		: intakeMotor(std::move(intake_motor)) {
 		intakeMotor.set_encoder_units(pros::MotorEncoderUnits::rotations);
-		intakeMotor.set_gearing(pros::MotorGears::blue);
+		intakeMotor.set_gearing(pros::MotorGears::green);
 	}
 
 	void periodic() override {
@@ -19,7 +19,7 @@ public:
 	}
 
 	void setPosition(double position) const {
-		this->intakeMotor.move_absolute(position * CONFIG::INTAKE_RATIO, 600);
+		this->intakeMotor.move_absolute(position * CONFIG::INTAKE_RATIO, 200);
 	}
 
 	void setPct(double pct) const {

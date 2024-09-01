@@ -44,7 +44,7 @@ public:
 		}
 
 		// return if competition is disabled
-		if (pros::competition::is_disabled() && !command->isFinished()) {
+		if (pros::competition::is_disabled()) {
 			return;
 		}
 

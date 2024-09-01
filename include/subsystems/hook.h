@@ -16,7 +16,7 @@ public:
 	void periodic() override {}
 
 	void setPosition(const Angle angle) {
-		motor.move_absolute(angle.Convert(revolution), 200);
+		motor.move_absolute(angle.Convert(revolution) * 2.0, 200);
 	}
 
 	FunctionalCommand* positionCommand(Angle angle) {
