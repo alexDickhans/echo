@@ -1,5 +1,7 @@
 #pragma once
 
+#include "config.h"
+
 #include "command/command.h"
 #include <iostream>
 
@@ -28,7 +30,7 @@ public:
 	}
 
 	bool isFinished() override {
-		return false; // Qabs(angleDifference(this->drivetrain->getAngle(), pid.getTarget() * radian)) < CONFIG::ANGLE_FINISH_THRESHOLD;
+		return Qabs(angleDifference(this->drivetrain->getAngle(), pid.getTarget() * radian)) < CONFIG::ANGLE_FINISH_THRESHOLD && abs(pid.getDerivitive()) < CONFIG::ANGLE_DA_FINISH_THRESHOLD;
 	}
 
 	std::vector<Subsystem *> getRequirements() override {

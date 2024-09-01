@@ -30,10 +30,10 @@ private:
 	PID pid = CONFIG::TURN_PID;
 
 public:
-	TankMotionProfiling(Drivetrain *drivetrain, TrapezoidalVelocityProfile velocity_profile,
-		const Angle &target_angle, const QLength &distance, const QCurvature &curvature, bool useTurnPID = true)
+	TankMotionProfiling(Drivetrain *drivetrain, ProfileConstraints profile_constraints,
+		const QLength &distance, const QCurvature &curvature, const bool useTurnPID = true, const QVelocity initialVelocity, const QVelocity endVelocity, const Angle &target_angle = 0.0)
 		: drivetrain(drivetrain),
-		  velocityProfile(std::move(velocity_profile)),
+		  velocityProfile(distance, profile_constraints, initialVelocity, endVelocity),
 		  targetAngle(target_angle),
 		  distance(distance),
 		  curvature(curvature) {

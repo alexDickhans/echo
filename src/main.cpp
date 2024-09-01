@@ -83,7 +83,7 @@ void competition_initialize() {}
  */
 void autonomous() {
 	CommandScheduler::schedule(
-		new Sequence({new Rotate(drivetrain, CONFIG::TURN_PID, 180_deg), new Rotate(drivetrain, CONFIG::TURN_PID, 0_deg)})
+		new Sequence({new TankMotionProfiling(drivetrain, )})
 		);
 }
 
