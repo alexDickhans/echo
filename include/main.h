@@ -39,6 +39,8 @@
 #include "command/commandScheduler.h"
 #include "feedback/feedback.h"
 #include "config.h"
+#include "motionProfiling/combinedMotionProfile.h"
+#include "motionProfiling/bezierMotionProfiling.h"
 
 /**
  * You should add more #includes here

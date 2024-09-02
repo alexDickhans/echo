@@ -1,6 +1,7 @@
 #pragma once
 
 #include "trigger.h"
+#include "commandScheduler.h"
 
 class CommandController : public pros::Controller {
 public:
@@ -9,6 +10,6 @@ public:
 	}
 
 	Trigger* getTrigger(pros::controller_digital_e_t button) {
-		return new Trigger([this, button]() { return this->get_digital(button); });
+		return new Trigger([this, button]() { return this->get_digital(button); }, CommandScheduler::getTeleopEventLoop());
 	}
 };

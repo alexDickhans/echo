@@ -13,7 +13,13 @@ private:
 	std::unordered_map<Subsystem*, Command*> requirements;
 	std::vector<Command*> scheduledCommands;
 
+	EventLoop teleopEventLoop{};
 	EventLoop eventLoop{};
+
+	bool inRunLoop = false;
+
+	std::vector<Command*> toSchedule;
+	std::vector<Command*> toCancel;
 
 	CommandScheduler() = default;
 public:
@@ -27,7 +33,7 @@ public:
 		CommandScheduler& instance = getInstance();
 
 		// Make sure the subsystem isn't already registered
-		assert(instance.subsystems.find(subsystem) == instance.subsystems.end());
+		assert(!instance.subsystems.contains(subsystem));
 
 		// Make sure the default command isn't null
 		assert(default_command != nullptr);
@@ -43,6 +49,10 @@ public:
 			return;
 		}
 
+		if (instance.inRunLoop) {
+			instance.toSchedule.emplace_back(command);
+		}
+
 		// return if competition is disabled
 		if (pros::competition::is_disabled()) {
 			return;
@@ -51,6 +61,7 @@ public:
 		std::vector<Command*> intersection;
 
 		bool all_interruptible = true;
+
 		auto requirements = command->getRequirements();
 
 	    for (auto requirement : instance.requirements) {
@@ -89,11 +100,20 @@ public:
 	static void run() {
 		CommandScheduler& instance = getInstance();
 
-		for (const auto key: instance.subsystems | std::views::keys) {
-			key->periodic();
+		// Run the periodic for all registered subsystems
+		for (const auto subsystem: instance.subsystems | std::views::keys) {
+			subsystem->periodic();
 		}
 
+		// Poll user set event loops
 		instance.eventLoop.poll();
+
+		// Only poll teleop tasks when the robot controller is active (Controller buttons)
+		if (!pros::competition::is_autonomous() && !pros::competition::is_disabled()) {
+			instance.teleopEventLoop.poll();
+		}
+
+		instance.inRunLoop = true;
 
 		for (auto command : instance.scheduledCommands) {
 			command->execute();
@@ -107,6 +127,16 @@ public:
 
 				std::erase(instance.scheduledCommands, command);
 			}
+		}
+
+		instance.inRunLoop = false;
+
+		for (auto command : instance.toSchedule) {
+			schedule(command);
+		}
+
+		for (auto command : instance.toCancel) {
+			cancel(command);
 		}
 
 		for (auto [subsystem, command] : instance.subsystems) {
@@ -129,8 +159,18 @@ public:
 		return &instance.eventLoop;
 	}
 
+	static EventLoop* getTeleopEventLoop() {
+		CommandScheduler& instance = getInstance();
+
+		return &instance.teleopEventLoop;
+	}
+
 	static void cancel(Command* command) {
 		CommandScheduler& instance = getInstance();
+
+		if (instance.inRunLoop) {
+			instance.toCancel.emplace_back(command);
+		}
 
 		if (scheduled(command)) {
 			command->end(true);

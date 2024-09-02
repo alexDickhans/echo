@@ -3,7 +3,8 @@
 #include <stdint.h>
 #include <cstddef>
 #include "json.hpp"
-using json = nlohmann::json;
+
+using Json = json11::Json;
 
 extern "C" {
 
@@ -25,7 +26,7 @@ typedef struct __attribute__((__packed__)) _asset {
  * json parsed_file = open_asset_as_json(FILE_json);
  * @endcode
  */
-json open_asset_as_json(asset x);
+Json open_asset_as_json(asset x);
 
 #define ASSET(x)                                                                                                       \
     extern "C" {                                                                                                       \

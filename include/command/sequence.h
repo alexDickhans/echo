@@ -1,6 +1,7 @@
 #pragma once
 
 #include "command.h"
+#include <algorithm>
 
 class Sequence : public Command {
 private:
@@ -30,7 +31,7 @@ public:
 	}
 
 	bool isFinished() override {
-		return index >= commands.size();
+		return this->index >= commands.size();
 	}
 
 	void end(const bool interrupted) override {

@@ -11,3 +11,9 @@ double sinc(Angle angle) {
 
 	return sin(angle) / angle.getValue();
 }
+
+double interp(std::vector<double> x, std::vector<double> y, double x0) {
+	// TODO
+
+	return 0.0;
+}
