@@ -4,6 +4,7 @@
 #include "config.h"
 #include "localization/particleFilter.h"
 #include "command/instantCommand.h"
+#include "telemetry/telemetry.h"
 
 class Drivetrain : public Subsystem {
 private:

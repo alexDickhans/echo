@@ -14,3 +14,5 @@ public:
 	void send(const std::string& string);
 };
 
+const Telemetry TELEMETRY;
+

@@ -7,15 +7,15 @@
 constexpr size_t BEZIER_POINT_DENSITY = 50;
 
 
-consteval auto BEZIER_MATRIX = Eigen::Matrix4d(
+inline auto BEZIER_MATRIX = Eigen::Matrix4d(
 	{{-1.0, 3.0, -3.0, 1.0}, {3.0, -6.0, 3.0, 0.0}, {-3.0, 3.0, 0.0, 0.0}, {1.0, 0.0, 0.0, 0.0}}
 );
 
-consteval auto BEZIER_D_MATRIX = Eigen::Matrix<double, 3, 4>(
+inline auto BEZIER_D_MATRIX = Eigen::Matrix<double, 3, 4>(
 	{{-3.0, 9.0, -9.0, 3.0}, {6.0, -12.0, 6.0, 0.0}, {-3.0, 3.0, 0.0, 0.0}}
 );
 
-consteval auto BEZIER_DD_MATRIX =
+inline auto BEZIER_DD_MATRIX =
 		Eigen::Matrix<double, 2, 4>({{-6.0, 18.0, -18.0, 6.0}, {6.0, -12.0, 6.0, 0.0}});
 
 class Bezier {
@@ -25,8 +25,8 @@ private:
 	bool stopBegin{};
 	std::vector<double> distance, t;
 
-	static Eigen::Vector2d toVector(const json11::Json &json) {
-		return {json["x"].number_value(), json["y"].number_value()};
+	static Eigen::Vector2d toVector(const json11::Json &json, bool mirror) {
+		return {json["x"].number_value(), json["y"].number_value() * mirror ? -1.0 : 1.0};
 	}
 
 public:
@@ -47,8 +47,8 @@ public:
 		calculate();
 	}
 
-	explicit Bezier(const json11::Json &json) : Bezier(toVector(json["path"][0]), toVector(json["path"][1]),
-	                                                   toVector(json["path"][2]), toVector(json["path"][3]),
+	explicit Bezier(const json11::Json &json, bool mirror) : Bezier(toVector(json["path"][0], mirror), toVector(json["path"][1], mirror),
+	                                                   toVector(json["path"][2], mirror), toVector(json["path"][3], mirror),
 	                                                   json["inverted"].bool_value(), json["stop_end"].bool_value(),
 	                                                   json["constraints"]["velocity"].number_value(),
 	                                                   json["constraints"]["accel"].number_value()) {
@@ -69,7 +69,7 @@ public:
 		}
 	}
 
-	[[nodiscard]] QLength getDistanceAtT(double t) const {
+	[[nodiscard]] QLength getDistanceAtT(const double t) const {
 		return interp(this->t, distance, t);
 	}
 
@@ -79,26 +79,26 @@ public:
 
 	[[nodiscard]] Eigen::Vector3d get(const double t) const {
 		const auto tVector = Eigen::RowVector4d(pow(t, 3), pow(t, 2), t, 1.0);
-		const double x = tVector * BEZIER_MATRIX * Eigen::Vector4d(a.x, b.x, c.x, d.x);
-		const double y = tVector * BEZIER_MATRIX * Eigen::Vector4d(a.y, b.y, c.y, d.y);
+		const double x = tVector * BEZIER_MATRIX * Eigen::Vector4d(a.x(), b.x(), c.x(), d.x());
+		const double y = tVector * BEZIER_MATRIX * Eigen::Vector4d(a.y(), b.y(), c.y(), d.y());
 
 		const auto d = this->getD(t);
 
-		return {x, y, atan2(d.y, d.x)};
+		return {x, y, atan2(d.y(), d.x())};
 	}
 
 	[[nodiscard]] Eigen::Vector2d getD(const double t) const {
 		const auto tVector = Eigen::RowVector3d(pow(t, 2), t, 1.0);
-		const double x = tVector * BEZIER_D_MATRIX * Eigen::Vector4d(a.x, b.x, c.x, d.x);
-		const double y = tVector * BEZIER_D_MATRIX * Eigen::Vector4d(a.y, b.y, c.y, d.y);
+		const double x = tVector * BEZIER_D_MATRIX * Eigen::Vector4d(a.x(), b.x(), c.x(), d.x());
+		const double y = tVector * BEZIER_D_MATRIX * Eigen::Vector4d(a.y(), b.y(), c.y(), d.y());
 
 		return {x, y};
 	}
 
 	[[nodiscard]] Eigen::Vector2d getDD(const double t) const {
-		const auto tVector = Eigen::RowVector3d(t, 1.0);
-		const double x = tVector * BEZIER_DD_MATRIX * Eigen::Vector4d(a.x, b.x, c.x, d.x);
-		const double y = tVector * BEZIER_DD_MATRIX * Eigen::Vector4d(a.y, b.y, c.y, d.y);
+		const auto tVector = Eigen::RowVector2d(t, 1.0);
+		const double x = tVector * BEZIER_DD_MATRIX * Eigen::Vector4d(a.x(), b.x(), c.x(), d.x());
+		const double y = tVector * BEZIER_DD_MATRIX * Eigen::Vector4d(a.y(), b.y(), c.y(), d.y());
 
 		return {x, y};
 	}

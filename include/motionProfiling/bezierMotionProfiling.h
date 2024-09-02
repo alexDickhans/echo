@@ -46,7 +46,7 @@ public:
 		calculate(startSpeed, endSpeed);
 	}
 
-	CombinedMotionProfile build(asset path) {
+	CombinedMotionProfile build(asset path, const bool mirror) {
 		Json parsed_path = open_asset_as_json(path);
 
 		std::vector<MotionProfile*> motionProfiles;
@@ -54,12 +54,12 @@ public:
 		QVelocity startSpeed = parsed_path["start_speed"].number_value();
 		QVelocity endSpeed = parsed_path["end_speed"].number_value();
 
-		std::vector<Bezier> segments{Bezier(parsed_path["segments"][0])};
+		std::vector<Bezier> segments{Bezier(parsed_path["segments"][0], mirror)};
 
 		bool last_inverted = segments[0].getReversed();
 
 		for (size_t i = 1; i < parsed_path["segments"].array_items().size(); i++) {
-			Bezier segment(parsed_path["segments"][i]);
+			Bezier segment(parsed_path["segments"][i], mirror);
 			if (segment.getReversed() ^ last_inverted || segment.getStopBegin()) {
 				if (!segments.empty()) {
 					last_inverted = segment.getReversed();
@@ -179,4 +179,5 @@ public:
 	~BezierMotionProfile() override = default;
 };
 
-#define BEZIER_MP_ASSET(x) ASSET(x##_json); auto x = BezierMotionProfile::build(x##_json);
+#define BEZIER_MP_ASSET(x) ASSET(x##_json); auto x = BezierMotionProfile::build(x##_json, false);
+#define BEZIER_MIRRORED_MP_ASSET(x) ASSET(x##_json); auto x##_red = BezierMotionProfile::build(x##_json, false); auto x##_blue = BezierMotionProfile::build(x##_json, true);
