@@ -59,13 +59,13 @@ public:
 	}
 
 	void execute() override {
-		QTime duration = (pros::millis() * 1_ms) - startTime;
+		const QTime duration = (pros::millis() * 1_ms) - startTime;
 
-		QAcceleration acceleration = velocityProfile.getAccelerationByTime(duration);
-		QVelocity speed = velocityProfile.getVelocityByTime(duration);
-		QLength targetDistance = velocityProfile.getDistanceByTime(duration);
+		const QAcceleration acceleration = velocityProfile.getAccelerationByTime(duration);
+		const QVelocity speed = velocityProfile.getVelocityByTime(duration);
+		const QLength targetDistance = velocityProfile.getDistanceByTime(duration);
 
-		QLength currentDistance = (drivetrain->getDistance()-startDistance);
+		const QLength currentDistance = (drivetrain->getDistance()-startDistance);
 
 		distancePid.setTarget(targetDistance.getValue());
 
@@ -80,9 +80,9 @@ public:
 
 		// integrate turnPid
 		if (useTurnPID) {
-			Angle offset = targetDistance * curvature;
+			const Angle offset = targetDistance * curvature;
 
-			Angle targetAngleWithOffset = targetAngle + offset;
+			const Angle targetAngleWithOffset = targetAngle + offset;
 
 			CONFIG::TURN_PID.setTarget(targetAngleWithOffset.getValue());
 
@@ -91,8 +91,6 @@ public:
 			leftVoltage -= turnPower;
 			rightVoltage += turnPower;
 		}
-
-		std::cout << "Left: " << leftVoltage << ", right: " << rightVoltage << std::endl;
 
 		// send to motors
 		drivetrain->setPct(leftVoltage, rightVoltage);

@@ -13,6 +13,10 @@ public:
 		: motionProfiles(std::move(motion_profiles)) {
 	}
 
+	void resetCommands() {
+		commandIndex = 0;
+	}
+
 	std::optional<MotionCommand> get(const QTime t) override {
 		QTime accumulatedTime = 0.0;
 

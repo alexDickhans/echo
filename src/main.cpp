@@ -1,6 +1,7 @@
 #include "main.h"
 
-ASSET(test_json);
+// BEZIER_MP_ASSET(skills);
+ASSET(skills_json);
 
 /**
  * A callback function for LLEMU's center button.
@@ -55,7 +56,7 @@ void initialize() {
 	pros::Task commandScheduler(update_loop);
 	pros::Task screenUpdate(screen_update_loop);
 
-	BezierMotionProfile::build(test_json, false);
+	BezierMotionProfile::build(skills_json, false);
 }
 
 /**
@@ -89,7 +90,7 @@ void competition_initialize() {}
  */
 void autonomous() {
 	// CommandScheduler::schedule(
-	// 	new Ramsete(drivetrain, 0.1, 0.1, &test_red)
+	// 	new Ramsete(drivetrain, 0.1, 0.1, &test)
 	// );
 }
 

@@ -82,7 +82,7 @@ public:
 			motionProfiles.addCommand(command["t"].number_value(), command["name"].string_value());
 		}
 
-		std::cout << std::endl << motionProfiles.getDuration().getValue() << std::endl;
+		std::cout << "D: " << motionProfiles.getDuration().getValue() << std::endl;
 
 		return motionProfiles;
 	}
@@ -105,10 +105,8 @@ public:
 
 				const auto curvature = beziers[i].getCurvature(t);
 
-				// std::cout << curvature.getValue() << std::endl;
-
 				distance.emplace_back(accumulatedDistance + beziers[i].getDistanceAtT(t));
-				velocity.emplace_back(limitSpeed(curvature));// * beziers[i].velocity);
+				velocity.emplace_back(limitSpeed(curvature) * beziers[i].velocity);
 				accel.emplace_back(beziers[i].acceleration);
 			}
 
@@ -152,9 +150,9 @@ public:
 
 			this->time.emplace_back(time.getValue());
 			this->velocity.emplace_back(velocity[i].getValue());
-		}
 
-		std::cout << this->time[velocity.size()-1] << std::endl;
+			std::cout << "Time: " << time.getValue() << " Velocity: " << velocity[i].getValue() << std::endl;
+		}
 	}
 
 	std::optional<MotionCommand> get(const QTime time) override {
