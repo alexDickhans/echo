@@ -110,11 +110,11 @@ public:
 		distanceSinceUpdate = 0.0;
 	}
 
-	void initNormal(const Eigen::Vector3d& mean, const Eigen::Matrix3d& covariance) {
+	void initNormal(const Eigen::Vector3d& mean, const Eigen::Matrix3d& covariance, bool flip) {
 		std::normal_distribution distribution(0.0, 1.0);
 
 		for (auto && particle : this->particles) {
-			particle = mean + covariance * Eigen::Vector3d({distribution(de), distribution(de), distribution(de)});
+			particle = mean + covariance * Eigen::Vector3d({distribution(de), distribution(de) * (flip ? -1.0 : 1.0), distribution(de)});
 
 			particle.z() = this->angleFunction().getValue();
 		}

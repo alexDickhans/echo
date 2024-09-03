@@ -126,12 +126,12 @@ public:
 		this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
 	}
 
-	void initNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance) {
-		this->particleFilter.initNormal(mean, covariance);
+	void initNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance, bool flip) {
+		this->particleFilter.initNormal(mean, covariance, flip);
 	}
 
-	InstantCommand* setNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance) {
-		return new InstantCommand([this, mean, covariance] () { this->initNorm(mean, covariance); }, {this});
+	InstantCommand* setNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance, bool flip) {
+		return new InstantCommand([this, mean, covariance, flip] () { this->initNorm(mean, covariance, flip); }, {this});
 	}
 
 	Eigen::Vector3d getPose() {

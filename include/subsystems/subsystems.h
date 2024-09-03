@@ -53,8 +53,9 @@ inline void subsystemInit() {
 		topIntake, new ConditionalCommand(topIntake->stopIntake(), topIntake->positionCommandFwd(0.0),
 		                                  [&]() { return hasRings; }));
 	CommandScheduler::registerSubsystem(bottomIntake, bottomIntake->stopIntake());
-	CommandScheduler::registerSubsystem(lift, new ConditionalCommand(lift->positionCommand(3.0_deg), lift->positionCommand(0.0_deg),
-										  [&]() { return hasRings; }));
+	CommandScheduler::registerSubsystem(lift, new ConditionalCommand(lift->positionCommand(3.0_deg),
+	                                                                 lift->positionCommand(0.0_deg),
+	                                                                 [&]() { return hasRings; }));
 	CommandScheduler::registerSubsystem(goalClamp, goalClamp->levelCommand(false));
 	CommandScheduler::registerSubsystem(hook, hook->positionCommand(0.0));
 
@@ -87,7 +88,8 @@ inline void subsystemInit() {
 	intakeOntoGoal = new ParallelCommandGroup({
 		bottomIntake->movePct(1.0),
 		lift->positionCommand(0.0_deg),
-		topIntake->movePct(1.0)
+		topIntake->movePct(1.0),
+		new InstantCommand([&]() { hasRings = false; }, {}),
 	});
 
 	primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcade(primary));
@@ -104,6 +106,7 @@ inline void subsystemInit() {
 
 	primary.getTrigger(DIGITAL_L2)->toggleOnTrue(
 		new Sequence({
+			new InstantCommand([&]() { hasRings = false; }, {}),
 			loadOneRingLow,
 			loadOneRingLow
 		})
@@ -145,7 +148,8 @@ inline void subsystemInit() {
 	primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClamp->levelCommand(true));
 
 	partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup({
-		bottomIntake->movePct(0.8), lift->positionCommand(8.0_deg), topIntake->movePct(-1.0)
+		new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8), lift->positionCommand(8.0_deg),
+		topIntake->movePct(-1.0)
 	}));
 
 	partner.getTrigger(DIGITAL_UP)->whileTrue(hook->positionCommand(0.37));
@@ -153,10 +157,11 @@ inline void subsystemInit() {
 	partner.getTrigger(DIGITAL_RIGHT)->whileTrue(hook->positionCommand(0.48));
 	partner.getTrigger(DIGITAL_DOWN)->whileTrue(hook->positionCommand(0.58));
 	partner.getTrigger(DIGITAL_L2)->whileTrue(lift->controller(&partner));
-	Trigger([&]() {return abs(partner.get_analog(ANALOG_RIGHT_Y)) > 15;}, CommandScheduler::getTeleopEventLoop()).whileTrue(topIntake->controller(&partner));
+	Trigger([&]() { return abs(partner.get_analog(ANALOG_RIGHT_Y)) > 15; }, CommandScheduler::getTeleopEventLoop()).
+			whileTrue(topIntake->controller(&partner));
 	partner.getTrigger(DIGITAL_X)->whileTrue(bottomIntake->movePct(1.0));
 	partner.getTrigger(DIGITAL_B)->whileTrue(bottomIntake->movePct(-1.0));
-	partner.getTrigger(DIGITAL_R1)->onTrue(new Sequence({
+	partner.getTrigger(DIGITAL_R1)->whileTrue(new Sequence({
 		new ParallelRaceGroup({
 			bottomIntake->movePct(0.0),
 			lift->moveToPosition(7_deg, 0.3_deg),
@@ -172,14 +177,9 @@ inline void subsystemInit() {
 		}),
 		new ParallelCommandGroup({
 			bottomIntake->movePct(0.0),
-			lift->positionCommand(7_deg),
+			lift->positionCommand(0_deg),
 			topIntake->movePct(1.0),
-			hook->positionCommand(5_deg),
+			hook->positionCommand(0_deg),
 		})
-	}))->onFalse(new ParallelRaceGroup({
-		bottomIntake->movePct(0.0),
-		lift->moveToPosition(0_deg, 4_deg),
-		topIntake->movePct(0.0),
-		hook->positionCommand(5_deg),
 	}));
 }

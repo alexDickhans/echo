@@ -97,7 +97,7 @@ void competition_initialize() {}
 void autonomous() {
 	CommandScheduler::schedule(
 		new Sequence({
-			drivetrain->setNorm(Eigen::Vector3d(0.0, 0.0, 0.0), Eigen::Matrix3d::Identity() * 0.01),
+			drivetrain->setNorm(Eigen::Vector3d(0.0, 0.0, 0.0), Eigen::Matrix3d::Identity() * 0.01, false),
 			new Ramsete(drivetrain, 0.0, 3.0, &test_red),
 		})
 	);
