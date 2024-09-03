@@ -36,6 +36,7 @@ CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 pros::Distance intakeDistance(21);
 
 bool outtakeWallStake = false;
+bool hasRings = false;
 
 inline void subsystemInit() {
 	TELEMETRY.setSerial(new pros::Serial(20, 921600));
@@ -48,7 +49,7 @@ inline void subsystemInit() {
 	hook = new Hook(pros::Motor(-8));
 
 	CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
-	CommandScheduler::registerSubsystem(topIntake, topIntake->stopIntake());
+	CommandScheduler::registerSubsystem(topIntake, new ConditionalCommand(topIntake->stopIntake(), topIntake->positionCommandFwd(0.0), [&] () { return hasRings; }));
 	CommandScheduler::registerSubsystem(bottomIntake, bottomIntake->stopIntake());
 	CommandScheduler::registerSubsystem(lift, lift->positionCommand(3.0_deg));
 	CommandScheduler::registerSubsystem(goalClamp, goalClamp->levelCommand(false));

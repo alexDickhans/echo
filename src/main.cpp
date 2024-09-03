@@ -37,6 +37,14 @@ void on_center_button() {
 
 		pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " + std::to_string(pose.y() * metre.Convert(inch)) + ", " + std::to_string(pose.z() * radian.Convert(degree)));
 
+		TELEMETRY.send("[[");
+		TELEMETRY.send(std::to_string(pose.x()));
+		TELEMETRY.send(",");
+		TELEMETRY.send(std::to_string(pose.y()));
+		TELEMETRY.send(",");
+		TELEMETRY.send(std::to_string(pose.z()));
+		TELEMETRY.send("]]\n");
+
 		pros::c::task_delay_until(&start_time, 50);
 	}
 }
@@ -55,10 +63,6 @@ void initialize() {
 
 	pros::Task commandScheduler(update_loop);
 	pros::Task screenUpdate(screen_update_loop);
-
-	CommandScheduler::schedule(
-		new Ramsete(drivetrain, 0.0, 0.0, &test_red)
-	);
 }
 
 /**
@@ -92,7 +96,10 @@ void competition_initialize() {}
  */
 void autonomous() {
 	CommandScheduler::schedule(
-		new Ramsete(drivetrain, 0.0, 2.0, &test_red)
+		new Sequence({
+			drivetrain->setNorm(Eigen::Vector3d(0.0, 0.0, 0.0), Eigen::Matrix3d::Identity() * 0.01),
+			new Ramsete(drivetrain, 0.0, 3.0, &test_red),
+		})
 	);
 }
 
