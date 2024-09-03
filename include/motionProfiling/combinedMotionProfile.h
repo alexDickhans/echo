@@ -6,6 +6,8 @@
 class CombinedMotionProfile : public MotionProfile {
 private:
 	std::vector<MotionProfile*> motionProfiles;
+	std::vector<std::pair<double, std::string>> commands;
+	size_t commandIndex;
 public:
 	explicit CombinedMotionProfile(std::vector<MotionProfile *> motion_profiles)
 		: motionProfiles(std::move(motion_profiles)) {
@@ -22,6 +24,10 @@ public:
 					auto result = currentProfile.value();
 
 					result.desiredT += accumulatedT;
+
+					for (; commandIndex < commands.size() && commands[commandIndex].first < result.desiredT; commandIndex ++) {
+						PathCommands::schedule(commands[commandIndex].second);
+					}
 
 					return result;
 				}
@@ -57,6 +63,10 @@ public:
 		}
 
 		return accumulatedT;
+	}
+
+	void addCommand(double t, const std::string& name) {
+		this->commands.emplace_back(t, name);
 	}
 
 	~CombinedMotionProfile() override = default;

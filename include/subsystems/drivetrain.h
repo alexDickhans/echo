@@ -69,13 +69,13 @@ public:
 
 		auto particle = particleFilter.getPrediction();
 
-		TELEMETRY.send("[[");
-		TELEMETRY.send(std::to_string(particle.x()));
-		TELEMETRY.send(",");
-		TELEMETRY.send(std::to_string(particle.y()));
-		TELEMETRY.send(",");
-		TELEMETRY.send(std::to_string(particle.z()));
-		TELEMETRY.send("]]\n");
+		// TELEMETRY.send("[[");
+		// TELEMETRY.send(std::to_string(particle.x()));
+		// TELEMETRY.send(",");
+		// TELEMETRY.send(std::to_string(particle.y()));
+		// TELEMETRY.send(",");
+		// TELEMETRY.send(std::to_string(particle.z()));
+		// TELEMETRY.send("]]\n");
 		//
 		// for (auto particle : particleFilter.getParticles()) {
 		// 	TELEMETRY.send("[");
@@ -118,10 +118,12 @@ public:
 	}
 
 	void setVelocity(const QVelocity left, const QVelocity right) {
-		this->left11W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 600.0);
-		this->right11W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 600.0);
-		this->left5W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 200.0);
-		this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
+		std::cout << "Left: " << left.Convert(inch/second) << " Right: " << right.Convert(inch/second) << std::endl;
+
+		// this->left11W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 600.0);
+		// this->right11W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 600.0);
+		// this->left5W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 200.0);
+		// this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
 	}
 
 	void initNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance) {

@@ -81,5 +81,14 @@
       }
     }
   ],
-  "commands": []
+  "commands": [
+    {
+      "t": 0.0,
+      "name": "change"
+    },
+    {
+      "t": 0.0,
+      "name": "change"
+    }
+  ]
 }

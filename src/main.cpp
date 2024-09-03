@@ -87,7 +87,7 @@ void competition_initialize() {}
  */
 void autonomous() {
 	CommandScheduler::schedule(
-		new TankMotionProfiling(drivetrain, {65_in/second, 100_in/second/second}, 70_in)
+		new Ramsete(drivetrain, 0.0, 0.0, &test_red)
 	);
 }
 

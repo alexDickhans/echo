@@ -13,7 +13,7 @@ class BezierMotionProfile : public MotionProfile {
 private:
 	std::vector<Bezier> beziers;
 	std::vector<double> time, velocity, t;
-	bool reversed;
+	bool reversed{false};
 
 	static double limitSpeed(const QCurvature curvature) {
 		if (curvature.getValue() == 0.0)
@@ -39,9 +39,9 @@ public:
 	explicit BezierMotionProfile(std::vector<Bezier> beziers, QVelocity startSpeed, QVelocity endSpeed)
 		: beziers(std::move(beziers)) {
 
-		assert(!beziers.empty());
-		reversed = beziers.at(0).getReversed();
-		for (const auto & bezier : beziers) {
+		assert(!this->beziers.empty());
+		reversed = this->beziers.at(0).getReversed();
+		for (const auto & bezier : this->beziers) {
 			assert(reversed == bezier.getReversed());
 		}
 
@@ -51,7 +51,7 @@ public:
 	static CombinedMotionProfile build(const asset path, const bool mirror) {
 		const Json parsed_path = open_asset_as_json(path);
 
-		std::vector<MotionProfile*> motionProfiles;
+		CombinedMotionProfile motionProfiles{{}};
 
 		QVelocity startSpeed = parsed_path["start_speed"].number_value();
 		QVelocity endSpeed = parsed_path["end_speed"].number_value();
@@ -65,16 +65,21 @@ public:
 			if (segment.getReversed() ^ last_inverted || segment.getStopBegin()) {
 				if (!segments.empty()) {
 					last_inverted = segment.getReversed();
-					motionProfiles.emplace_back(new BezierMotionProfile(segments, startSpeed, 0.0));
+					motionProfiles.addMP(new BezierMotionProfile(segments, startSpeed, 0.0));
 					startSpeed = 0.0;
+					segments.clear();
 				}
 			}
 			segments.emplace_back(segment);
 		}
 
-		motionProfiles.emplace_back(new BezierMotionProfile(segments, startSpeed, endSpeed));
+		motionProfiles.addMP(new BezierMotionProfile(segments, startSpeed, endSpeed));
 
-		return CombinedMotionProfile(motionProfiles);
+		for (const auto& command : parsed_path["commands"].array_items()) {
+			motionProfiles.addCommand(command["t"].number_value(), command["name"].string_value());
+		}
+
+		return motionProfiles;
 	}
 
 
@@ -182,4 +187,4 @@ public:
 };
 
 #define BEZIER_MP_ASSET(x) ASSET(x##_json); auto x = BezierMotionProfile::build(x##_json, false);
-#define BEZIER_MIRRORED_MP_ASSET(x) ASSET(x##_json); auto x##_red = BezierMotionProfile::build(x##_json, false); auto x##_blue = BezierMotionProfile::build(x##_json, true);
+#define BEZIER_MIRRORED_MP_ASSET(x) ASSET(x##_json); auto x##_red = BezierMotionProfile::build(x##_json, false); //auto x##_blue = BezierMotionProfile::build(x##_json, true);
