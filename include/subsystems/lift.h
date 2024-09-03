@@ -39,5 +39,9 @@ public:
 		return new FunctionalCommand([]() {}, [this, angle]() { this->setTarget(angle); }, [](bool _) {}, [this, threshold, angle]() { return Qabs(this->getPosition() - angle) < threshold; }, {this});
 	}
 
+	RunCommand* controller(pros::Controller* controller) {
+		return new RunCommand([this, controller]() { this->setTarget(this->getPosition() + controller->get_analog(ANALOG_LEFT_Y) / 127.0 * 1.0_deg); }, {this});
+	}
+
 	~LiftSubsystem() override = default;
 };

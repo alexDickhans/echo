@@ -74,5 +74,9 @@ public:
 		return new RunCommand([this, pct]() { this->setPct(pct); }, {this});
 	}
 
+	RunCommand* controller(pros::Controller* controller) {
+		return new RunCommand([this, controller]() { this->setPct(controller->get_analog(ANALOG_RIGHT_Y) / 127.0); }, {this});
+	}
+
 	~TopIntake() override = default;
 };
