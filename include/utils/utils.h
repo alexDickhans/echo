@@ -24,11 +24,11 @@ inline double interp(const std::vector<double>& x, const std::vector<double>& y,
 	}
 
 	for (size_t i = 1; i < min_len; i ++) {
-		if (x[i] > x0 || i == min_len - 1) {
+		if (x0 < x[i] || i == min_len - 1) {
 			const auto dx = x[i] - x[i-1];
 			const auto dy = y[i] - y[i-1];
 
-			return y[i-1] + dy * ((x0-x[i-1]) / dx);
+			return y[i-1] + (x0 - x[i-1]) * (dy/dx);
 		}
 	}
 

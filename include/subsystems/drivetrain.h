@@ -118,12 +118,12 @@ public:
 	}
 
 	void setVelocity(const QVelocity left, const QVelocity right) {
-		std::cout << "Left: " << left.Convert(inch/second) << " Right: " << right.Convert(inch/second) << std::endl;
+		// std::cout << "Left: " << left.Convert(inch/second) << " Right: " << right.Convert(inch/second) << std::endl;
 
-		// this->left11W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 600.0);
-		// this->right11W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 600.0);
-		// this->left5W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 200.0);
-		// this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
+		this->left11W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 600.0);
+		this->right11W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 600.0);
+		this->left5W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 200.0);
+		this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
 	}
 
 	void initNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance) {

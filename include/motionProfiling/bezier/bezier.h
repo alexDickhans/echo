@@ -104,7 +104,9 @@ public:
 		return {x, y};
 	}
 
-	[[nodiscard]] QCurvature getCurvature(const double t) const {
+	[[nodiscard]] QCurvature getCurvature(const double tIn) const {
+		const double t = std::clamp(tIn, 0.0, 1.0);
+
 		auto D = this->getD(t);
 		auto DD = this->getDD(t);
 

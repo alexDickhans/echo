@@ -1,6 +1,6 @@
 #include "main.h"
 
-BEZIER_MP_ASSET(skills);
+// BEZIER_MP_ASSET(skills);
 BEZIER_MIRRORED_MP_ASSET(test);
 
 /**
@@ -56,6 +56,9 @@ void initialize() {
 	pros::Task commandScheduler(update_loop);
 	pros::Task screenUpdate(screen_update_loop);
 
+	CommandScheduler::schedule(
+		new Ramsete(drivetrain, 0.0, 0.0, &test_red)
+	);
 }
 
 /**
@@ -89,7 +92,7 @@ void competition_initialize() {}
  */
 void autonomous() {
 	CommandScheduler::schedule(
-		new Ramsete(drivetrain, 0.1, 0.1, &test_red)
+		new Ramsete(drivetrain, 0.0, 2.0, &test_red)
 	);
 }
 

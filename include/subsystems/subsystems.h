@@ -115,14 +115,15 @@ inline void subsystemInit() {
 			bottomIntake->movePct(0.0),
 			lift->positionCommand(33_deg),
 			topIntake->movePct(0.0),
-			hook->positionCommand(5_deg),
+			hook->positionCommand(0_deg),
 			new WaitUntilCommand([&]() { return primary.get_digital(DIGITAL_Y); })
 		}),
 		new InstantCommand([&]() { outtakeWallStake = true; }, {}),
 		new ParallelCommandGroup({
 			bottomIntake->movePct(0.0),
 			lift->positionCommand(33_deg),
-			topIntake->movePct(-1.0)
+			topIntake->movePct(-1.0),
+			hook->positionCommand(0_deg),
 		})
 	}))->onFalse(new ParallelRaceGroup({
 		bottomIntake->movePct(0.0),

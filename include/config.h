@@ -10,7 +10,7 @@ namespace CONFIG {
 	constexpr QLength DRIVE_RADIUS = 3.25_in/2.0;
 	constexpr double DRIVE_RATIO = 48.0/36.0;
 	constexpr double LIFT_RATIO = 8.0;
-	constexpr QLength TRACK_WIDTH = 6_in;
+	constexpr QLength TRACK_WIDTH = 12_in;
 	constexpr size_t NUM_PARTICLES = 100;
 	constexpr Angle ANGLE_FINISH_THRESHOLD = 0.5_deg;
 	constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.02;

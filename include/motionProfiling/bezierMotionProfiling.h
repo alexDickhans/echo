@@ -92,6 +92,8 @@ public:
 
 		QLength accumulatedDistance = 0.0;
 
+		this->t.emplace_back(0.0);
+
 		for (size_t i = 0; i < beziers.size(); i++) {
 			auto length = beziers[i].getDistance();
 			const auto count = std::max(5, static_cast<int>(std::ceil((length / 2_in).getValue())));
@@ -152,9 +154,9 @@ public:
 	}
 
 	std::optional<MotionCommand> get(const QTime time) override {
-		const auto t = interp(this->time, this->t, time.getValue());
-		auto i = static_cast<int>(t);
-		auto tLocal = fmod(t, 1.0);
+		const auto t = std::clamp(interp(this->time, this->t, time.getValue()), 0.0, static_cast<double>(this->beziers.size()));
+		auto i = std::clamp(static_cast<size_t>(t), (size_t) 0, this->beziers.size()-1);
+		auto tLocal = fmod(t, 1.0000001);
 
 		auto invertedMultiplier = this->reversed ? -1.0 : 1.0;
 
