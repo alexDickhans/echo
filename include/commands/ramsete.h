@@ -41,7 +41,9 @@ public:
 				{0.0, 0.0, 1.0}
 			};
 
-			auto error = errorMatrix * (command->desiredPose - currentPose);
+			Eigen::Vector3d error = errorMatrix * (command->desiredPose - currentPose);
+
+			error.z() = angleDifference(command->desiredPose.z(), currentPose.z()).getValue();
 
 			auto k = 2.0 * this->zeta * sqrt(Qsq(command->desiredAngularVelocity).getValue()
 			                                 + this->beta * Qsq(command->desiredVelocity).getValue());
@@ -60,7 +62,6 @@ public:
 			drivetrain->setVelocity(velocity_commanded - angular_wheel_velocity_commanded,
 			                        velocity_commanded + angular_wheel_velocity_commanded);
 
-			std::cout << motionProfile->getDuration().Convert(second) << std::endl;
 		}
 	}
 

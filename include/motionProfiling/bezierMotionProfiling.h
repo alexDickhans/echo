@@ -82,8 +82,6 @@ public:
 			motionProfiles.addCommand(command["t"].number_value(), command["name"].string_value());
 		}
 
-		std::cout << "D: " << motionProfiles.getDuration().getValue() << std::endl;
-
 		return motionProfiles;
 	}
 
@@ -150,8 +148,6 @@ public:
 
 			this->time.emplace_back(time.getValue());
 			this->velocity.emplace_back(velocity[i].getValue());
-
-			std::cout << "Time: " << time.getValue() << " Velocity: " << velocity[i].getValue() << std::endl;
 		}
 	}
 
@@ -193,4 +189,4 @@ public:
 };
 
 #define BEZIER_MP_ASSET(x) ASSET(x##_json); auto x = BezierMotionProfile::build(x##_json, false);
-#define BEZIER_MIRRORED_MP_ASSET(x) ASSET(x##_json); auto x##_red = BezierMotionProfile::build(x##_json, false); //auto x##_blue = BezierMotionProfile::build(x##_json, true);
+#define BEZIER_MIRRORED_MP_ASSET(x) ASSET(x##_json); auto x##_red = BezierMotionProfile::build(x##_json, false); auto x##_blue = BezierMotionProfile::build(x##_json, true);
