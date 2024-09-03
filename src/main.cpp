@@ -1,5 +1,7 @@
 #include "main.h"
 
+BEZIER_MIRRORED_MP_ASSET(test);
+
 /**
  * A callback function for LLEMU's center button.
  *
@@ -30,7 +32,9 @@ void on_center_button() {
 	while (true) {
 		auto start_time = pros::millis();
 
-		pros::lcd::set_text(2, std::to_string(drivetrain->getDistance().Convert(inch)));
+		auto pose = drivetrain->getPose();
+
+		pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " + std::to_string(pose.y() * metre.Convert(inch)) + ", " + std::to_string(pose.z() * radian.Convert(degree)));
 
 		pros::c::task_delay_until(&start_time, 50);
 	}

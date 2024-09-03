@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Eigen/Eigen"
+#include "units/units.hpp"
 
 struct MotionCommand {
 	Eigen::Vector3d desiredPose;

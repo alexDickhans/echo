@@ -38,6 +38,8 @@ pros::Distance intakeDistance(21);
 bool outtakeWallStake = false;
 
 inline void subsystemInit() {
+	TELEMETRY.setSerial(new pros::Serial(20, 921600));
+
 	drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16)); // TODO: actual ports
 	topIntake = new TopIntake(pros::Motor(-5));
 	bottomIntake = new BottomIntake(pros::Motor(-10));

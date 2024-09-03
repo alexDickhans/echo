@@ -49,7 +49,15 @@ public:
 		this->motionProfiles.emplace_back(profile);
 	}
 
-	double maxT() override;
+	double maxT() override {
+		double accumulatedT = 0.0;
+
+		for (auto motion_profile : this->motionProfiles) {
+			accumulatedT += motion_profile->maxT();
+		}
+
+		return accumulatedT;
+	}
 
 	~CombinedMotionProfile() override = default;
 };

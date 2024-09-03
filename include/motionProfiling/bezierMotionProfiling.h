@@ -6,6 +6,8 @@
 #include "path.h"
 #include "json/json.hpp"
 #include "json/asset.hpp"
+#include "combinedMotionProfile.h"
+#include "config.h"
 
 class BezierMotionProfile : public MotionProfile {
 private:
@@ -46,8 +48,8 @@ public:
 		calculate(startSpeed, endSpeed);
 	}
 
-	CombinedMotionProfile build(asset path, const bool mirror) {
-		Json parsed_path = open_asset_as_json(path);
+	static CombinedMotionProfile build(const asset path, const bool mirror) {
+		const Json parsed_path = open_asset_as_json(path);
 
 		std::vector<MotionProfile*> motionProfiles;
 

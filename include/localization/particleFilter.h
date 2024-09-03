@@ -24,6 +24,9 @@ private:
 public:
 	explicit ParticleFilter(std::function<Angle()> angle_function)
 		: angleFunction(std::move(angle_function)) {
+		for (auto&& particle : particles) {
+			particle = Eigen::Vector3d(0.0, 0.0, 0.0);
+		}
 	}
 
 	Eigen::Vector3d getPrediction() {
@@ -38,7 +41,15 @@ public:
 		return {totalX/static_cast<double>(L), totalY/static_cast<double>(L), angleFunction().Convert(radian)};
 	}
 
+	std::array<Eigen::Vector3d, L> getParticles() {
+		return particles;
+	}
+
 	void update(const std::function<Eigen::Vector2d()>& predictionFunction) {
+		if (!isfinite(angleFunction().getValue())) {
+			return;
+		}
+
 		for (auto& particle : particles) {
 			auto prediction = predictionFunction();
 			particle = Eigen::Vector3d(particle.x() + prediction.x(), particle.y() + prediction.y(), angleFunction().Convert(radian));

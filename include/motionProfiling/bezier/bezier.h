@@ -1,6 +1,7 @@
 #pragma once
 
 #include "json/json.hpp"
+#include "utils/utils.h"
 
 #include "Eigen/Eigen"
 

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "units/units.hpp"
+#include "feedback/pid.h"
+
 namespace CONFIG {
 	constexpr double INTAKE_RATIO = 66.0/96.0; // 66 chain links
 	constexpr double DRIVE_NOISE = 0.1;

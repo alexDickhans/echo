@@ -41,7 +41,7 @@ public:
 		left5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 		right5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
-		imu.reset(false);
+		imu.reset(true);
 	}
 
 	void periodic() override {
@@ -56,7 +56,7 @@ public:
 
 		std::normal_distribution leftDistribution(leftChange.getValue(), CONFIG::DRIVE_NOISE * leftChange.getValue());
 		std::normal_distribution rightDistribution(rightChange.getValue(), CONFIG::DRIVE_NOISE * rightChange.getValue());
-		std::normal_distribution angleDistribution(0.0, CONFIG::ANGLE_NOISE.getValue());
+		std::normal_distribution angleDistribution(this->getAngle().getValue(), CONFIG::ANGLE_NOISE.getValue());
 
 		particleFilter.update([this, leftDistribution, angleDistribution, rightDistribution]() mutable {
 			const auto leftNoisy = leftDistribution(de);
@@ -64,8 +64,30 @@ public:
 
 			const Eigen::Vector2d localVector({(leftNoisy + rightNoisy) / 2.0, 0.0});
 
-			return Eigen::Rotation2Dd(this->getAngle().getValue() + angleDistribution(de)) * localVector;
+			return Eigen::Rotation2Dd(angleDistribution(de)) * localVector;
 		});
+
+		auto particle = particleFilter.getPrediction();
+
+		TELEMETRY.send("[[");
+		TELEMETRY.send(std::to_string(particle.x()));
+		TELEMETRY.send(",");
+		TELEMETRY.send(std::to_string(particle.y()));
+		TELEMETRY.send(",");
+		TELEMETRY.send(std::to_string(particle.z()));
+		TELEMETRY.send("]]\n");
+		//
+		// for (auto particle : particleFilter.getParticles()) {
+		// 	TELEMETRY.send("[");
+		// 	TELEMETRY.send(std::to_string(particle.x()));
+		// 	TELEMETRY.send(",");
+		// 	TELEMETRY.send(std::to_string(particle.y()));
+		// 	TELEMETRY.send(",");
+		// 	TELEMETRY.send(std::to_string(particle.z()));
+		// 	TELEMETRY.send("],");
+		// }
+		//
+		// TELEMETRY.send("[]]\n");
 	}
 
 	Angle getAngle() const {
