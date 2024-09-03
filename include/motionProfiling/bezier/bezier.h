@@ -27,7 +27,7 @@ private:
 	std::vector<double> distance, t;
 
 	static Eigen::Vector2d toVector(const json11::Json &json, bool mirror) {
-		return {json["x"].number_value(), json["y"].number_value() * mirror ? -1.0 : 1.0};
+		return {json["x"].number_value(), json["y"].number_value() * (mirror ? -1.0 : 1.0)};
 	}
 
 public:
@@ -107,8 +107,6 @@ public:
 	[[nodiscard]] QCurvature getCurvature(const double t) const {
 		auto D = this->getD(t);
 		auto DD = this->getDD(t);
-
-		std::cout << DD << std::endl;
 
 		return (D.x() * DD.y() - DD.x() * D.y()) / pow(this->getD(t).norm(), 3);
 	}
