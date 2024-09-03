@@ -1,6 +1,6 @@
 #include "main.h"
 
-BEZIER_MIRRORED_MP_ASSET(test);
+ASSET(test_json);
 
 /**
  * A callback function for LLEMU's center button.
@@ -54,6 +54,8 @@ void initialize() {
 
 	pros::Task commandScheduler(update_loop);
 	pros::Task screenUpdate(screen_update_loop);
+
+	BezierMotionProfile::build(test_json, false);
 }
 
 /**
@@ -86,9 +88,9 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	CommandScheduler::schedule(
-		new Ramsete(drivetrain, 0.0, 0.0, &test_red)
-	);
+	// CommandScheduler::schedule(
+	// 	new Ramsete(drivetrain, 0.1, 0.1, &test_red)
+	// );
 }
 
 /**

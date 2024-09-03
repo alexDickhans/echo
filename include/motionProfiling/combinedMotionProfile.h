@@ -69,5 +69,9 @@ public:
 		this->commands.emplace_back(t, name);
 	}
 
+	size_t size() {
+		return this->motionProfiles.size();
+	}
+
 	~CombinedMotionProfile() override = default;
 };

@@ -59,7 +59,13 @@ public:
 
 			drivetrain->setVelocity(velocity_commanded - angular_wheel_velocity_commanded,
 			                        velocity_commanded + angular_wheel_velocity_commanded);
+
+			std::cout << motionProfile->getDuration().Convert(second) << std::endl;
 		}
+	}
+
+	void end(bool interrupted) override {
+          std::cout << "DONE" << std::endl;
 	}
 
 	bool isFinished() override {

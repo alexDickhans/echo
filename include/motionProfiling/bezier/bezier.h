@@ -66,7 +66,7 @@ public:
 			this->t.emplace_back(t);
 			this->distance.emplace_back(distance);
 
-			distance += this->getD(t).norm();
+			distance += this->getD(t).norm() / static_cast<double>(BEZIER_POINT_DENSITY);
 		}
 	}
 
@@ -105,7 +105,12 @@ public:
 	}
 
 	[[nodiscard]] QCurvature getCurvature(const double t) const {
-		return this->getD(t).cross(this->getDD(t)) / pow(this->getD(t).norm(), 3);
+		auto D = this->getD(t);
+		auto DD = this->getDD(t);
+
+		std::cout << DD << std::endl;
+
+		return (D.x() * DD.y() - DD.x() * D.y()) / pow(this->getD(t).norm(), 3);
 	}
 
 	[[nodiscard]] bool getReversed() const {

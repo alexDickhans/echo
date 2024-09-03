@@ -23,13 +23,16 @@ private:
 	}
 
 	static std::vector<QVelocity> limitedSpeed(const std::vector<QLength> &distance, const std::vector<QVelocity>& velocity, const std::vector<QAcceleration> &accel) {
-		std::vector<QVelocity> result = velocity;
+		std::vector<QVelocity> result;
+
+		result.emplace_back(velocity[0]);
 
 		for (size_t i = 1; i < velocity.size(); i++) {
 			QLength deltaDistance = Qabs(distance[i] - distance[i-1]);
-			QVelocity endVelocity = std::min(
-					Qsqrt((Qsq(result[i-1]) + 2 * accel[i-1] * deltaDistance)), result[i]);
-			result[i] = endVelocity;
+
+			result.emplace_back(
+				std::min(Qsqrt(Qsq(result[i - 1]) + 2.0 * accel[i] * deltaDistance),
+                    velocity[i]));
 		}
 
 		return result;
@@ -79,9 +82,10 @@ public:
 			motionProfiles.addCommand(command["t"].number_value(), command["name"].string_value());
 		}
 
+		std::cout << std::endl << motionProfiles.getDuration().getValue() << std::endl;
+
 		return motionProfiles;
 	}
-
 
 	void calculate(const QVelocity startSpeed, const QVelocity endSpeed) {
 		std::vector<QLength> distance{0.0};
@@ -101,8 +105,10 @@ public:
 
 				const auto curvature = beziers[i].getCurvature(t);
 
+				// std::cout << curvature.getValue() << std::endl;
+
 				distance.emplace_back(accumulatedDistance + beziers[i].getDistanceAtT(t));
-				velocity.emplace_back(limitSpeed(curvature) * beziers[i].velocity);
+				velocity.emplace_back(limitSpeed(curvature));// * beziers[i].velocity);
 				accel.emplace_back(beziers[i].acceleration);
 			}
 
@@ -138,7 +144,7 @@ public:
 			auto change_v = Qsq(velocity[i]) - Qsq(velocity[i - 1]);
 			auto a = change_v / (2.0 * delta_distance);
 
-			if (Qabs(a).getValue() > 0.01) {
+			if (Qabs(a).getValue() > 0.1) {
 				time += (velocity[i] - velocity[i - 1]) / a;
 			} else {
 				time += delta_distance / velocity[i];
@@ -147,6 +153,8 @@ public:
 			this->time.emplace_back(time.getValue());
 			this->velocity.emplace_back(velocity[i].getValue());
 		}
+
+		std::cout << this->time[velocity.size()-1] << std::endl;
 	}
 
 	std::optional<MotionCommand> get(const QTime time) override {
