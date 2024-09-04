@@ -24,7 +24,7 @@ public:
 
 		for (auto mp : this->motionProfiles) {
 			if (accumulatedTime + mp->getDuration() > t) {
-				if (auto currentProfile = mp->get(t - accumulatedTime)) {
+				if (const auto currentProfile = mp->get(t - accumulatedTime)) {
 					auto result = currentProfile.value();
 
 					result.desiredT += accumulatedT;
