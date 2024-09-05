@@ -1,0 +1,48 @@
+#pragma once
+
+#include "config.h"
+#include "sensor.h"
+#include "config.h"
+
+const std::vector<std::pair<Eigen::Vector2d, Eigen::Vector2d>> LINES = {
+	{{-1.78308, 0}, {1.78308, 0}},
+	{{-1.78308, 1.47828}, {1.78308, 1.47828}},
+	{{-1.78308, -1.47828}, {1.78308, -1.47828}},
+};
+
+class LineSensor : public Sensor {
+private:
+	Eigen::Vector2d sensorOffset;
+	pros::adi::LineSensor lineSensor;
+public:
+	LineSensor(Eigen::Vector2d sensor_offset, pros::adi::LineSensor line_sensor)
+		: sensorOffset(std::move(sensor_offset)),
+		  lineSensor(std::move(line_sensor)) {
+	}
+
+	std::optional<double> p(Eigen::Vector3d x) override {
+
+		auto measured = this->lineSensor.get_value() < LOCO_CONFIG::LINE_SENSOR_THRESHOLD;
+		Eigen::Vector2d sensor_position = Eigen::Rotation2Dd(x.z()) * sensorOffset + x.head<2>();
+
+		auto predictedDistance = 50.0_m;
+
+		for (auto [fst, snd] : LINES) {
+			predictedDistance = std::min(Qabs(((fst.y() - snd.y()) * sensor_position.y()
+				- (fst.x() - snd.x()) * sensor_position.x()
+				+ snd.x() * fst.y()
+				- snd.y() * fst.x())
+				/ (fst - snd).norm() * metre), predictedDistance);
+		}
+
+		auto predicted = Qabs(predictedDistance) < LOCO_CONFIG::LINE_SENSOR_DISTANCE_THRESHOLD;
+
+		if (predicted && measured) {
+			return 1.0 * LOCO_CONFIG::LINE_WEIGHT;
+		} else if (!predicted && !measured) {
+			return 1.0 * LOCO_CONFIG::LINE_WEIGHT;
+		} else {
+			return 0.0 * LOCO_CONFIG::LINE_WEIGHT;
+		}
+	}
+};

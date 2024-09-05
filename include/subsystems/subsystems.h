@@ -18,6 +18,9 @@
 #include "commands/driveMove.h"
 #include "command/conditionalCommand.h"
 #include "commands/rotate.h"
+#include "localization/line.h"
+#include "localization/distance.h"
+#include "localization/gps.h"
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;
@@ -41,12 +44,21 @@ bool hasRings = false;
 inline void subsystemInit() {
 	TELEMETRY.setSerial(new pros::Serial(20, 921600));
 
-	drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16)); // TODO: actual ports
+	drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16));
 	topIntake = new TopIntake(pros::Motor(-5));
 	bottomIntake = new BottomIntake(pros::Motor(-10));
 	lift = new LiftSubsystem(pros::Motor(1), PID(30.0, 0.0, 50.0));
 	goalClamp = new GoalClamp(pros::adi::DigitalOut('a'));
 	hook = new Hook(pros::Motor(-8));
+
+	drivetrain->addLocalizationSensor(new LineSensor(CONFIG::LINE_SENSOR_1_OFFSET, pros::adi::LineSensor('b')));
+	// drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
+	// drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
+	// drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
+	// drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(), pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
+
+	// drivetrain->initNorm(Eigen::Vector3d(0.0, (-48_in).Convert(metre), 0.0), Eigen::Matrix3d::Identity() * 0.01, false);
+	drivetrain->initUniform(-1_in, -70_in, 1_in, -69_in, 90_deg);
 
 	CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
 	CommandScheduler::registerSubsystem(

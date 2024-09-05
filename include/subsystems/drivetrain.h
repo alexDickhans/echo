@@ -26,7 +26,7 @@ public:
 		  right11W(right11_w),
 		  left5W(left5_w),
 		  right5W(right5_w),
-		  imu(std::move(imu)), particleFilter([this]() {return this->getAngle();}) {
+		  imu(std::move(imu)), particleFilter([this]() { const Angle angle = this->getAngle(); return isfinite(angle.getValue()) ? angle : 0.0;}) {
 		this->leftChange = 0.0;
 		this->rightChange = 0.0;
 
@@ -42,6 +42,10 @@ public:
 		right5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
 		imu.reset(true);
+	}
+
+	void addLocalizationSensor(Sensor* sensor) {
+		particleFilter.addSensor(sensor);
 	}
 
 	void periodic() override {
@@ -66,28 +70,6 @@ public:
 
 			return Eigen::Rotation2Dd(angleDistribution(de)) * localVector;
 		});
-
-		auto particle = particleFilter.getPrediction();
-
-		// TELEMETRY.send("[[");
-		// TELEMETRY.send(std::to_string(particle.x()));
-		// TELEMETRY.send(",");
-		// TELEMETRY.send(std::to_string(particle.y()));
-		// TELEMETRY.send(",");
-		// TELEMETRY.send(std::to_string(particle.z()));
-		// TELEMETRY.send("]]\n");
-		//
-		// for (auto particle : particleFilter.getParticles()) {
-		// 	TELEMETRY.send("[");
-		// 	TELEMETRY.send(std::to_string(particle.x()));
-		// 	TELEMETRY.send(",");
-		// 	TELEMETRY.send(std::to_string(particle.y()));
-		// 	TELEMETRY.send(",");
-		// 	TELEMETRY.send(std::to_string(particle.z()));
-		// 	TELEMETRY.send("],");
-		// }
-		//
-		// TELEMETRY.send("[]]\n");
 	}
 
 	Angle getAngle() const {
@@ -130,12 +112,26 @@ public:
 		this->particleFilter.initNormal(mean, covariance, flip);
 	}
 
+	void initUniform(QLength minX, QLength minY, QLength maxX, QLength maxY, Angle angle) {
+		imu.set_rotation(-angle.Convert(degree));
+		this->particleFilter.initUniform(minX, minY, maxX, maxY);
+	}
+
+	InstantCommand* setUniform(QLength minX, QLength minY, QLength maxX, QLength maxY, Angle angle) {
+		return new InstantCommand([this, minX, minY, maxX, maxY, angle] () { this->initUniform(minX, minY, maxX, maxY, angle); }, {this});
+	}
+
 	InstantCommand* setNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance, bool flip) {
+		imu.set_rotation(-mean.z() * degree.Convert(radian));
 		return new InstantCommand([this, mean, covariance, flip] () { this->initNorm(mean, covariance, flip); }, {this});
 	}
 
 	Eigen::Vector3d getPose() {
 		return this->particleFilter.getPrediction();
+	}
+
+	std::array<Eigen::Vector3d, CONFIG::NUM_PARTICLES> getParticles() {
+		return std::move(particleFilter.getParticles());
 	}
 
 	RunCommand *tank(pros::Controller &controller) {

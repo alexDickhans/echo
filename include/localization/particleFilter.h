@@ -6,6 +6,8 @@
 
 #include <random>
 
+#include "config.h"
+
 template<size_t L>
 class ParticleFilter {
 private:
@@ -17,10 +19,12 @@ private:
 	QTime lastUpdateTime = 0.0;
 
 	QLength maxDistanceSinceUpdate = 1_in;
-	QTime maxUpdateInterval = 500_ms;
+	QTime maxUpdateInterval = 500_s;
 
 	std::function<Angle()> angleFunction;
 	std::default_random_engine de;
+
+	std::uniform_real_distribution<> fieldDist{-1.78308, 1.78308};
 public:
 	explicit ParticleFilter(std::function<Angle()> angle_function)
 		: angleFunction(std::move(angle_function)) {
@@ -57,7 +61,7 @@ public:
 
 		distanceSinceUpdate += predictionFunction().norm() * metre;
 
-		if (distanceSinceUpdate < maxDistanceSinceUpdate || maxUpdateInterval > pros::millis() * millisecond) {
+		if (distanceSinceUpdate < maxDistanceSinceUpdate && maxUpdateInterval > pros::millis() * millisecond || sensors.empty()) {
 			return;
 		}
 
@@ -67,9 +71,14 @@ public:
 		for (size_t i = 0; i < particles.size(); i++) {
 			weights[i] = 0.0;
 
+			if (outOfField(particles[i])) {
+				particles[i].x() = fieldDist(de);
+				particles[i].y() = fieldDist(de);
+			}
+
 			size_t num_readings = 0;
 
-			for (auto sensor : sensors) {
+			for (const auto sensor : sensors) {
 				if (auto weight = sensor->p(particles[i]); weight.has_value()) {
 					if (isfinite(weight.value())) {
 						weights[i] += weight.value();
@@ -77,40 +86,45 @@ public:
 					}
 				}
 
-				weights[i] = weights[i] / static_cast<double>(num_readings);
+				weights[i] = weights[i] / static_cast<double>(num_readings) + LOCO_CONFIG::minWeight;
 
 				totalWeight += weights[i];
 			}
 		}
 
-		double avgWeight = totalWeight / static_cast<double>(L);
+		if (totalWeight == 0.0) {
+			return;
+		}
+
+		const double avgWeight = totalWeight / static_cast<double>(L);
 		std::uniform_real_distribution distribution(0.0, avgWeight);
 
-		double randWeight = distribution(de);
+		const double randWeight = distribution(de);
 
-		std::array<Eigen::Vector3d, L> newParticles;
+		std::array<Eigen::Vector3d, L> oldParticles{particles};
 
 		for (size_t i = 0; i < L; i++) {
-			auto weight = static_cast<double>(i) * avgWeight + randWeight;
+			const auto weight = static_cast<double>(i) * avgWeight + randWeight;
 
 			auto weightSum = 0.0;
 
 			size_t j = 0;
 
 			for (; weightSum < weight; j++) {
+				if (j >= weights.size()) {
+					break;
+				}
 				weightSum += weights[j];
 			}
 
-			newParticles[i] = particles[j];
+			particles[i] = oldParticles[j];
 		}
-
-		this->particles = newParticles;
 
 		lastUpdateTime = pros::millis() * millisecond;
 		distanceSinceUpdate = 0.0;
 	}
 
-	void initNormal(const Eigen::Vector3d& mean, const Eigen::Matrix3d& covariance, bool flip) {
+	void initNormal(const Eigen::Vector3d& mean, const Eigen::Matrix3d& covariance, const bool flip) {
 		std::normal_distribution distribution(0.0, 1.0);
 
 		for (auto && particle : this->particles) {
@@ -118,5 +132,22 @@ public:
 
 			particle.z() = this->angleFunction().getValue();
 		}
+	}
+
+	static bool outOfField(const Eigen::Vector3d& vector) {
+		return vector.x() > 1.78308 || vector.x() < -1.78308 || vector.y() < -1.78308 || vector.y() > 1.78308;
+	}
+
+	void initUniform(QLength minX, QLength minY, QLength maxX, QLength maxY) {
+		std::uniform_real_distribution xDistribution(minX.getValue(), maxX.getValue());
+		std::uniform_real_distribution yDistribution(minY.getValue(), maxY.getValue());
+
+		for (auto && particle : this->particles) {
+			particle = Eigen::Vector3d(xDistribution(de), yDistribution(de), angleFunction().getValue());
+		}
+	}
+
+	void addSensor(Sensor* sensor) {
+		this->sensors.emplace_back(sensor);
 	}
 };

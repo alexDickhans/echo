@@ -30,6 +30,10 @@ void on_center_button() {
 
 
 [[noreturn]] void screen_update_loop() {
+	std::default_random_engine de;
+
+	std::uniform_int_distribution<size_t> particle_dist(0, 10);
+
 	while (true) {
 		auto start_time = pros::millis();
 
@@ -37,15 +41,20 @@ void on_center_button() {
 
 		pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " + std::to_string(pose.y() * metre.Convert(inch)) + ", " + std::to_string(pose.z() * radian.Convert(degree)));
 
-		TELEMETRY.send("[[");
-		TELEMETRY.send(std::to_string(pose.x()));
-		TELEMETRY.send(",");
-		TELEMETRY.send(std::to_string(pose.y()));
-		TELEMETRY.send(",");
-		TELEMETRY.send(std::to_string(pose.z()));
-		TELEMETRY.send("]]\n");
+		auto particles = drivetrain->getParticles();
+		TELEMETRY.send("[");
+		for (size_t i = particle_dist(de); i < particles.size(); i += 10) {
+			TELEMETRY.send("[");
+			TELEMETRY.send(std::to_string(particles[i].x()));
+			TELEMETRY.send(",");
+			TELEMETRY.send(std::to_string(particles[i].y()));
+			TELEMETRY.send(",");
+			TELEMETRY.send(std::to_string(particles[i].z()));
+			if (i <= particles.size()-11) TELEMETRY.send("],");
+			else TELEMETRY.send("]]\n");
+		}
 
-		pros::c::task_delay_until(&start_time, 50);
+		pros::c::task_delay_until(&start_time, 100);
 	}
 }
 
@@ -61,8 +70,8 @@ void initialize() {
 
 	subsystemInit();
 
-	pros::Task commandScheduler(update_loop);
-	pros::Task screenUpdate(screen_update_loop);
+	pros::Task commandScheduler(update_loop, "Command Scheduler");
+	pros::Task screenUpdate(screen_update_loop, "Screen Updater");
 }
 
 /**

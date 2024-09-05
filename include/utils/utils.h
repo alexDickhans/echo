@@ -1,5 +1,10 @@
 #pragma once
 
+inline double normal_pdf(const double x, const double mu, const double sigma) {
+	const auto exponent = -pow(x - mu, 2) / (2.0 * pow(sigma, 2));
+	return (1.0 / (sigma * sqrt(2.0 * M_PI))) * pow(M_E, exponent);
+}
+
 inline Angle angleDifference(const Angle x, const Angle y) {
 	return fmod((x.Convert(radian) - y.Convert(radian) + M_PI), M_TWOPI) - M_PI;
 }
