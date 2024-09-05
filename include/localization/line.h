@@ -21,8 +21,7 @@ public:
 	}
 
 	std::optional<double> p(Eigen::Vector3d x) override {
-
-		auto measured = this->lineSensor.get_value() < LOCO_CONFIG::LINE_SENSOR_THRESHOLD;
+		const bool measured = this->lineSensor.get_value() < LOCO_CONFIG::LINE_SENSOR_THRESHOLD;
 		Eigen::Vector2d sensor_position = Eigen::Rotation2Dd(x.z()) * sensorOffset + x.head<2>();
 
 		auto predictedDistance = 50.0_m;

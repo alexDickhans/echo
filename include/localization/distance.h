@@ -22,7 +22,7 @@ public:
 	std::optional<double> p(Eigen::Vector3d x) override {
 		const auto measured = distance.get();
 
-		if (measured == 9999 || distance.get_object_size() < 0) {
+		if (measured == 9999 || distance.get_object_size() < 30) {
 			return std::nullopt;
 		}
 

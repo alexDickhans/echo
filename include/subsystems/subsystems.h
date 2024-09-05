@@ -52,13 +52,12 @@ inline void subsystemInit() {
 	hook = new Hook(pros::Motor(-8));
 
 	drivetrain->addLocalizationSensor(new LineSensor(CONFIG::LINE_SENSOR_1_OFFSET, pros::adi::LineSensor('b')));
-	// drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
-	// drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
-	// drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
-	// drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(), pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
+	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
+	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
+	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
+	drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(), pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
 
-	// drivetrain->initNorm(Eigen::Vector3d(0.0, (-48_in).Convert(metre), 0.0), Eigen::Matrix3d::Identity() * 0.01, false);
-	drivetrain->initUniform(-1_in, -70_in, 1_in, -69_in, 90_deg);
+	drivetrain->initUniform(-70_in, -70_in, 70_in, -70_in, 0_deg);
 
 	CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
 	CommandScheduler::registerSubsystem(

@@ -19,7 +19,7 @@ private:
 	QTime lastUpdateTime = 0.0;
 
 	QLength maxDistanceSinceUpdate = 1_in;
-	QTime maxUpdateInterval = 500_s;
+	QTime maxUpdateInterval = 0_s;
 
 	std::function<Angle()> angleFunction;
 	std::default_random_engine de;
