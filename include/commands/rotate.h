@@ -12,11 +12,11 @@ private:
 	double static_voltage;
 
 public:
-	Rotate(Drivetrain *drivetrain, const PID& pid, const Angle angle, const double static_voltage = 0.0)
+	Rotate(Drivetrain *drivetrain, const PID& pid, const Angle angle, const bool flip, const double static_voltage = 0.0)
 		: drivetrain(drivetrain),
 		  pid(pid),
 		  static_voltage(static_voltage) {
-		this->pid.setTarget(angle.getValue());
+		this->pid.setTarget(angle.getValue() * (flip ? -1.0 : 1.0));
 		this->pid.setTurnPid(true);
 	}
 

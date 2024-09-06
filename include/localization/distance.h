@@ -13,20 +13,31 @@ class Distance : public Sensor {
 private:
 	Eigen::Vector3d sensorOffset;
 	pros::Distance distance;
+
+	QLength measured = 0.0;
+	bool exit = false;
+	QLength std = 0.0;
 public:
 	Distance(Eigen::Vector3d sensor_offset, pros::Distance distance)
 		: sensorOffset(std::move(sensor_offset)),
 		  distance(std::move(distance)) {
 	}
 
-	std::optional<double> p(Eigen::Vector3d x) override {
-		const auto measured = distance.get();
+	void update() override {
+		auto measuredMM = distance.get();
 
-		if (measured == 9999 || distance.get_object_size() < 30) {
+		exit = measuredMM == 9999 || distance.get_object_size() < 30;
+
+		measured = measuredMM * millimetre;
+
+		std = 0.20 * measured / (distance.get_confidence() / 64.0);
+	}
+
+	[[nodiscard]] std::optional<double> p(Eigen::Vector3d x) override {
+
+		if (exit) {
 			return std::nullopt;
 		}
-
-		const auto measuredMeters = measured * 1_mm;
 
 		const Eigen::Vector2d v_1 = Eigen::Rotation2Dd(x.z()) * sensorOffset.head<2>() + x.head<2>();
 		const Eigen::Vector2d v_2 = Eigen::Rotation2Dd(sensorOffset.z() + x.z()) * Eigen::Vector2d(1.0, 0.0) + v_1;
@@ -44,11 +55,7 @@ public:
 			}
 		}
 
-		const auto std = 0.20 * measuredMeters / (distance.get_confidence() / 64.0);
-
-		// std::cout << std.Convert(inch) << " " << measuredMeters.Convert(inch) << " " << predicted.Convert(inch) << " " << normal_pdf((predicted - measuredMeters).getValue() / std.getValue(), 0.0, 1.0) * LOCO_CONFIG::DISTANCE_WEIGHT << std::endl;
-
-		return normal_pdf(measuredMeters.getValue(), predicted.getValue(), std.getValue()) * LOCO_CONFIG::DISTANCE_WEIGHT;
+		return normal_pdf(measured.getValue(), predicted.getValue(), std.getValue()) * LOCO_CONFIG::DISTANCE_WEIGHT;
 	}
 
 	~Distance() override = default;

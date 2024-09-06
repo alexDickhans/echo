@@ -8,20 +8,26 @@ class GpsSensor : public Sensor {
 private:
 	pros::Gps gps;
 	Angle sensorAngleOffset;
+	double x{0.0}, y{0.0};
+	bool notInstalled{false};
 public:
 	GpsSensor(const Angle sensorAngleOffset, pros::Gps gps)
 		: gps(std::move(gps)),
 		  sensorAngleOffset(sensorAngleOffset) {
 	}
 
+	void update() override {
+		notInstalled = !gps.is_installed();
+		auto [x, y] = gps.get_position();
+
+		this->x = x;
+		this->y = y;
+	}
+
 	std::optional<double> p(Eigen::Vector3d X) override {
-		if (!gps.is_installed()) {
+		if (notInstalled) [[unlikely]] {
 			return std::nullopt;
 		}
-
-		// TODO: Flag stuff
-
-		auto [x, y] = gps.get_position();
 
 		const auto std = gps.get_error() * 4.0;
 

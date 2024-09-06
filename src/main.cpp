@@ -43,14 +43,14 @@ void on_center_button() {
 
 		auto particles = drivetrain->getParticles();
 		TELEMETRY.send("[");
-		for (size_t i = particle_dist(de); i < particles.size(); i += 10) {
+		for (size_t i = particle_dist(de); i < particles.size(); i += 100) {
 			TELEMETRY.send("[");
 			TELEMETRY.send(std::to_string(particles[i].x()));
 			TELEMETRY.send(",");
 			TELEMETRY.send(std::to_string(particles[i].y()));
 			TELEMETRY.send(",");
 			TELEMETRY.send(std::to_string(particles[i].z()));
-			if (i <= particles.size()-11) TELEMETRY.send("],");
+			if (i <= particles.size()-101) TELEMETRY.send("],");
 			else TELEMETRY.send("]]\n");
 		}
 
@@ -106,7 +106,7 @@ void competition_initialize() {}
 void autonomous() {
 	CommandScheduler::schedule(
 		new Sequence({
-			drivetrain->setNorm(Eigen::Vector3d(0.0, 0.0, 0.0), Eigen::Matrix3d::Identity() * 0.01, false),
+			drivetrain->setNorm(Eigen::Vector2d(0.0, 0.0), Eigen::Matrix2d::Identity() * 0.01, 0_deg, false),
 			new Ramsete(drivetrain, 0.0, 3.0, &test_red),
 		})
 	);

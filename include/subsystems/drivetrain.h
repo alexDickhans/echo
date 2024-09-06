@@ -108,11 +108,12 @@ public:
 		this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
 	}
 
-	void initNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance, bool flip) {
+	void initNorm(const Eigen::Vector2d& mean, const Eigen::Matrix2d& covariance, const Angle& angle, const bool flip) {
+		imu.set_rotation(-angle.Convert(degree));
 		this->particleFilter.initNormal(mean, covariance, flip);
 	}
 
-	void initUniform(QLength minX, QLength minY, QLength maxX, QLength maxY, Angle angle) {
+	void initUniform(QLength minX, const QLength minY, QLength maxX, QLength maxY, Angle angle) {
 		imu.set_rotation(-angle.Convert(degree));
 		this->particleFilter.initUniform(minX, minY, maxX, maxY);
 	}
@@ -121,9 +122,8 @@ public:
 		return new InstantCommand([this, minX, minY, maxX, maxY, angle] () { this->initUniform(minX, minY, maxX, maxY, angle); }, {this});
 	}
 
-	InstantCommand* setNorm(Eigen::Vector3d mean, Eigen::Matrix3d covariance, bool flip) {
-		imu.set_rotation(-mean.z() * degree.Convert(radian));
-		return new InstantCommand([this, mean, covariance, flip] () { this->initNorm(mean, covariance, flip); }, {this});
+	InstantCommand* setNorm(const Eigen::Vector2d& mean, const Eigen::Matrix2d& covariance, const Angle& angle, const bool flip) {
+		return new InstantCommand([this, mean, covariance, flip, angle] () { this->initNorm(mean, covariance, angle, flip); }, {this});
 	}
 
 	Eigen::Vector3d getPose() {

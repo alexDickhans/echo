@@ -13,7 +13,7 @@ namespace CONFIG {
 	constexpr double DRIVE_RATIO = 48.0/36.0;
 	constexpr double LIFT_RATIO = 8.0;
 	constexpr QLength TRACK_WIDTH = 10_in;
-	constexpr size_t NUM_PARTICLES = 100;
+	constexpr size_t NUM_PARTICLES = 1000;
 	constexpr Angle ANGLE_FINISH_THRESHOLD = 0.5_deg;
 	constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.02;
 	constexpr double DRIVETRAIN_TUNING_SCALAR = 75.0/87.9;
