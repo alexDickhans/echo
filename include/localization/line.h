@@ -10,6 +10,12 @@ const std::vector<std::pair<Eigen::Vector2f, Eigen::Vector2f>> LINES = {
 	{{-1.78308, -1.47828}, {1.78308, -1.47828}},
 };
 
+const std::vector<float> LINES_Y = {
+	0.0,
+	1.47828,
+	-1.47828,
+};
+
 class LineSensor : public Sensor {
 private:
 	Eigen::Vector2f sensorOffset;
@@ -32,15 +38,11 @@ public:
 
 		auto predictedDistance = 50.0_m;
 
-		for (auto [fst, snd] : LINES) {
-			predictedDistance = std::min(Qabs(((fst.y() - snd.y()) * sensor_position.y()
-				- (fst.x() - snd.x()) * sensor_position.x()
-				+ snd.x() * fst.y()
-				- snd.y() * fst.x())
-				/ (fst - snd).norm() * metre), predictedDistance);
+		for (float lines_y : LINES_Y) {
+			predictedDistance = std::min(abs(sensor_position.y() - lines_y) * metre, predictedDistance);
 		}
 
-		auto predicted = Qabs(predictedDistance) < LOCO_CONFIG::LINE_SENSOR_DISTANCE_THRESHOLD;
+		const auto predicted = predictedDistance < LOCO_CONFIG::LINE_SENSOR_DISTANCE_THRESHOLD;
 
 		if (predicted && measured) {
 			return 1.0 * LOCO_CONFIG::LINE_WEIGHT;
