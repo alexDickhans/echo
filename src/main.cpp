@@ -41,18 +41,18 @@ void on_center_button() {
 
 		pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " + std::to_string(pose.y() * metre.Convert(inch)) + ", " + std::to_string(pose.z() * radian.Convert(degree)));
 
-		auto particles = drivetrain->getParticles();
-		TELEMETRY.send("[");
-		for (size_t i = particle_dist(de); i < particles.size(); i += 100) {
-			TELEMETRY.send("[");
-			TELEMETRY.send(std::to_string(particles[i].x()));
-			TELEMETRY.send(",");
-			TELEMETRY.send(std::to_string(particles[i].y()));
-			TELEMETRY.send(",");
-			TELEMETRY.send(std::to_string(particles[i].z()));
-			if (i <= particles.size()-101) TELEMETRY.send("],");
-			else TELEMETRY.send("]]\n");
-		}
+		// TELEMETRY.send("[");
+		// for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 100) {
+		// 	auto particle = drivetrain->getParticle(i);
+		// 	TELEMETRY.send("[");
+		// 	TELEMETRY.send(std::to_string(particle.x()));
+		// 	TELEMETRY.send(",");
+		// 	TELEMETRY.send(std::to_string(particle.y()));
+		// 	TELEMETRY.send(",");
+		// 	TELEMETRY.send(std::to_string(particle.z()));
+		// 	if (i <= CONFIG::NUM_PARTICLES-101) TELEMETRY.send("],");
+		// 	else TELEMETRY.send("]]\n");
+		// }
 
 		pros::c::task_delay_until(&start_time, 100);
 	}
@@ -106,7 +106,7 @@ void competition_initialize() {}
 void autonomous() {
 	CommandScheduler::schedule(
 		new Sequence({
-			drivetrain->setNorm(Eigen::Vector2d(0.0, 0.0), Eigen::Matrix2d::Identity() * 0.01, 0_deg, false),
+			drivetrain->setNorm(Eigen::Vector2f(0.0, 0.0), Eigen::Matrix2f::Identity() * 0.01, 0_deg, false),
 			new Ramsete(drivetrain, 0.0, 3.0, &test_red),
 		})
 	);

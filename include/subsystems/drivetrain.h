@@ -16,7 +16,7 @@ private:
 
 	ParticleFilter<CONFIG::NUM_PARTICLES> particleFilter;
 
-	std::default_random_engine de;
+	std::ranlux24_base de;
 
 public:
 	Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
@@ -58,17 +58,16 @@ public:
 		lastLeft = leftLength;
 		lastRight = rightLength;
 
-		std::normal_distribution leftDistribution(leftChange.getValue(), CONFIG::DRIVE_NOISE * leftChange.getValue());
-		std::normal_distribution rightDistribution(rightChange.getValue(), CONFIG::DRIVE_NOISE * rightChange.getValue());
-		std::normal_distribution angleDistribution(this->getAngle().getValue(), CONFIG::ANGLE_NOISE.getValue());
+		auto avg = (leftChange + rightChange) / 2.0;
 
-		particleFilter.update([this, leftDistribution, angleDistribution, rightDistribution]() mutable {
-			const auto leftNoisy = leftDistribution(de);
-			const auto rightNoisy = rightDistribution(de);
+		std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),  avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
+		std::uniform_real_distribution angleDistribution(this->getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(), this->getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
 
-			const Eigen::Vector2d localVector({(leftNoisy + rightNoisy) / 2.0, 0.0});
+		particleFilter.update([this, angleDistribution, avgDistribution]() mutable {
+			const auto noisy = avgDistribution(de);
+			const auto angle = angleDistribution(de);
 
-			return Eigen::Rotation2Dd(angleDistribution(de)) * localVector;
+			return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
 		});
 	}
 
@@ -108,7 +107,7 @@ public:
 		this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
 	}
 
-	void initNorm(const Eigen::Vector2d& mean, const Eigen::Matrix2d& covariance, const Angle& angle, const bool flip) {
+	void initNorm(const Eigen::Vector2f& mean, const Eigen::Matrix2f& covariance, const Angle& angle, const bool flip) {
 		imu.set_rotation(-angle.Convert(degree));
 		this->particleFilter.initNormal(mean, covariance, flip);
 	}
@@ -122,16 +121,21 @@ public:
 		return new InstantCommand([this, minX, minY, maxX, maxY, angle] () { this->initUniform(minX, minY, maxX, maxY, angle); }, {this});
 	}
 
-	InstantCommand* setNorm(const Eigen::Vector2d& mean, const Eigen::Matrix2d& covariance, const Angle& angle, const bool flip) {
+	InstantCommand* setNorm(const Eigen::Vector2f& mean, const Eigen::Matrix2f& covariance, const Angle& angle, const bool flip) {
 		return new InstantCommand([this, mean, covariance, flip, angle] () { this->initNorm(mean, covariance, angle, flip); }, {this});
 	}
 
-	Eigen::Vector3d getPose() {
+	Eigen::Vector3f getPose() {
 		return this->particleFilter.getPrediction();
 	}
 
-	std::array<Eigen::Vector3d, CONFIG::NUM_PARTICLES> getParticles() {
+	std::array<Eigen::Vector3f, CONFIG::NUM_PARTICLES> getParticles() {
 		return std::move(particleFilter.getParticles());
+	}
+
+
+	Eigen::Vector3f getParticle(const size_t i) {
+		return std::move(particleFilter.getParticle(i));
 	}
 
 	RunCommand *tank(pros::Controller &controller) {

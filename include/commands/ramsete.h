@@ -33,7 +33,7 @@ public:
 
 	void execute() override {
 		if (const auto command = motionProfile->get(pros::millis() * millisecond - startTime); command.has_value()) {
-			auto currentPose = drivetrain->getPose();
+			Eigen::Vector3d currentPose = drivetrain->getPose().cast<double>();
 
 			const Eigen::Matrix3d errorMatrix{
 				{cos(currentPose.z()), sin(currentPose.z()), 0.0},

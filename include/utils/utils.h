@@ -5,6 +5,17 @@ inline double normal_pdf(const double x, const double mu, const double sigma) {
 	return (1.0 / (sigma * sqrt(2.0 * M_PI))) * pow(M_E, exponent);
 }
 
+inline float cheap_norm_pdf(const float x) {// Approximation of the standard normal PDF
+	// Coefficients for the rational approximation
+	const float a = 0.3989422804014337; // 1 / sqrt(2 * PI)
+	const float e = 0.59422804014337;
+
+	// Compute the approximate normal PDF using a rational polynomial
+	const float pdfApprox = a / (1.0 + e * x * x * x * x);
+
+	return pdfApprox;
+}
+
 inline Angle angleDifference(const Angle x, const Angle y) {
 	return fmod((x.Convert(radian) - y.Convert(radian) + M_PI), M_TWOPI) - M_PI;
 }

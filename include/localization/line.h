@@ -4,7 +4,7 @@
 #include "sensor.h"
 #include "config.h"
 
-const std::vector<std::pair<Eigen::Vector2d, Eigen::Vector2d>> LINES = {
+const std::vector<std::pair<Eigen::Vector2f, Eigen::Vector2f>> LINES = {
 	{{-1.78308, 0}, {1.78308, 0}},
 	{{-1.78308, 1.47828}, {1.78308, 1.47828}},
 	{{-1.78308, -1.47828}, {1.78308, -1.47828}},
@@ -12,11 +12,11 @@ const std::vector<std::pair<Eigen::Vector2d, Eigen::Vector2d>> LINES = {
 
 class LineSensor : public Sensor {
 private:
-	Eigen::Vector2d sensorOffset;
+	Eigen::Vector2f sensorOffset;
 	pros::adi::LineSensor lineSensor;
 	bool measured{false};
 public:
-	LineSensor(Eigen::Vector2d sensor_offset, pros::adi::LineSensor line_sensor)
+	LineSensor(Eigen::Vector2f sensor_offset, pros::adi::LineSensor line_sensor)
 		: sensorOffset(std::move(sensor_offset)),
 		  lineSensor(std::move(line_sensor)) {
 	}
@@ -27,8 +27,8 @@ public:
 
 	~LineSensor() override = default;
 
-	std::optional<double> p(Eigen::Vector3d x) override {
-		Eigen::Vector2d sensor_position = Eigen::Rotation2Dd(x.z()) * sensorOffset + x.head<2>();
+	std::optional<double> p(const Eigen::Vector3f& x) override {
+		Eigen::Vector2f sensor_position = Eigen::Rotation2Df(x.z()) * sensorOffset + x.head<2>();
 
 		auto predictedDistance = 50.0_m;
 

@@ -714,7 +714,7 @@
                 "version": "8.3.8"
             },
             "libunit": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libunit@1.0.0",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libunit@1.0.1",
                 "metadata": {
                     "origin": "local"
                 },
@@ -722,12 +722,12 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.1.0",
                 "system_files": [
-                    "firmware/libunit.a",
-                    "include/units/units.hpp"
+                    "include/units/units.hpp",
+                    "firmware/libunit.a"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "1.0.0"
+                "version": "1.0.1"
             },
             "telemetry": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/telemetry@1.0.0",
