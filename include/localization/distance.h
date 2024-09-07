@@ -40,9 +40,9 @@ public:
 
 	[[nodiscard]] std::optional<double> p(const Eigen::Vector3f& x) override {
 
-		// if (exit) {
-		// 	return std::nullopt;
-		// }
+		if (exit) {
+			return std::nullopt;
+		}
 
 		auto predicted = 50.0f;
 
