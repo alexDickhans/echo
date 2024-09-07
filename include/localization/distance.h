@@ -9,6 +9,11 @@ const std::vector<std::pair<Eigen::Vector2f, Eigen::Vector2f>> WALLS = {
 	{{-1.78308, 1.78308}, {1.78308, 1.78308}},
 };
 
+constexpr float WALL_0_X = 1.78308;
+constexpr float WALL_1_Y = 1.78308;
+constexpr float WALL_2_X = -1.78308;
+constexpr float WALL_3_Y = -1.78308;
+
 class Distance : public Sensor {
 private:
 	Eigen::Vector3f sensorOffset;
@@ -35,24 +40,26 @@ public:
 
 	[[nodiscard]] std::optional<double> p(const Eigen::Vector3f& x) override {
 
-		if (exit) {
-			return std::nullopt;
-		}
-
-		const Eigen::Vector2f v_1 = Eigen::Rotation2Df(x.z()) * sensorOffset.head<2>() + x.head<2>();
-		const Eigen::Vector2f v_2 = Eigen::Rotation2Df(sensorOffset.z() + x.z()) * Eigen::Vector2f(1.0, 0.0) + v_1;
+		// if (exit) {
+		// 	return std::nullopt;
+		// }
 
 		auto predicted = 50.0f;
 
-		for (const auto & [v_3, v_4] : WALLS) {
-			auto t = ((v_1.x() - v_3.x()) * (v_3.y() - v_4.y())
-					- (v_1.y() - v_3.y()) * (v_3.x() - v_4.x()))
-					/ ((v_1.x() - v_2.x()) * (v_3.y() - v_4.y())
-						- (v_1.y() - v_2.y()) * (v_3.x() - v_4.x()));
+		if (const auto theta = abs(angleDifference(0_deg, x.z()).getValue()); theta < M_PI_2) {
+			predicted = std::min(WALL_0_X - x.x() / cos(theta), predicted);
+		}
 
-			if (t > 0.0 && finite(t)) {
-				predicted = std::min(predicted, t);
-			}
+		if (const auto theta = abs(angleDifference(90_deg, x.z()).getValue()); theta < M_PI_2) {
+			predicted = std::min(WALL_1_Y - x.y() / cos(theta), predicted);
+		}
+
+		if (const auto theta = abs(angleDifference(180_deg, x.z()).getValue()); theta < M_PI_2) {
+			predicted = std::min(x.x() - WALL_2_X / cos(theta), predicted);
+		}
+
+		if (const auto theta = abs(angleDifference(270_deg, x.z()).getValue()); theta < M_PI_2) {
+			predicted = std::min(x.y() - WALL_3_Y / cos(theta), predicted);
 		}
 
 		return cheap_norm_pdf((predicted - measured.getValue())/std.getValue()) * LOCO_CONFIG::DISTANCE_WEIGHT;
