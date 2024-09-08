@@ -131,12 +131,12 @@ public:
 
 		instance.inRunLoop = false;
 
-		for (auto command : instance.toSchedule) {
-			schedule(command);
+		for (const auto command : instance.toCancel) {
+			cancel(command);
 		}
 
-		for (auto command : instance.toCancel) {
-			cancel(command);
+		for (const auto command : instance.toSchedule) {
+			schedule(command);
 		}
 
 		for (auto [subsystem, command] : instance.subsystems) {

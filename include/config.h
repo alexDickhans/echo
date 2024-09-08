@@ -22,6 +22,7 @@ namespace CONFIG {
 	constexpr QVelocity MAX_SPEED = 65_in/second;
 
 	inline PID TURN_PID = PID(1.0, 0.00, 9.0);
+	inline PID GOAL_PID = PID(1.0, 0.00, 9.0);
 	inline PID DISTANCE_PID = PID(18.0, 0.00, 0.0);
 
 	inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
@@ -38,5 +39,5 @@ namespace CONFIG {
 
 	constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 193, 219, 157, 22, 0.71);
+	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 164, 203, 133, 45, 0.92);
 }
