@@ -5,11 +5,13 @@
 #include "localization/particleFilter.h"
 #include "command/instantCommand.h"
 #include "telemetry/telemetry.h"
+#include "vex/v5_vcs.h"
 
 class Drivetrain : public Subsystem {
 private:
 	pros::MotorGroup left11W, right11W, left5W, right5W;
 	pros::Imu imu;
+	vex::aivision AIVision1;
 
 	QLength leftChange, rightChange;
 	QLength lastLeft, lastRight;
@@ -26,7 +28,11 @@ public:
 		  right11W(right11_w),
 		  left5W(left5_w),
 		  right5W(right5_w),
-		  imu(std::move(imu)), particleFilter([this]() { const Angle angle = this->getAngle(); return isfinite(angle.getValue()) ? angle : 0.0;}) {
+		  AIVision1(12, CONFIG::GOAL_COLOR_DESC),
+		  imu(std::move(imu)), particleFilter([this]() {
+			  const Angle angle = this->getAngle();
+			  return isfinite(angle.getValue()) ? angle : 0.0;
+		  }) {
 		this->leftChange = 0.0;
 		this->rightChange = 0.0;
 
@@ -41,11 +47,34 @@ public:
 		left5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 		right5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
-		imu.reset(true);
+		this->AIVision1.colorDetection(true, true);
+
+		imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled());
 	}
 
-	void addLocalizationSensor(Sensor* sensor) {
+	void addLocalizationSensor(Sensor *sensor) {
 		particleFilter.addSensor(sensor);
+	}
+
+	std::optional<Angle> getGoalAngle() {
+		AIVision1.takeSnapshot(CONFIG::GOAL_COLOR_DESC);
+
+		if (AIVision1.objectCount > 0) {
+			return -(AIVision1.largestObject.centerX - 158.0) * CONFIG::AI_VISION_PIXELS_TO_DEGREES;
+		}
+
+		return std::nullopt;
+	}
+
+	std::optional<double> getLargestObjectAspectRatio() {
+		AIVision1.takeSnapshot(CONFIG::GOAL_COLOR_DESC);
+
+		if (AIVision1.objectCount > 0) {
+			return static_cast<double>(AIVision1.largestObject.width) / static_cast<double>(AIVision1.largestObject.
+				       height);
+		}
+
+		return std::nullopt;
 	}
 
 	void periodic() override {
@@ -60,8 +89,10 @@ public:
 
 		auto avg = (leftChange + rightChange) / 2.0;
 
-		std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),  avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
-		std::uniform_real_distribution angleDistribution(this->getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(), this->getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
+		std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
+		                                               avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
+		std::uniform_real_distribution angleDistribution(this->getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
+		                                                 this->getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
 
 		particleFilter.update([this, angleDistribution, avgDistribution, avg]() mutable {
 			const auto noisy = avgDistribution(de);
@@ -87,11 +118,13 @@ public:
 	}
 
 	QLength getLeftDistance() const {
-		return (this->left11W.get_position(0) + this->left11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 * M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+		return (this->left11W.get_position(0) + this->left11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 * M_PI
+		       * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
 	}
 
 	QLength getRightDistance() const {
-		return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 * M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+		return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
+		       M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
 	}
 
 	QLength getDistance() const {
@@ -107,7 +140,7 @@ public:
 		this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
 	}
 
-	void initNorm(const Eigen::Vector2f& mean, const Eigen::Matrix2f& covariance, const Angle& angle, const bool flip) {
+	void initNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle, const bool flip) {
 		imu.set_rotation(-angle.Convert(degree));
 		this->particleFilter.initNormal(mean, covariance, flip);
 	}
@@ -117,12 +150,17 @@ public:
 		this->particleFilter.initUniform(minX, minY, maxX, maxY);
 	}
 
-	InstantCommand* setUniform(QLength minX, QLength minY, QLength maxX, QLength maxY, Angle angle) {
-		return new InstantCommand([this, minX, minY, maxX, maxY, angle] () { this->initUniform(minX, minY, maxX, maxY, angle); }, {this});
+	InstantCommand *setUniform(QLength minX, QLength minY, QLength maxX, QLength maxY, Angle angle) {
+		return new InstantCommand([this, minX, minY, maxX, maxY, angle]() {
+			this->initUniform(minX, minY, maxX, maxY, angle);
+		}, {this});
 	}
 
-	InstantCommand* setNorm(const Eigen::Vector2f& mean, const Eigen::Matrix2f& covariance, const Angle& angle, const bool flip) {
-		return new InstantCommand([this, mean, covariance, flip, angle] () { this->initNorm(mean, covariance, angle, flip); }, {this});
+	InstantCommand *setNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle,
+	                        const bool flip) {
+		return new InstantCommand([this, mean, covariance, flip, angle]() {
+			this->initNorm(mean, covariance, angle, flip);
+		}, {this});
 	}
 
 	Eigen::Vector3f getPose() {
@@ -146,7 +184,8 @@ public:
 
 	RunCommand *arcade(pros::Controller &controller) {
 		return new RunCommand([this, controller]() mutable {
-			this->setPct((controller.get_analog(ANALOG_LEFT_Y) + controller.get_analog(ANALOG_RIGHT_X))/127.0, (controller.get_analog(ANALOG_LEFT_Y) - controller.get_analog(ANALOG_RIGHT_X)) / 127.0);
+			this->setPct((controller.get_analog(ANALOG_LEFT_Y) + controller.get_analog(ANALOG_RIGHT_X)) / 127.0,
+			             (controller.get_analog(ANALOG_LEFT_Y) - controller.get_analog(ANALOG_RIGHT_X)) / 127.0);
 		}, {this});
 	}
 

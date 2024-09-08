@@ -4,6 +4,7 @@
 
 #include "units/units.hpp"
 #include "feedback/pid.h"
+#include "vex/v5_vcs.h"
 
 namespace CONFIG {
 	constexpr double INTAKE_RATIO = 66.0/96.0; // 66 chain links
@@ -21,6 +22,7 @@ namespace CONFIG {
 	constexpr QVelocity MAX_SPEED = 65_in/second;
 
 	inline PID TURN_PID = PID(1.0, 0.00, 9.0);
+	inline PID GOAL_PID = PID(1.0, 0.00, 9.0);
 	inline PID DISTANCE_PID = PID(18.0, 0.00, 0.0);
 
 	inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
@@ -34,4 +36,8 @@ namespace CONFIG {
 	const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-5.8_in).getValue(), (-4.2_in).getValue(), (-90_deg).getValue());
 
 	const Eigen::Vector3f GPS_OFFSET((-6_in).getValue(), (-4_in).getValue(), (-90_deg).getValue());
+
+	constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
+
+	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 164, 203, 133, 45, 0.92);
 }

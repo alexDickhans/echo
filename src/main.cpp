@@ -41,7 +41,7 @@ void on_center_button() {
 
 		pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " + std::to_string(pose.y() * metre.Convert(inch)) + ", " + std::to_string(pose.z() * radian.Convert(degree)));
 
-		TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," + std::to_string(pose.z()) + "]]\n");
+		// TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," + std::to_string(pose.z()) + "]]\n");
 
 		// TELEMETRY.send("[");
 		// for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {
@@ -56,7 +56,7 @@ void on_center_button() {
 		// 	else TELEMETRY.send("]]\n");
 		// }
 
-		pros::c::task_delay_until(&start_time, 100);
+		pros::c::task_delay_until(&start_time, 50);
 	}
 }
 
@@ -128,5 +128,4 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-
 }
