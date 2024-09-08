@@ -21,3 +21,8 @@ public:
 
 	~WaitCommand() override = default;
 };
+
+inline Command *Command::withTimeout(const QTime duration) {
+	return new ParallelRaceGroup({new WaitCommand(duration), this});
+}
+

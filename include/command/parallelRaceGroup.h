@@ -58,3 +58,8 @@ public:
 		return requirements;
 	}
 };
+
+inline Command *Command::race(Command *other) {
+	return new ParallelRaceGroup({this, other});
+}
+

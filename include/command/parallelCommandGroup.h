@@ -70,3 +70,8 @@ public:
 		return requirements;
 	}
 };
+
+inline Command *Command::with(Command *other) {
+	return new ParallelCommandGroup({this, other});
+}
+

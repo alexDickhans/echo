@@ -32,3 +32,8 @@ public:
 
 	~RepeatCommand() override = default;
 };
+
+inline Command *Command::repeatedly() {
+	return new RepeatCommand(this);
+}
+
