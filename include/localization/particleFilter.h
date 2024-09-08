@@ -24,10 +24,10 @@ private:
 	QTime lastUpdateTime = 0.0;
 
 	QLength maxDistanceSinceUpdate = 1_in;
-	QTime maxUpdateInterval = 0_s;
+	QTime maxUpdateInterval = 500_s;
 
 	std::function<Angle()> angleFunction;
-	std::default_random_engine de;
+	std::ranlux24_base de;
 
 	std::uniform_real_distribution<> fieldDist{-1.78308, 1.78308};
 public:
@@ -84,21 +84,21 @@ public:
 			particle[1] += prediction.y();
 		}
 
-		std::cout << "prediction: " << pros::micros() - start << std::endl;
-		start = pros::micros();
+		// std::cout << "prediction: " << pros::micros() - start << std::endl;
+		// start = pros::micros();
 
 		distanceSinceUpdate += predictionFunction().norm();
 
-		// if (distanceSinceUpdate < maxDistanceSinceUpdate && maxUpdateInterval > pros::millis() * millisecond || sensors.empty()) {
-		// 	return;
-		// }
+		if (distanceSinceUpdate < maxDistanceSinceUpdate && maxUpdateInterval > pros::millis() * millisecond) {
+			return;
+		}
 
 		for (auto && sensor : this->sensors) {
 			sensor->update();
 		}
 
-		std::cout << "sensor updates: " << pros::micros() - start << std::endl;
-		start = pros::micros();
+		// std::cout << "sensor updates: " << pros::micros() - start << std::endl;
+		// start = pros::micros();
 
 		double totalWeight = 0.0;
 
@@ -106,7 +106,7 @@ public:
 		size_t highestIndex = 0;
 
 		for (size_t i = 0; i < L; i++) {
-			weights[i] = 0.0;
+			weights[i] = 1.0;
 
 			if (outOfField(particles[i])) {
 				particles[i][0] = fieldDist(de);
@@ -131,8 +131,8 @@ public:
 			totalWeight = totalWeight + weights[i];
 		}
 
-		std::cout << "weight particles: " << pros::micros() - start << std::endl;
-		start = pros::micros();
+		// std::cout << "weight particles: " << pros::micros() - start << std::endl;
+		// start = pros::micros();
 
 		prediction = Eigen::Vector3f(particles[highestIndex][0], particles[highestIndex][1], angle.getValue());
 
@@ -146,7 +146,9 @@ public:
 		std::uniform_real_distribution distribution(0.0, avgWeight);
 		const double randWeight = distribution(de);
 
-		oldParticles = particles;
+		for (size_t i = 0; i < particles.size(); i++) {
+			oldParticles[i] = particles[i];
+		}
 
 		size_t j = 0;
 		auto cumulativeWeight = 0.0;
@@ -162,8 +164,8 @@ public:
 				j++;
 			}
 
-			particles[i][0] = oldParticles[j][0];
-			particles[i][1] = oldParticles[j][1];
+			particles[i][0] = oldParticles[j-1][0];
+			particles[i][1] = oldParticles[j-1][1];
 		}
 
 		std::cout << "resample particles: " << pros::micros() - start << std::endl;

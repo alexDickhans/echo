@@ -63,7 +63,7 @@ public:
 		std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),  avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
 		std::uniform_real_distribution angleDistribution(this->getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(), this->getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
 
-		particleFilter.update([this, angleDistribution, avgDistribution]() mutable {
+		particleFilter.update([this, angleDistribution, avgDistribution, avg]() mutable {
 			const auto noisy = avgDistribution(de);
 			const auto angle = angleDistribution(de);
 

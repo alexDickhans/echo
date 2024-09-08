@@ -44,22 +44,24 @@ public:
 			return std::nullopt;
 		}
 
+		auto angle = x.z() + sensorOffset.z();
+
 		auto predicted = 50.0f;
 
-		if (const auto theta = abs(angleDifference(0_deg, x.z()).getValue()); theta < M_PI_2) {
-			predicted = std::min(WALL_0_X - x.x() / cos(theta), predicted);
+		if (const auto theta = abs(angleDifference(0_deg, angle).getValue()); theta < M_PI_2) {
+			predicted = std::min((WALL_0_X - x.x()) / cos(theta), predicted);
 		}
 
-		if (const auto theta = abs(angleDifference(90_deg, x.z()).getValue()); theta < M_PI_2) {
-			predicted = std::min(WALL_1_Y - x.y() / cos(theta), predicted);
+		if (const auto theta = abs(angleDifference(90_deg, angle).getValue()); theta < M_PI_2) {
+			predicted = std::min((WALL_1_Y - x.y()) / cos(theta), predicted);
 		}
 
-		if (const auto theta = abs(angleDifference(180_deg, x.z()).getValue()); theta < M_PI_2) {
-			predicted = std::min(x.x() - WALL_2_X / cos(theta), predicted);
+		if (const auto theta = abs(angleDifference(180_deg, angle).getValue()); theta < M_PI_2) {
+			predicted = std::min((x.x() - WALL_2_X) / cos(theta), predicted);
 		}
 
-		if (const auto theta = abs(angleDifference(270_deg, x.z()).getValue()); theta < M_PI_2) {
-			predicted = std::min(x.y() - WALL_3_Y / cos(theta), predicted);
+		if (const auto theta = abs(angleDifference(270_deg, angle).getValue()); theta < M_PI_2) {
+			predicted = std::min((x.y() - WALL_3_Y) / cos(theta), predicted);
 		}
 
 		return cheap_norm_pdf((predicted - measured.getValue())/std.getValue()) * LOCO_CONFIG::DISTANCE_WEIGHT;
