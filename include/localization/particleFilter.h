@@ -168,7 +168,7 @@ public:
 			particles[i][1] = oldParticles[j-1][1];
 		}
 
-		std::cout << "resample particles: " << pros::micros() - start << std::endl;
+		// std::cout << "resample particles: " << pros::micros() - start << std::endl;
 
 		lastUpdateTime = pros::millis() * millisecond;
 		distanceSinceUpdate = 0.0;

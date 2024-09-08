@@ -4,6 +4,7 @@
 
 #include "units/units.hpp"
 #include "feedback/pid.h"
+#include "vex/v5_vcs.h"
 
 namespace CONFIG {
 	constexpr double INTAKE_RATIO = 66.0/96.0; // 66 chain links
@@ -34,4 +35,8 @@ namespace CONFIG {
 	const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-5.8_in).getValue(), (-4.2_in).getValue(), (-90_deg).getValue());
 
 	const Eigen::Vector3f GPS_OFFSET((-6_in).getValue(), (-4_in).getValue(), (-90_deg).getValue());
+
+	constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
+
+	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 193, 219, 157, 22, 0.71);
 }

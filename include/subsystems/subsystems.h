@@ -21,6 +21,7 @@
 #include "localization/line.h"
 #include "localization/distance.h"
 #include "localization/gps.h"
+#include "commands/driveToGoal.h"
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;

@@ -3,12 +3,6 @@
 // BEZIER_MP_ASSET(skills);
 BEZIER_MIRRORED_MP_ASSET(test);
 
-vex::aivision::colordesc AIVision1__BLUEBOX(1, 7, 56, 188, 10, 0.2);
-vex::aivision::colordesc AIVision1__REDBOX(2, 238, 44, 125, 10, 0.2);
-vex::aivision::colordesc AIVision1__GREENBOX(3, 49, 139, 81, 21, 0.2);
-// AI Vision Code Descriptions
-vex::aivision AIVision1(1, AIVision1__BLUEBOX, AIVision1__REDBOX, AIVision1__GREENBOX);
-
 /**
  * A callback function for LLEMU's center button.
  *
@@ -47,7 +41,10 @@ void on_center_button() {
 
 		pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " + std::to_string(pose.y() * metre.Convert(inch)) + ", " + std::to_string(pose.z() * radian.Convert(degree)));
 
-		TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," + std::to_string(pose.z()) + "]]\n");
+		if (auto angle = drivetrain->getGoalAngle(); angle.has_value())
+			std::cout << angle->Convert(degree) << std::endl;
+
+		// TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," + std::to_string(pose.z()) + "]]\n");
 
 		// TELEMETRY.send("[");
 		// for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {
@@ -62,7 +59,7 @@ void on_center_button() {
 		// 	else TELEMETRY.send("]]\n");
 		// }
 
-		pros::c::task_delay_until(&start_time, 100);
+		pros::c::task_delay_until(&start_time, 50);
 	}
 }
 
@@ -134,17 +131,4 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	// auto code = vex::aivision::colordesc(1, 40, 136, 65, 50, 0.2);
-	// AIVision1.set(code);
-	AIVision1.colorDetection(true, true);
-
-	while (true) {
-		// Take a snapshot to check for detected objects
-		AIVision1.takeSnapshot(AIVision1__GREENBOX);
-
-		// Print how many objects were detected
-		std::cout << "object count: " << AIVision1.objectCount << std::endl;
-
-		pros::Task::delay(10);
-	}
 }
