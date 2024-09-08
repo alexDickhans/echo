@@ -39,5 +39,5 @@ namespace CONFIG {
 
 	constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 164, 203, 133, 45, 0.92);
+	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 193, 255, 136, 12, 0.61);
 }

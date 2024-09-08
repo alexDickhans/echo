@@ -169,8 +169,8 @@ inline void subsystemInit() {
 
 	primary.getTrigger(DIGITAL_B)->whileTrue(new Sequence({
 		new ScheduleCommand(goalClamp->levelCommand(false)),
-		new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.3),
-		new ParallelRaceGroup({drivetrain->pct(-0.3, -0.3), new WaitCommand(0.8_s)}),
+		new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6),
+		new ParallelRaceGroup({drivetrain->pct(-0.4, -0.4), new WaitCommand(0.4_s)}),
 		new ScheduleCommand(goalClampTrue),
 	}));
 

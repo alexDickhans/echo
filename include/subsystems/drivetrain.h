@@ -47,7 +47,7 @@ public:
 		left5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 		right5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
-		this->AIVision1.colorDetection(true, true);
+		this->AIVision1.colorDetection(true, false);
 
 		imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled());
 	}
