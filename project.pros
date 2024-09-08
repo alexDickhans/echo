@@ -467,7 +467,7 @@
                 "version": "4.1.0"
             },
             "libcommand": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.1.5",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.1.6",
                 "metadata": {
                     "origin": "local"
                 },
@@ -475,28 +475,29 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.1.0",
                 "system_files": [
-                    "include/command/sequence.h",
-                    "include/command/waitCommand.h",
-                    "include/command/command.h",
-                    "include/command/conditionalCommand.h",
-                    "include/command/functionalCommand.h",
-                    "include/command/trigger.h",
-                    "include/command/parallelCommandGroup.h",
-                    "include/command/repeatCommand.h",
-                    "include/command/scheduleCommand.h",
-                    "include/command/commandScheduler.h",
-                    "include/command/eventLoop.h",
-                    "include/command/runCommand.h",
                     "include/command/parallelRaceGroup.h",
-                    "firmware/libcommand.a",
-                    "include/command/commandController.h",
+                    "include/command/functionalCommand.h",
+                    "include/command/runCommand.h",
+                    "include/command/conditionalCommand.h",
+                    "include/command/parallelCommandGroup.h",
+                    "include/command/command.h",
+                    "include/command/eventLoop.h",
                     "include/command/subsystem.h",
                     "include/command/instantCommand.h",
-                    "include/command/waitUntilCommand.h"
+                    "include/command/commandScheduler.h",
+                    "include/command/waitUntilCommand.h",
+                    "include/command/proxyCommand.h",
+                    "include/command/sequence.h",
+                    "include/command/waitCommand.h",
+                    "include/command/trigger.h",
+                    "include/command/scheduleCommand.h",
+                    "firmware/libcommand.a",
+                    "include/command/commandController.h",
+                    "include/command/repeatCommand.h"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.1.5"
+                "version": "0.1.6"
             },
             "libjson": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/libjson@3.11.5",

@@ -29,6 +29,7 @@ public:
     Command* with(Command* other);
     Command* race(Command* other);
     Command* repeatedly();
+    Command* asProxy();
 
     virtual ~Command() = default;
 };
