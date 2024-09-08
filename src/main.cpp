@@ -41,9 +41,6 @@ void on_center_button() {
 
 		pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " + std::to_string(pose.y() * metre.Convert(inch)) + ", " + std::to_string(pose.z() * radian.Convert(degree)));
 
-		if (auto angle = drivetrain->getGoalAngle(); angle.has_value())
-			std::cout << angle->Convert(degree) << std::endl;
-
 		// TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," + std::to_string(pose.z()) + "]]\n");
 
 		// TELEMETRY.send("[");

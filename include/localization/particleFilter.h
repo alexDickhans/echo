@@ -183,7 +183,7 @@ public:
 	}
 
 	static bool outOfField(const std::array<float, 2>& vector) {
-		return vector[0] > 1.78308 || vector[0] < -1.78308 || vector[1] < -1.78308 || vector[1] > 1.78308;
+		return vector[0] > 1.78308 || vector[0] < -1.78308 || vector[1] < -1.78308 || vector[1] > 1.78308 || !finite(vector[0]) || !finite(vector[1]);
 	}
 
 	void initUniform(const QLength minX, const QLength minY, const QLength maxX, const QLength maxY) {

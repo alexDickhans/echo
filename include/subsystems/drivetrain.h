@@ -49,7 +49,7 @@ public:
 
 		this->AIVision1.colorDetection(true, true);
 
-		imu.reset(true);
+		imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled());
 	}
 
 	void addLocalizationSensor(Sensor *sensor) {

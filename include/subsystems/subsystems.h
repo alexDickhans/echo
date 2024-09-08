@@ -168,8 +168,10 @@ inline void subsystemInit() {
 	primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 
 	primary.getTrigger(DIGITAL_B)->whileTrue(new Sequence({
+		new ScheduleCommand(goalClamp->levelCommand(false)),
 		new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.3),
 		new ParallelRaceGroup({drivetrain->pct(-0.3, -0.3), new WaitCommand(0.8_s)}),
+		new ScheduleCommand(goalClampTrue),
 	}));
 
 	partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup({

@@ -139,6 +139,9 @@ public:
 			schedule(command);
 		}
 
+		instance.toCancel.clear();
+		instance.toSchedule.clear();
+
 		for (auto [subsystem, command] : instance.subsystems) {
 			if (!instance.requirements.contains(subsystem)) {
 				schedule(command);
