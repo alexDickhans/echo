@@ -21,6 +21,9 @@
 #include "localization/line.h"
 #include "localization/distance.h"
 #include "localization/gps.h"
+#include "commands/driveToGoal.h"
+#include "command/scheduleCommand.h"
+#include "pros/adi.hpp"
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;
@@ -33,10 +36,13 @@ Command *loadOneRingHigh;
 Command *loadOneRingLow;
 Command *intakeOntoGoal;
 
+Command *goalClampTrue;
+
 CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
 pros::Distance intakeDistance(21);
+pros::adi::LineSensor goalClampLineSensor('c');
 
 bool outtakeWallStake = false;
 bool hasRings = false;
@@ -55,9 +61,12 @@ inline void subsystemInit() {
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
-	drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(), pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
+	drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(),
+	                                                pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
 
-	drivetrain->initUniform(-70_in, -70_in, 70_in, -70_in, 0_deg);
+	drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg);
+
+	// drivetrain->initNorm(Eigen::Vector2f::Constant(0.0), Eigen::Matrix2f::Identity() * 0.1, 0.0, false);
 
 	CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
 	CommandScheduler::registerSubsystem(
@@ -69,6 +78,8 @@ inline void subsystemInit() {
 	                                                                 [&]() { return hasRings; }));
 	CommandScheduler::registerSubsystem(goalClamp, goalClamp->levelCommand(false));
 	CommandScheduler::registerSubsystem(hook, hook->positionCommand(0.0));
+
+	goalClampTrue = goalClamp->levelCommand(true);
 
 	loadOneRingLow = new Sequence({
 		new ParallelRaceGroup({
@@ -156,7 +167,13 @@ inline void subsystemInit() {
 		hook->positionCommand(5_deg),
 	}));
 
-	primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClamp->levelCommand(true));
+	primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
+
+	primary.getTrigger(DIGITAL_B)->whileTrue(new Sequence({
+		new ScheduleCommand(goalClamp->levelCommand(false)),
+		(new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))->until([&]() { return goalClampLineSensor.get_value() < 250; }),
+		new ScheduleCommand(goalClampTrue),
+	}));
 
 	partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup({
 		new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8), lift->positionCommand(8.0_deg),

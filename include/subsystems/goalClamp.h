@@ -13,7 +13,7 @@ public:
 		// no - op
 	}
 
-	void setLevel(bool value) {
+	void setLevel(const bool value) {
 		solenoid.set_value(value);
 	}
 

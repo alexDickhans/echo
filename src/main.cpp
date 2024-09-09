@@ -32,7 +32,7 @@ void on_center_button() {
 [[noreturn]] void screen_update_loop() {
 	std::default_random_engine de;
 
-	std::uniform_int_distribution<size_t> particle_dist(0, 10);
+	std::uniform_int_distribution<size_t> particle_dist(0, 49);
 
 	while (true) {
 		auto start_time = pros::millis();
@@ -41,20 +41,22 @@ void on_center_button() {
 
 		pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " + std::to_string(pose.y() * metre.Convert(inch)) + ", " + std::to_string(pose.z() * radian.Convert(degree)));
 
-		auto particles = drivetrain->getParticles();
+		// TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," + std::to_string(pose.z()) + "]]\n");
+
 		TELEMETRY.send("[");
-		for (size_t i = particle_dist(de); i < particles.size(); i += 10) {
+		for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {
+			auto particle = drivetrain->getParticle(i);
 			TELEMETRY.send("[");
-			TELEMETRY.send(std::to_string(particles[i].x()));
+			TELEMETRY.send(std::to_string(particle.x()));
 			TELEMETRY.send(",");
-			TELEMETRY.send(std::to_string(particles[i].y()));
+			TELEMETRY.send(std::to_string(particle.y()));
 			TELEMETRY.send(",");
-			TELEMETRY.send(std::to_string(particles[i].z()));
-			if (i <= particles.size()-11) TELEMETRY.send("],");
+			TELEMETRY.send(std::to_string(particle.z()));
+			if (i <= CONFIG::NUM_PARTICLES-52) TELEMETRY.send("],");
 			else TELEMETRY.send("]]\n");
 		}
 
-		pros::c::task_delay_until(&start_time, 100);
+		pros::c::task_delay_until(&start_time, 50);
 	}
 }
 
@@ -106,7 +108,7 @@ void competition_initialize() {}
 void autonomous() {
 	CommandScheduler::schedule(
 		new Sequence({
-			drivetrain->setNorm(Eigen::Vector3d(0.0, 0.0, 0.0), Eigen::Matrix3d::Identity() * 0.01, false),
+			drivetrain->setNorm(Eigen::Vector2f(0.0, 0.0), Eigen::Matrix2f::Identity() * 0.01, 0_deg, false),
 			new Ramsete(drivetrain, 0.0, 3.0, &test_red),
 		})
 	);
@@ -126,5 +128,4 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-
 }

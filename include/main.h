@@ -42,6 +42,9 @@
 #include "motionProfiling/combinedMotionProfile.h"
 #include "motionProfiling/bezierMotionProfiling.h"
 
+#include "vex/v5.h"
+#include "vex/v5_vcs.h"
+
 /**
  * You should add more #includes here
  */

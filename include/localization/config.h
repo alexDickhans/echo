@@ -2,11 +2,12 @@
 
 namespace LOCO_CONFIG {
 	constexpr size_t LINE_SENSOR_THRESHOLD = 2000;
-	constexpr QLength LINE_SENSOR_DISTANCE_THRESHOLD = 0.5_in;
+	constexpr QLength LINE_SENSOR_DISTANCE_THRESHOLD = 3_in;
 
-	constexpr double DISTANCE_WEIGHT = 1.0;
-	constexpr double GPS_WEIGHT = 1.0;
-	constexpr double LINE_WEIGHT = 1.0;
+	constexpr float DISTANCE_WEIGHT = 1.0;
+	constexpr float GPS_WEIGHT = 1.0;
+	constexpr float LINE_WEIGHT = 1.0;
 
-	constexpr double minWeight = 0.1;
+	constexpr float minWeight = 0.0;
+
 }

@@ -29,16 +29,16 @@ private:
 	PID anglePid = CONFIG::TURN_PID;
 
 public:
-	TankMotionProfiling(Drivetrain *drivetrain, ProfileConstraints profile_constraints,
-		const QLength &distance, const QCurvature &curvature = 0.0, const bool useTurnPID = true, const QVelocity initialVelocity = 0.0, const QVelocity endVelocity = 0.0, const Angle &target_angle = 0.0)
+	TankMotionProfiling(Drivetrain *drivetrain, const ProfileConstraints &profile_constraints,
+		const QLength &distance, const bool flip, const QCurvature &curvature = 0.0, const bool useTurnPID = true, const QVelocity initialVelocity = 0.0, const QVelocity endVelocity = 0.0, const Angle &target_angle = 0.0)
 		: drivetrain(drivetrain),
 		  velocityProfile(distance, profile_constraints, initialVelocity, endVelocity),
-		  targetAngle(target_angle),
-		  curvature(curvature) {
+		  targetAngle(target_angle.getValue() * (flip ? -1.0 : 1.0)),
+		  curvature(curvature.getValue() * (flip ? -1.0 : 1.0)) {
 		this->useTurnPID = useTurnPID;
 	}
 
-	double getSpeedMultiplier() {
+	double getSpeedMultiplier() const {
 
 		if (curvature.getValue() == 0.0)
 			return 1.0;

@@ -10,3 +10,7 @@ public:
 
 	~WaitUntilCommand() override = default;
 };
+
+inline Command *Command::until(const std::function<bool()>& isFinish) {
+	return new ParallelRaceGroup({new WaitUntilCommand(isFinish), this});
+}

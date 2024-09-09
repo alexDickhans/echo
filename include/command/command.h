@@ -1,5 +1,6 @@
 #pragma once
 
+#include "units/units.hpp"
 #include "subsystem.h"
 
 // enum for different cancel behaviors
@@ -21,6 +22,14 @@ public:
     void schedule();
     void cancel();
     [[nodiscard]] bool scheduled() const;
+
+    Command* andThen(Command* other);
+    Command* withTimeout(QTime duration);
+    Command* until(const std::function<bool()>& isFinish);
+    Command* with(Command* other);
+    Command* race(Command* other);
+    Command* repeatedly();
+    Command* asProxy();
 
     virtual ~Command() = default;
 };

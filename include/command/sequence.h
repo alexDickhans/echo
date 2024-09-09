@@ -54,3 +54,7 @@ public:
 		return requirements;
 	}
 };
+
+inline Command *Command::andThen(Command *other) {
+	return new Sequence({this, other});
+}
