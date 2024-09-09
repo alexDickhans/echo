@@ -24,7 +24,7 @@ private:
 	QTime lastUpdateTime = 0.0;
 
 	QLength maxDistanceSinceUpdate = 1_in;
-	QTime maxUpdateInterval = 1_s;
+	QTime maxUpdateInterval = 500_s;
 
 	std::function<Angle()> angleFunction;
 	std::ranlux24_base de;
