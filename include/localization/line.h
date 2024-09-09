@@ -48,10 +48,8 @@ public:
 			return 1.0 * LOCO_CONFIG::LINE_WEIGHT;
 		} else if (!predicted && !measured) {
 			return 1.0 * LOCO_CONFIG::LINE_WEIGHT;
-		} else if (predicted) {
-			return 0.9 * LOCO_CONFIG::LINE_WEIGHT;
 		} else {
-			return 0.0 * LOCO_CONFIG::LINE_WEIGHT;
+			return 0.4 * LOCO_CONFIG::LINE_WEIGHT;
 		}
 	}
 };

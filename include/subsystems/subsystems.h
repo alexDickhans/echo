@@ -23,6 +23,7 @@
 #include "localization/gps.h"
 #include "commands/driveToGoal.h"
 #include "command/scheduleCommand.h"
+#include "pros/adi.hpp"
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;
@@ -41,6 +42,7 @@ CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
 pros::Distance intakeDistance(21);
+pros::adi::LineSensor goalClampLineSensor('c');
 
 bool outtakeWallStake = false;
 bool hasRings = false;
@@ -169,8 +171,7 @@ inline void subsystemInit() {
 
 	primary.getTrigger(DIGITAL_B)->whileTrue(new Sequence({
 		new ScheduleCommand(goalClamp->levelCommand(false)),
-		new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6),
-		new ParallelRaceGroup({drivetrain->pct(-0.4, -0.4), new WaitCommand(0.4_s)}),
+		(new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))->until([&]() { return goalClampLineSensor.get_value() < 250; }),
 		new ScheduleCommand(goalClampTrue),
 	}));
 
