@@ -171,7 +171,7 @@ inline void subsystemInit() {
 
 	primary.getTrigger(DIGITAL_B)->whileTrue(new Sequence({
 		new ScheduleCommand(goalClamp->levelCommand(false)),
-		(new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))->until([&]() { return goalClampLineSensor.get_value() < 250; }),
+		(new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))->until([&]() { return goalClampLineSensor.get_value() < 2100; })->withTimeout(2_s),
 		new ScheduleCommand(goalClampTrue),
 	}));
 
