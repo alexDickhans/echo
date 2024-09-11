@@ -23,7 +23,7 @@ public:
 
 		point = Eigen::Vector2f(-y, x);
 
-		std = gps.get_error() * 4.0;
+		std = gps.get_error() * 8.0;
 	}
 
 	std::optional<double> p(const Eigen::Vector3f& X) override {

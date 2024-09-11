@@ -24,7 +24,7 @@ private:
 	QTime lastUpdateTime = 0.0;
 
 	QLength maxDistanceSinceUpdate = 1_in;
-	QTime maxUpdateInterval = 500_s;
+	QTime maxUpdateInterval = 1_s;
 
 	std::function<Angle()> angleFunction;
 	std::ranlux24_base de;
@@ -180,6 +180,9 @@ public:
 			particle[0] = p.x();
 			particle[1] = p.y() * (flip ? -1.0 : 1.0);
 		}
+
+		prediction.z() = angleFunction().getValue();
+		distanceSinceUpdate += 2.0 * distanceSinceUpdate;
 	}
 
 	static bool outOfField(const std::array<float, 2>& vector) {

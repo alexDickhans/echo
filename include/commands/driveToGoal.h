@@ -35,10 +35,6 @@ public:
 	}
 
 	bool isFinished() override {
-		// if (const auto aspectRatio = drivetrain->getLargestObjectAspectRatio(); aspectRatio.has_value()) {
-		// 	return aspectRatio.value() < 3.0;
-		// }
-		// return true;
 		return false;
 	}
 
