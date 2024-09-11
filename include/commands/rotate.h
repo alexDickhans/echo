@@ -8,15 +8,17 @@
 class Rotate : public Command {
 private:
 	Drivetrain *drivetrain;
-	PID pid;
+	PID pid{CONFIG::TURN_PID};
 	double static_voltage;
+	bool finish{true};
 
 public:
-	Rotate(Drivetrain *drivetrain, const PID& pid, const Angle angle, const bool flip, const double static_voltage = 0.0)
+	Rotate(Drivetrain *drivetrain, const Angle angle, const bool flip, const double static_voltage = 0.0,
+           const bool finish = true)
 		: drivetrain(drivetrain),
-		  pid(pid),
-		  static_voltage(static_voltage) {
-		this->pid.setTarget(angle.getValue() * (flip ? -1.0 : 1.0));
+		  static_voltage(static_voltage),
+		  finish(finish) {
+		this->pid.setTarget((flip ? -1.0f : 1.0f) * angle.getValue());
 		this->pid.setTurnPid(true);
 	}
 
@@ -30,7 +32,7 @@ public:
 	}
 
 	bool isFinished() override {
-		return Qabs(angleDifference(this->drivetrain->getAngle(), pid.getTarget() * radian)) < CONFIG::ANGLE_FINISH_THRESHOLD && abs(pid.getDerivitive()) < CONFIG::ANGLE_DA_FINISH_THRESHOLD;
+		return finish && Qabs(angleDifference(this->drivetrain->getAngle(), pid.getTarget() * radian)) < CONFIG::ANGLE_FINISH_THRESHOLD; // && abs(pid.getDerivitive()) < CONFIG::ANGLE_DA_FINISH_THRESHOLD;
 	}
 
 	std::vector<Subsystem *> getRequirements() override {

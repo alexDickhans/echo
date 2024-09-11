@@ -30,15 +30,16 @@ private:
 
 public:
 	TankMotionProfiling(Drivetrain *drivetrain, const ProfileConstraints &profile_constraints,
-		const QLength &distance, const bool flip, const QCurvature &curvature = 0.0, const bool useTurnPID = true, const QVelocity initialVelocity = 0.0, const QVelocity endVelocity = 0.0, const Angle &target_angle = 0.0)
+		const QLength &distance, const bool flip, const Angle &target_angle, const QCurvature &curvature = 0.0, const bool useTurnPID = true, const QVelocity initialVelocity = 0.0, const QVelocity endVelocity = 0.0)
 		: drivetrain(drivetrain),
 		  velocityProfile(distance, profile_constraints, initialVelocity, endVelocity),
-		  targetAngle(target_angle.getValue() * (flip ? -1.0 : 1.0)),
-		  curvature(curvature.getValue() * (flip ? -1.0 : 1.0)) {
+		  targetAngle((flip ? -1.0f : 1.0f) * target_angle),
+		  curvature((flip ? -1.0f : 1.0f) * curvature.getValue()) {
 		this->useTurnPID = useTurnPID;
+		CONFIG::TURN_PID.setTurnPid(true);
 	}
 
-	double getSpeedMultiplier() const {
+	[[nodiscard]] double getSpeedMultiplier() const {
 
 		if (curvature.getValue() == 0.0)
 			return 1.0;
@@ -56,6 +57,8 @@ public:
 		this->velocityProfile.setProfileConstraints({adjustedSpeed, velocityProfile.getProfileConstraints().maxAcceleration});
 
 		this->velocityProfile.calculate();
+
+		anglePid.reset();
 	}
 
 	void execute() override {
@@ -84,12 +87,12 @@ public:
 
 			const Angle targetAngleWithOffset = targetAngle + offset;
 
-			CONFIG::TURN_PID.setTarget(targetAngleWithOffset.getValue());
+			anglePid.setTarget(targetAngleWithOffset.getValue());
 
-			const double turnPower = CONFIG::TURN_PID.update(drivetrain->getPose().z());
+			const double turnPower = std::clamp(anglePid.update(drivetrain->getPose().z()), -1.0, 1.0);
 
-			leftVoltage -= turnPower;
-			rightVoltage += turnPower;
+			leftVoltage += turnPower;
+			rightVoltage -= turnPower;
 		}
 
 		// send to motors

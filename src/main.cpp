@@ -2,6 +2,7 @@
 
 // BEZIER_MP_ASSET(skills);
 BEZIER_MIRRORED_MP_ASSET(test);
+BEZIER_MP_ASSET(skills_1);
 
 /**
  * A callback function for LLEMU's center button.
@@ -10,54 +11,59 @@ BEZIER_MIRRORED_MP_ASSET(test);
  * "I was pressed!" and nothing.
  */
 void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-	} else {
-		pros::lcd::clear_line(2);
-	}
+    static bool pressed = false;
+    pressed = !pressed;
+    if (pressed) {
+    } else {
+        pros::lcd::clear_line(2);
+    }
 }
 
 [[noreturn]] void update_loop() {
-	while (true) {
-		auto start_time = pros::millis();
+    while (true) {
+        auto start_time = pros::millis();
 
-		CommandScheduler::run();
+        CommandScheduler::run();
 
-		pros::c::task_delay_until(&start_time, 10);
-	}
+        pros::c::task_delay_until(&start_time, 10);
+    }
 }
 
 
 [[noreturn]] void screen_update_loop() {
-	std::default_random_engine de;
+    std::default_random_engine de;
 
-	std::uniform_int_distribution<size_t> particle_dist(0, 49);
+    std::uniform_int_distribution<size_t> particle_dist(0, 49);
 
-	while (true) {
-		auto start_time = pros::millis();
+    while (true) {
+        auto start_time = pros::millis();
 
-		auto pose = drivetrain->getPose();
+        auto pose = drivetrain->getPose();
 
-		pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " + std::to_string(pose.y() * metre.Convert(inch)) + ", " + std::to_string(pose.z() * radian.Convert(degree)));
+        pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " +
+                                       std::to_string(pose.y() * metre.Convert(inch)) + ", " +
+                                       std::to_string(pose.z() * radian.Convert(degree)));
 
-		// TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," + std::to_string(pose.z()) + "]]\n");
+        TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," +
+                       std::to_string(pose.z()) + "]]\n");
 
-		TELEMETRY.send("[");
-		for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {
-			auto particle = drivetrain->getParticle(i);
-			TELEMETRY.send("[");
-			TELEMETRY.send(std::to_string(particle.x()));
-			TELEMETRY.send(",");
-			TELEMETRY.send(std::to_string(particle.y()));
-			TELEMETRY.send(",");
-			TELEMETRY.send(std::to_string(particle.z()));
-			if (i <= CONFIG::NUM_PARTICLES-52) TELEMETRY.send("],");
-			else TELEMETRY.send("]]\n");
-		}
+        // TELEMETRY.send("[");
+        // for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {
+        //     auto particle = drivetrain->getParticle(i);
+        //     TELEMETRY.send("[");
+        //     TELEMETRY.send(std::to_string(particle.x()));
+        //     TELEMETRY.send(",");
+        //     TELEMETRY.send(std::to_string(particle.y()));
+        //     TELEMETRY.send(",");
+        //     TELEMETRY.send(std::to_string(particle.z()));
+        //     if (i <= CONFIG::NUM_PARTICLES - 52)
+        //         TELEMETRY.send("],");
+        //     else
+        //         TELEMETRY.send("]]\n");
+        // }
 
-		pros::c::task_delay_until(&start_time, 50);
-	}
+        pros::c::task_delay_until(&start_time, 50);
+    }
 }
 
 /**
@@ -67,13 +73,13 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");  // Prints "Hello PROS User!" to line 1 of the LCD
+    pros::lcd::initialize();
+    pros::lcd::set_text(1, "Hello PROS User!"); // Prints "Hello PROS User!" to line 1 of the LCD
 
-	subsystemInit();
+    subsystemInit();
 
-	pros::Task commandScheduler(update_loop, "Command Scheduler");
-	pros::Task screenUpdate(screen_update_loop, "Screen Updater");
+    pros::Task commandScheduler(update_loop, "Command Scheduler");
+    pros::Task screenUpdate(screen_update_loop, "Screen Updater");
 }
 
 /**
@@ -106,12 +112,22 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	CommandScheduler::schedule(
-		new Sequence({
-			drivetrain->setNorm(Eigen::Vector2f(0.0, 0.0), Eigen::Matrix2f::Identity() * 0.01, 0_deg, false),
-			new Ramsete(drivetrain, 0.0, 3.0, &test_red),
-		})
-	);
+    CommandScheduler::schedule(new Sequence({
+            drivetrain->setNorm(Eigen::Vector2f(0.0, (64_in).getValue()), Eigen::Matrix2f::Identity() * 0.2, -90_deg,
+                                false),
+            new ScheduleCommand(topIntake->movePct(1.0)),
+            (new Rotate(drivetrain, -90_deg, false, -2000, false))->withTimeout(0.5_s),
+            new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 16_in, false, -90_deg, 0.0),
+            (new Rotate(drivetrain, 180_deg, false, 0.0))->withTimeout(0.8_s),
+            new ScheduleCommand(goalClamp->levelCommand(false)),
+            (new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))
+                    ->until([&]() { return goalClampLineSensor.get_value() < 2550; })
+                    ->withTimeout(1.5_s),
+            new ScheduleCommand(goalClampTrue),
+            new ScheduleCommand(new ParallelCommandGroup(
+                    {bottomIntake->movePct(1.0), lift->positionCommand(0.0_deg), topIntake->movePct(1.0)})),
+            new Ramsete(drivetrain, 0.0, 14.0, &skills_1),
+    }));
 }
 
 /**
@@ -127,5 +143,4 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
-void opcontrol() {
-}
+void opcontrol() {}

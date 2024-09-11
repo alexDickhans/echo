@@ -36,6 +36,7 @@ public:
 		measured = measuredMM * millimetre;
 
 		std = 0.20 * measured / (distance.get_confidence() / 64.0);
+
 	}
 
 	[[nodiscard]] std::optional<double> p(const Eigen::Vector3f& x) override {
