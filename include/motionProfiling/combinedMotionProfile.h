@@ -29,8 +29,10 @@ public:
 
 					result.desiredT += accumulatedT;
 
-					for (; commandIndex < commands.size() && commands[commandIndex].first < result.desiredT; commandIndex ++) {
+					while (commandIndex < commands.size() && commands[commandIndex].first < result.desiredT) {
 						PathCommands::schedule(commands[commandIndex].second);
+
+						commandIndex ++;
 					}
 
 					return result;
