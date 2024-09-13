@@ -120,13 +120,29 @@ void autonomous() {
             new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 16_in, false, -90_deg, 0.0),
             (new Rotate(drivetrain, 180_deg, false, 0.0))->withTimeout(0.8_s),
             new ScheduleCommand(goalClamp->levelCommand(false)),
-            (new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))
-                    ->until([&]() { return goalClampLineSensor.get_value() < 2550; })
+            (new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.7))
+                    ->until([&]() { return goalClampLineSensor.get_value() < 2200; })
                     ->withTimeout(1.5_s),
             new ScheduleCommand(goalClampTrue),
-            new ScheduleCommand(new ParallelCommandGroup(
-                    {bottomIntake->movePct(1.0), lift->positionCommand(0.0_deg), topIntake->movePct(1.0)})),
-            new Ramsete(drivetrain, 0.0, 14.0, &skills_1),
+            new Ramsete(drivetrain, 0.6, 25.0, &skills_1),
+        drivetrain->pct(0.5, 0.5)->race((new Sequence({new ParallelRaceGroup({
+                                                  bottomIntake->movePct(0.0),
+                                                  lift->moveToPosition(33_deg, 0.3_deg),
+                                                  topIntake->movePct(0.0),
+                                                  hook->positionCommand(5_deg),
+                                          }),
+                                          new ParallelRaceGroup({
+                                                  bottomIntake->movePct(0.0),
+                                                  lift->moveToPosition(33_deg, 1_deg),
+                                                  topIntake->movePct(0.0),
+                                                  hook->positionCommand(0_deg),
+                                          }),
+                                          (new ParallelCommandGroup({
+                                                  bottomIntake->movePct(0.0),
+                                                  lift->positionCommand(33_deg),
+                                                  topIntake->movePct(-1.0),
+                                                  hook->positionCommand(0_deg),
+                                          }))->withTimeout(0.8_s)}))->asProxy()),
     }));
 }
 

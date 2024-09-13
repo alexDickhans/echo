@@ -25,6 +25,7 @@
 #include "command/scheduleCommand.h"
 #include "pros/adi.hpp"
 #include "motionProfiling/pathCommands.h"
+#include "command/proxyCommand.h"
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;
@@ -211,4 +212,23 @@ inline void subsystemInit() {
 			hook->positionCommand(0_deg),
 		})
 	}));
+
+	PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
+	PathCommands::registerCommand("scoreNeutral", new Sequence(
+			{
+			 new ParallelRaceGroup({
+				 bottomIntake->movePct(0.0),
+				 lift->moveToPosition(33_deg, 0.3_deg),
+				 topIntake->movePct(0.0),
+				 hook->positionCommand(5_deg),
+			 }),
+			 new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->moveToPosition(33_deg, 1_deg),
+						topIntake->movePct(0.0), hook->positionCommand(0_deg),}),
+			 new ParallelCommandGroup({
+				 bottomIntake->movePct(0.0),
+				 lift->positionCommand(33_deg),
+				 topIntake->movePct(-1.0),
+				 hook->positionCommand(0_deg),
+			 })}));
+	PathCommands::registerCommand("intakeGoal", new ParallelCommandGroup({topIntake->movePct(1.0), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
 }

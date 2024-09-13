@@ -17,6 +17,8 @@ private:
 
     MotionProfile *motionProfile;
 
+    QVelocity lastLeft = 0.0, lastRight = 0.0;
+
 public:
     Ramsete(Drivetrain *drivetrain, const float zeta, const float beta, MotionProfile *motion_profile) :
         drivetrain(drivetrain), zeta(zeta), beta(beta), motionProfile(motion_profile) {
@@ -46,8 +48,17 @@ public:
                      this->beta * command->desiredVelocity.getValue() * sinc(errorAngle) * error.y()) *
                     CONFIG::TRACK_WIDTH / 2.0 / second;
 
-            drivetrain->setVelocity(velocity_commanded - angular_wheel_velocity_commanded,
-                                    velocity_commanded + angular_wheel_velocity_commanded);
+            QVelocity currentLeft = velocity_commanded - angular_wheel_velocity_commanded;
+            QVelocity currentRight = velocity_commanded + angular_wheel_velocity_commanded;
+
+            QAcceleration accelLeft = (currentLeft - lastLeft) / 10_ms;
+            QAcceleration accelRight = (currentRight - currentRight) / 10_ms;
+
+            lastLeft = currentLeft;
+            lastRight = currentRight;
+
+            drivetrain->setPct(CONFIG::DRIVETRAIN_FEEDFORWARD(currentLeft, accelLeft),
+                                    CONFIG::DRIVETRAIN_FEEDFORWARD(currentRight, accelRight));
         }
     }
 

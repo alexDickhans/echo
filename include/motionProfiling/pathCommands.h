@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include "command/command.h"
+
 class PathCommands {
 private:
 	std::unordered_map<std::string, Command*> commands;
@@ -12,14 +15,16 @@ public:
 		return instance;
 	}
 
-	static void registerCommand(const std::string& name, Command* command) {
-		auto instance = getInstance();
+	PathCommands(PathCommands& other) = delete;
 
-		instance.commands[name] = command;
+	static void registerCommand(const std::string& name, Command* command) {
+		PathCommands& instance = getInstance();
+
+		instance.commands.insert_or_assign(name, command);
 	}
 
 	static void schedule(const std::string& name) {
-		auto instance = getInstance();
+		PathCommands& instance = getInstance();
 
 		if (instance.commands.contains(name)) {
 			CommandScheduler::schedule(instance.commands[name]);
