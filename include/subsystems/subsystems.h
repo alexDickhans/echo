@@ -44,13 +44,13 @@ CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
 pros::Distance intakeDistance(21);
-pros::adi::LineSensor goalClampLineSensor('c');
+pros::Distance goalClampDistanceSensor(20);
 
 bool outtakeWallStake = false;
 bool hasRings = false;
 
 inline void subsystemInit() {
-	TELEMETRY.setSerial(new pros::Serial(20, 921600));
+	TELEMETRY.setSerial(new pros::Serial(19, 921600));
 
 	drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16));
 	topIntake = new TopIntake(pros::Motor(-5));
@@ -63,8 +63,8 @@ inline void subsystemInit() {
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
-	drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(),
-	                                                pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
+	// drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(),
+	//                                                 pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
 
 	drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg);
 
@@ -173,7 +173,7 @@ inline void subsystemInit() {
 
 	primary.getTrigger(DIGITAL_B)->whileTrue(new Sequence({
 		new ScheduleCommand(goalClamp->levelCommand(false)),
-		(new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))->until([&]() { return goalClampLineSensor.get_value() < 2400; })->withTimeout(2_s),
+		(new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))->until([&]() { return goalClampDistanceSensor.get_distance() < 10; })->withTimeout(2_s),
 		new ScheduleCommand(goalClampTrue),
 	}));
 
@@ -214,6 +214,7 @@ inline void subsystemInit() {
 	}));
 
 	PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
+	PathCommands::registerCommand("intakeAllianceStakes", loadOneRingLow->andThen(loadOneRingLow));
 	PathCommands::registerCommand("scoreNeutral", new Sequence(
 			{
 			 new ParallelRaceGroup({
@@ -231,4 +232,6 @@ inline void subsystemInit() {
 				 hook->positionCommand(0_deg),
 			 })}));
 	PathCommands::registerCommand("intakeGoal", new ParallelCommandGroup({topIntake->movePct(1.0), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
+	PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
+	PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
 }
