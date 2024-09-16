@@ -122,7 +122,7 @@ void autonomous() {
             (new Rotate(drivetrain, 180_deg, false, 0.0))->withTimeout(0.8_s),
             new ScheduleCommand(goalClamp->levelCommand(false)),
             (new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.7))
-                    ->until([&]() { return goalClampDistanceSensor.get_distance() < 30; })
+                    ->until([&]() { return goalClampDistanceSensor.get_distance() < 25; })
                     ->withTimeout(1.5_s),
             new ScheduleCommand(goalClampTrue),
             new Ramsete(drivetrain, 0.6, 25.0, &skills_1),
