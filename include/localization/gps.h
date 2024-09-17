@@ -18,7 +18,7 @@ public:
 	}
 
 	void update() override {
-		notInstalled = !gps.is_installed() || gps.get_error() > 0.5;
+		notInstalled = !gps.is_installed() || gps.get_error() > 0.015;
 		auto [x, y] = gps.get_position();
 
 		point = Eigen::Vector2f(-y, x);
