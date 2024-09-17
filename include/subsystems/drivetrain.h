@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Eigen/Eigen"
+#include "command/instantCommand.h"
 #include "config.h"
 #include "localization/particleFilter.h"
-#include "command/instantCommand.h"
+#include "subsystems.h"
 #include "telemetry/telemetry.h"
 #include "vex/v5_vcs.h"
+
+#include "localization/gps.h"
 
 class Drivetrain : public Subsystem {
 private:
@@ -20,19 +23,21 @@ private:
 
 	std::ranlux24_base de;
 
+	GpsSensor* sensor;
+
 public:
 	Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
 	           const std::initializer_list<int8_t> &left5_w,
-	           const std::initializer_list<int8_t> &right5_w, pros::Imu imu)
+	           const std::initializer_list<int8_t> &right5_w, pros::Imu imu, GpsSensor* sensor)
 		: left11W(left11_w),
 		  right11W(right11_w),
 		  left5W(left5_w),
 		  right5W(right5_w),
 		  AIVision1(12, CONFIG::GOAL_COLOR_DESC),
-		  imu(std::move(imu)), particleFilter([this]() {
-			  const Angle angle = this->getAngle();
+		  imu(std::move(imu)), particleFilter([this, imu]() {
+			  const Angle angle = -imu.get_rotation() * degree;
 			  return isfinite(angle.getValue()) ? angle : 0.0;
-		  }) {
+		  }), sensor(sensor) {
 		this->leftChange = 0.0;
 		this->rightChange = 0.0;
 
@@ -49,6 +54,8 @@ public:
 
 		this->AIVision1.colorDetection(true, false);
 		this->AIVision1.startAwb();
+
+		// particleFilter.addSensor(sensor);
 
 		imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled());
 	}
@@ -92,10 +99,10 @@ public:
 
 		std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
 		                                               avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
-		std::uniform_real_distribution angleDistribution(this->getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
-		                                                 this->getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
+		std::uniform_real_distribution angleDistribution(particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
+		                                                 particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
 
-		particleFilter.update([this, angleDistribution, avgDistribution, avg]() mutable {
+		particleFilter.update([this, angleDistribution, avgDistribution]() mutable {
 			const auto noisy = avgDistribution(de);
 			const auto angle = angleDistribution(de);
 
@@ -142,18 +149,18 @@ public:
 	}
 
 	void initNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle, const bool flip) {
-		imu.set_rotation(-angle.Convert(degree));
+		imu.set_rotation(angle.Convert(degree) * (flip ? 1 : -1));
 		this->particleFilter.initNormal(mean, covariance, flip);
 	}
 
-	void initUniform(QLength minX, const QLength minY, QLength maxX, QLength maxY, Angle angle) {
-		imu.set_rotation(-angle.Convert(degree));
+	void initUniform(QLength minX, const QLength minY, QLength maxX, QLength maxY, Angle angle, bool flip) {
+		imu.set_rotation(angle.Convert(degree) * (flip ? 1 : -1));
 		this->particleFilter.initUniform(minX, minY, maxX, maxY);
 	}
 
-	InstantCommand *setUniform(QLength minX, QLength minY, QLength maxX, QLength maxY, Angle angle) {
-		return new InstantCommand([this, minX, minY, maxX, maxY, angle]() {
-			this->initUniform(minX, minY, maxX, maxY, angle);
+	InstantCommand *setUniform(QLength minX, QLength minY, QLength maxX, QLength maxY, Angle angle, bool flip) {
+		return new InstantCommand([this, minX, minY, maxX, maxY, angle, flip]() {
+			this->initUniform(minX, minY, maxX, maxY, angle, flip);
 		}, {this});
 	}
 
@@ -171,7 +178,6 @@ public:
 	std::array<Eigen::Vector3f, CONFIG::NUM_PARTICLES> getParticles() {
 		return std::move(particleFilter.getParticles());
 	}
-
 
 	Eigen::Vector3f getParticle(const size_t i) {
 		return std::move(particleFilter.getParticle(i));

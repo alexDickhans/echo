@@ -8,8 +8,8 @@
 
 namespace CONFIG {
 	constexpr double INTAKE_RATIO = 66.0/96.0; // 66 chain links
-	constexpr float DRIVE_NOISE = 0.2;
-	constexpr Angle ANGLE_NOISE = 5_deg;
+	constexpr float DRIVE_NOISE = 0.5;
+	constexpr Angle ANGLE_NOISE = 8_deg;
 	constexpr QLength DRIVE_RADIUS = 3.25_in/2.0;
 	constexpr float DRIVE_RATIO = 48.0/36.0;
 	constexpr double LIFT_RATIO = 8.0;
@@ -31,9 +31,9 @@ namespace CONFIG {
 
 	const Eigen::Vector2f LINE_SENSOR_1_OFFSET((-1.2_in).getValue(), (-0.3_in).getValue());
 
-	const Eigen::Vector3f DISTANCE_LEFT_OFFSET((5.8_in).getValue(), (-4.2_in).getValue(), (90_deg).getValue());
-	const Eigen::Vector3f DISTANCE_BACK_OFFSET((-5.2_in).getValue(), (-5.4_in).getValue(), (180_deg).getValue());
-	const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-5.8_in).getValue(), (-4.2_in).getValue(), (-90_deg).getValue());
+	const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-4.2_in).getValue(), (5.8_in).getValue(), (90_deg).getValue());
+	const Eigen::Vector3f DISTANCE_BACK_OFFSET((-5.4_in).getValue(), (-5.2_in).getValue(), (180_deg).getValue());
+	const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-4.2_in).getValue(), (-5.8_in).getValue(), (-90_deg).getValue());
 
 	const Eigen::Vector3f GPS_OFFSET((-6_in).getValue(), (-4_in).getValue(), (-90_deg).getValue());
 

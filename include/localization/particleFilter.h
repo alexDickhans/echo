@@ -24,7 +24,7 @@ private:
 	QTime lastUpdateTime = 0.0;
 
 	QLength maxDistanceSinceUpdate = 1_in;
-	QTime maxUpdateInterval = 1_s;
+	QTime maxUpdateInterval = 500_s;
 
 	std::function<Angle()> angleFunction;
 	std::ranlux24_base de;
@@ -186,7 +186,7 @@ public:
 	}
 
 	static bool outOfField(const std::array<float, 2>& vector) {
-		return vector[0] > 1.78308 || vector[0] < -1.78308 || vector[1] < -1.78308 || vector[1] > 1.78308 || !finite(vector[0]) || !finite(vector[1]);
+		return vector[0] > 1.78308 || vector[0] < -1.78308 || vector[1] < -1.78308 || vector[1] > 1.78308;
 	}
 
 	void initUniform(const QLength minX, const QLength minY, const QLength maxX, const QLength maxY) {
@@ -201,5 +201,9 @@ public:
 
 	void addSensor(Sensor* sensor) {
 		this->sensors.emplace_back(sensor);
+	}
+
+	Angle getAngle() {
+		return angleFunction();
 	}
 };

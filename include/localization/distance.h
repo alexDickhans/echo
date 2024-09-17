@@ -39,13 +39,15 @@ public:
 
 	}
 
-	[[nodiscard]] std::optional<double> p(const Eigen::Vector3f& x) override {
+	[[nodiscard]] std::optional<double> p(const Eigen::Vector3f& X) override {
 
 		if (exit) {
 			return std::nullopt;
 		}
 
-		auto angle = x.z() + sensorOffset.z();
+		auto angle = X.z() + sensorOffset.z();
+
+		Eigen::Vector2f x = X.head<2>() + Eigen::Rotation2Df(X.z()) * sensorOffset.head<2>();
 
 		auto predicted = 50.0f;
 
