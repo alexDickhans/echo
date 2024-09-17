@@ -1,16 +1,6 @@
-//
-// Created by Alex Dickhans on 9/16/24.
-//
 
-#ifndef AUTONCOMMANDS_H
-#define AUTONCOMMANDS_H
+#include "autons.h"
 
-
-
-class autonCommands {
+class AutonomousCommands {
 
 };
-
-
-
-#endif //AUTONCOMMANDS_H
