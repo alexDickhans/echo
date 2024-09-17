@@ -54,10 +54,7 @@ bool hasRings = false;
 inline void subsystemInit() {
 	TELEMETRY.setSerial(new pros::Serial(19, 921600));
 
-	gpsSensor = new GpsSensor(CONFIG::GPS_OFFSET.z(),
-							pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x()));
-
-	drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16), gpsSensor);
+	drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16));
 	topIntake = new TopIntake(pros::Motor(-5));
 	bottomIntake = new BottomIntake(pros::Motor(-10));
 	lift = new LiftSubsystem(pros::Motor(1), PID(30.0, 0.0, 50.0));
@@ -68,6 +65,8 @@ inline void subsystemInit() {
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
+	drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(),
+							pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
 
 	drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 

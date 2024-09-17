@@ -10,6 +10,9 @@
 
 #include "localization/gps.h"
 
+#include "auton.h"
+#include "autonomous/autons.h"
+
 class Drivetrain : public Subsystem {
 private:
 	pros::MotorGroup left11W, right11W, left5W, right5W;
@@ -28,7 +31,7 @@ private:
 public:
 	Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
 	           const std::initializer_list<int8_t> &left5_w,
-	           const std::initializer_list<int8_t> &right5_w, pros::Imu imu, GpsSensor* sensor)
+	           const std::initializer_list<int8_t> &right5_w, pros::Imu imu)
 		: left11W(left11_w),
 		  right11W(right11_w),
 		  left5W(left5_w),
@@ -37,7 +40,7 @@ public:
 		  imu(std::move(imu)), particleFilter([this, imu]() {
 			  const Angle angle = -imu.get_rotation() * degree;
 			  return isfinite(angle.getValue()) ? angle : 0.0;
-		  }), sensor(sensor) {
+		  }) {
 		this->leftChange = 0.0;
 		this->rightChange = 0.0;
 
@@ -55,9 +58,7 @@ public:
 		this->AIVision1.colorDetection(true, false);
 		this->AIVision1.startAwb();
 
-		// particleFilter.addSensor(sensor);
-
-		imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled());
+		imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled() || AUTON == SKILLS);
 	}
 
 	void addLocalizationSensor(Sensor *sensor) {

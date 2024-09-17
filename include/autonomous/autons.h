@@ -1,7 +1,12 @@
-enum auton_selection_ {
+#pragma once
 
-};
+enum Auton_ {
+  AWP,
+  SKILLS,
+  NONE
+} typedef Auton;
 
-enum alliance {
-
-};
+enum Alliance_ {
+  RED,
+  BLUE
+} typedef Alliance;
