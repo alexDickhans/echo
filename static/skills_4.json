@@ -1,0 +1,38 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.707,
+          "y": 1.165
+        },
+        {
+          "x": -1.245,
+          "y": 0.994
+        },
+        {
+          "x": -1.186,
+          "y": -0.014
+        },
+        {
+          "x": -1.718,
+          "y": -0.0
+        }
+      ],
+      "constraints": {
+        "velocity": 1.651,
+        "accel": 3.048
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 3.616,
+      "name": "unclamp"
+    }
+  ]
+}

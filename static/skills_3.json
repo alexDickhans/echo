@@ -1,0 +1,116 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.057,
+          "y": -1.182
+        },
+        {
+          "x": 0.273,
+          "y": -1.055
+        },
+        {
+          "x": 0.785,
+          "y": -0.882
+        },
+        {
+          "x": 0.188,
+          "y": -0.164
+        }
+      ],
+      "constraints": {
+        "velocity": 1.651,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.188,
+          "y": -0.164
+        },
+        {
+          "x": -0.441,
+          "y": 0.592
+        },
+        {
+          "x": -0.951,
+          "y": 1.079
+        },
+        {
+          "x": -1.315,
+          "y": 1.198
+        }
+      ],
+      "constraints": {
+        "velocity": 1.651,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.315,
+          "y": 1.198
+        },
+        {
+          "x": -1.786,
+          "y": 1.352
+        },
+        {
+          "x": -1.326,
+          "y": 1.567
+        },
+        {
+          "x": -0.917,
+          "y": 1.542
+        }
+      ],
+      "constraints": {
+        "velocity": 1.651,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.917,
+          "y": 1.542
+        },
+        {
+          "x": -1.326,
+          "y": 1.567
+        },
+        {
+          "x": -1.444,
+          "y": 1.525
+        },
+        {
+          "x": -1.565,
+          "y": 1.651
+        }
+      ],
+      "constraints": {
+        "velocity": 1.651,
+        "accel": 3.048
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 3.616,
+      "name": "unclamp"
+    }
+  ]
+}

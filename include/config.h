@@ -15,13 +15,13 @@ namespace CONFIG {
 	constexpr double LIFT_RATIO = 8.0;
 	constexpr QLength TRACK_WIDTH = 13_in;
 	constexpr size_t NUM_PARTICLES = 500;
-	constexpr Angle ANGLE_FINISH_THRESHOLD = 1.0_deg;
+	constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
 	constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
 	constexpr double DRIVETRAIN_TUNING_SCALAR = 75.0/87.9;
 
 	constexpr QVelocity MAX_SPEED = 65_in/second;
 
-	inline PID TURN_PID = PID(1.2, 0.00, 9.0);
+	inline PID TURN_PID = PID(1.3, 0.00, 9.0);
 	inline PID GOAL_PID = PID(1.2, 0.00, 9.0);
 	inline PID DISTANCE_PID = PID(18.0, 0.00, 0.0);
 
@@ -39,8 +39,8 @@ namespace CONFIG {
 
 	constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-	constexpr float RAMSETE_ZETA = 0.8;
-	constexpr float RAMSETE_BETA = 25.0;
+	constexpr float RAMSETE_ZETA = 0.4;
+	constexpr float RAMSETE_BETA = 20.0;
 
 	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 193, 255, 136, 12, 0.61);
 }
