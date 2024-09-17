@@ -39,5 +39,8 @@ namespace CONFIG {
 
 	constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
+	constexpr float RAMSETE_ZETA = 0.8;
+	constexpr float RAMSETE_BETA = 25.0;
+
 	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 193, 255, 136, 12, 0.61);
 }

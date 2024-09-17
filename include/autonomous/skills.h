@@ -20,7 +20,7 @@ public:
                     ->until([&]() { return goalClampDistanceSensor.get_distance() < 25; })
                     ->withTimeout(1.5_s),
             new ScheduleCommand(goalClampTrue),
-            new Ramsete(drivetrain, 0.6, 25.0, &skills_1),
+            new Ramsete(drivetrain, &skills_1),
             drivetrain->pct(0.5, 0.5)->race((new Sequence({new ParallelRaceGroup({
                                                                    bottomIntake->movePct(0.0),
                                                                    lift->moveToPosition(33_deg, 0.3_deg),
@@ -41,9 +41,9 @@ public:
                                                             }))
                                                                    ->withTimeout(0.8_s)}))
                                                     ->asProxy()),
-            new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, -18_in, false, 0_deg, 0.0),
+            new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, -18_in, false, 0_deg, 0.0, false),
             (new Rotate(drivetrain, -90_deg, false, 0.0))->withTimeout(0.8_s),
-            new Ramsete(drivetrain, 0.6, 25.0, &skills_2),
+            new Ramsete(drivetrain, &skills_2),
     });
   }
 };

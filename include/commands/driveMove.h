@@ -36,7 +36,7 @@ public:
 		  targetAngle((flip ? -1.0f : 1.0f) * target_angle),
 		  curvature((flip ? -1.0f : 1.0f) * curvature.getValue()) {
 		this->useTurnPID = useTurnPID;
-		CONFIG::TURN_PID.setTurnPid(true);
+		anglePid.setTurnPid(true);
 	}
 
 	[[nodiscard]] double getSpeedMultiplier() const {

@@ -26,12 +26,13 @@ def getFilePath():
 backslash_char = "\\ "
 
 if len(sys.argv) > 1:
-    i = int(sys.argv[1]) -1
+
+    i = auton_list.index(list(filter(lambda x: x[0] in (sys.argv[1]), auton_list))[0])
     f = open("./include/auton.h", "w")
     f.write("#define AUTON Auton::" + auton_list[i][0] + "\n")
     f.write("#define ALLIANCE Alliance::" + auton_list[i][1] + "\n")
     f.close()
-    command = f"pros mu --project {getFilePath().replace(' ', backslash_char)} --slot " + str(i+offset) + " --name \"" + auton_list[i][1][0] + auton_list[i][0] + "\""
+    command = f"pros mu --slot " + str(i+offset) + " --name \"" + auton_list[i][1][0] + auton_list[i][0] + "\""
     print (command)
 
     result = os.system(command)
