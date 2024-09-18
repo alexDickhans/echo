@@ -46,6 +46,8 @@ CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 pros::Distance intakeDistance(21);
 pros::Distance goalClampDistanceSensor(20);
 
+GpsSensor* gpsSensor;
+
 bool outtakeWallStake = false;
 bool hasRings = false;
 
@@ -59,16 +61,16 @@ inline void subsystemInit() {
 	goalClamp = new GoalClamp(pros::adi::DigitalOut('a'));
 	hook = new Hook(pros::Motor(-8));
 
-	drivetrain->addLocalizationSensor(new LineSensor(CONFIG::LINE_SENSOR_1_OFFSET, pros::adi::LineSensor('b')));
+	// drivetrain->addLocalizationSensor(new LineSensor(CONFIG::LINE_SENSOR_1_OFFSET, pros::adi::LineSensor('b')));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
-	// drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(),
-	//                                                 pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
+	drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(),
+							pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
 
-	drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg);
+	drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
-	// drivetrain->initNorm(Eigen::Vector2f::Constant(0.0), Eigen::Matrix2f::Identity() * 0.1, 0.0, false);
+	// drivetrain->initNorm(Eigen::Vector2f::Constant(0.0), Eigen::Matrix2f::Identity() * 0.01, 0.0, false);
 
 	CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
 	CommandScheduler::registerSubsystem(

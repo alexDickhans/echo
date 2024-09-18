@@ -18,7 +18,7 @@ public:
 	}
 
 	void update() override {
-		notInstalled = !gps.is_installed() || gps.get_error() > 0.5;
+		notInstalled = !gps.is_installed() || gps.get_error() > 0.015;
 		auto [x, y] = gps.get_position();
 
 		point = Eigen::Vector2f(-y, x);
@@ -32,6 +32,14 @@ public:
 		}
 
 		return cheap_norm_pdf(sqrt(X.x() * point.x() + X.y() * point.y()) / 2.0f) * LOCO_CONFIG::GPS_WEIGHT;
+	}
+
+	Angle getAngle() {
+		return -gps.get_yaw() * 1_deg - sensorAngleOffset;
+	}
+
+	pros::Gps& getGps() {
+		return gps;
 	}
 
 	~GpsSensor() override = default;

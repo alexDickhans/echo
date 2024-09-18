@@ -24,7 +24,7 @@ private:
 	QTime lastUpdateTime = 0.0;
 
 	QLength maxDistanceSinceUpdate = 1_in;
-	QTime maxUpdateInterval = 1_s;
+	QTime maxUpdateInterval = 2_s;
 
 	std::function<Angle()> angleFunction;
 	std::ranlux24_base de;
@@ -102,9 +102,6 @@ public:
 
 		double totalWeight = 0.0;
 
-		double highestWeight = 0.0;
-		size_t highestIndex = 0;
-
 		for (size_t i = 0; i < L; i++) {
 			weights[i] = 1.0;
 
@@ -121,11 +118,6 @@ public:
 				}
 			}
 
-			if (weights[i] > highestWeight) {
-				highestIndex = i;
-				highestWeight = weights[i];
-			}
-
 			weights[i] = weights[i] + LOCO_CONFIG::minWeight;
 
 			totalWeight = totalWeight + weights[i];
@@ -133,8 +125,6 @@ public:
 
 		// std::cout << "weight particles: " << pros::micros() - start << std::endl;
 		// start = pros::micros();
-
-		prediction = Eigen::Vector3f(particles[highestIndex][0], particles[highestIndex][1], angle.getValue());
 
 		if (totalWeight == 0.0) {
 			std::cout << "Warning: Total weight equal to 0" << std::endl;
@@ -153,6 +143,8 @@ public:
 		size_t j = 0;
 		auto cumulativeWeight = 0.0;
 
+		float xSum = 0.0, ySum = 0.0;
+
 		for (size_t i = 0; i < L; i++) {
 			const auto weight = static_cast<double>(i) * avgWeight + randWeight;
 
@@ -166,9 +158,12 @@ public:
 
 			particles[i][0] = oldParticles[j-1][0];
 			particles[i][1] = oldParticles[j-1][1];
+
+			xSum += particles[i][0];
+			ySum += particles[i][1];
 		}
 
-		// std::cout << "resample particles: " << pros::micros() - start << std::endl;
+		prediction = Eigen::Vector3f(xSum / static_cast<float>(L), ySum / static_cast<float>(L), angle.getValue());
 
 		lastUpdateTime = pros::millis() * millisecond;
 		distanceSinceUpdate = 0.0;
@@ -186,7 +181,7 @@ public:
 	}
 
 	static bool outOfField(const std::array<float, 2>& vector) {
-		return vector[0] > 1.78308 || vector[0] < -1.78308 || vector[1] < -1.78308 || vector[1] > 1.78308 || !finite(vector[0]) || !finite(vector[1]);
+		return vector[0] > 1.78308 || vector[0] < -1.78308 || vector[1] < -1.78308 || vector[1] > 1.78308;
 	}
 
 	void initUniform(const QLength minX, const QLength minY, const QLength maxX, const QLength maxY) {
@@ -201,5 +196,9 @@ public:
 
 	void addSensor(Sensor* sensor) {
 		this->sensors.emplace_back(sensor);
+	}
+
+	Angle getAngle() {
+		return angleFunction();
 	}
 };

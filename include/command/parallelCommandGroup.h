@@ -2,11 +2,23 @@
 #include <set>
 #include "command.h"
 
+#include <bits/ranges_algo.h>
+
+/**
+ * @brief Runs multiple \refitem Command s at once, with the command ending once all individual commands finsh.
+ */
 class ParallelCommandGroup : public Command {
 private:
 	std::vector<std::pair<Command *, bool> > commands;
-
 public:
+	/**
+	 * @brief Create a new ParallelCommandGroup given a initializer list of commands
+	 *
+	 * @warning No Commands in the parallel can require the same hardware! If this happens the code will immediately
+	 * abort
+	 *
+	 * @param commands Initializer list of \refitem Command s to run in this parallel
+	 */
 	ParallelCommandGroup(const std::initializer_list<Command *> commands) {
 		for (auto command: commands) {
 			this->commands.emplace_back(command, false);
@@ -19,6 +31,9 @@ public:
 		assert(requirements.size() == uniqueRequirements.size());
 	}
 
+	/**
+	 * Initialize all commands in the ParallelCommandGroup
+	 */
 	void initialize() override {
 		for (auto &[command, running]: commands) {
 			command->initialize();
@@ -26,6 +41,9 @@ public:
 		}
 	}
 
+	/**
+	 * Runs all the active commands in the ParallelCommandGroup
+	 */
 	void execute() override {
 		for (auto &[command, running]: commands) {
 			if (running) {
@@ -39,16 +57,20 @@ public:
 		}
 	}
 
+	/**
+	 * @brief Returns true if all commands are finished
+	 *
+	 * @return True if all commands are finished
+	 */
 	bool isFinished() override {
-		for (const auto running: commands | std::views::values) {
-			if (running) {
-				return false;
-			}
-		}
-
-		return true;
+		return std::ranges::all_of(commands | std::views::values, [](const bool running) { return !running; });
 	}
 
+	/**
+	 * @brief Ends all commands with the ones that should be interrupted being interrupted
+	 *
+	 * @param interrupted Ends all commands based on if they are done or not
+	 */
 	void end(bool interrupted) override {
 		if (interrupted) {
 			for (auto &[command, running]: commands) {
@@ -58,6 +80,11 @@ public:
 		}
 	}
 
+	/**
+	 * @brief Gets all the required subsystems for this ParallelCommandGroup
+	 *
+	 * @return Set of all requirements of all the command
+	 */
 	std::vector<Subsystem *> getRequirements() override {
 		std::vector<Subsystem *> requirements;
 

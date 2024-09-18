@@ -21,26 +21,50 @@ public:
 		  requirements(requirements) {
 	}
 
+	/**
+	 * @brief Runs the user-defined initializer function
+	 */
 	void initialize() override {
 		onInit();
 	}
 
+	/**
+	 * @brief Runs the user-defined execute function
+	 */
 	void execute() override {
 		onExecute();
 	}
 
+	/**
+	 * @brief Uses the user-defined function for isFinished
+	 *
+	 * @return The boolean result from the user defined function
+	 */
 	bool isFinished() override {
 		return isFinish();
 	}
 
+	/**
+	 * @brief Runs the user-defined end function
+	 *
+	 * @param interrupted Passes on the interrupted parameter to the user-defined function
+	 */
 	void end(const bool interrupted) override {
 		onEnd(interrupted);
 	}
 
+	/**
+	 * @brief Returns requirements for the subsystem
+	 *
+	 * @return User-defined requirements for the subsystem
+	 */
 	std::vector<Subsystem *> getRequirements() override {
 		return requirements;
 	}
 
+	/**
+	 * Default destructor
+	 */
 	virtual ~FunctionalCommand() = default;
 };
 

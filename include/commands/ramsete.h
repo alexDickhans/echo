@@ -20,7 +20,8 @@ private:
     QVelocity lastLeft = 0.0, lastRight = 0.0;
 
 public:
-    Ramsete(Drivetrain *drivetrain, const float zeta, const float beta, MotionProfile *motion_profile) :
+    Ramsete(Drivetrain *drivetrain, MotionProfile *motion_profile, const float zeta = CONFIG::RAMSETE_ZETA,
+            const float beta = CONFIG::RAMSETE_BETA) :
         drivetrain(drivetrain), zeta(zeta), beta(beta), motionProfile(motion_profile) {
         startTime = 0.0;
     }
@@ -32,8 +33,7 @@ public:
             Eigen::Vector3f currentPose = drivetrain->getPose();
             Eigen::Vector3f desiredPose = command->desiredPose.cast<float>();
 
-            Eigen::Vector2f error =
-                    Eigen::Rotation2Df(-currentPose.z()) * (desiredPose - currentPose).head<2>();
+            Eigen::Vector2f error = Eigen::Rotation2Df(-currentPose.z()) * (desiredPose - currentPose).head<2>();
 
             Angle errorAngle = angleDifference(desiredPose.z(), currentPose.z()).getValue();
 
@@ -43,8 +43,7 @@ public:
 
             const auto velocity_commanded = cos(errorAngle) * command->desiredVelocity + k * error.x() * metre / second;
             const auto angular_wheel_velocity_commanded =
-                    (command->desiredAngularVelocity.getValue() +
-                     k * errorAngle.getValue() +
+                    (command->desiredAngularVelocity.getValue() + k * errorAngle.getValue() +
                      this->beta * command->desiredVelocity.getValue() * sinc(errorAngle) * error.y()) *
                     CONFIG::TRACK_WIDTH / 2.0 / second;
 
@@ -58,7 +57,7 @@ public:
             lastRight = currentRight;
 
             drivetrain->setPct(CONFIG::DRIVETRAIN_FEEDFORWARD(currentLeft, accelLeft),
-                                    CONFIG::DRIVETRAIN_FEEDFORWARD(currentRight, accelRight));
+                               CONFIG::DRIVETRAIN_FEEDFORWARD(currentRight, accelRight));
         }
     }
 

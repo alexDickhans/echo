@@ -41,6 +41,7 @@
 #include "config.h"
 #include "motionProfiling/combinedMotionProfile.h"
 #include "motionProfiling/bezierMotionProfiling.h"
+#include "autonomous/autonCommands.h"
 
 #include "vex/v5.h"
 #include "vex/v5_vcs.h"
