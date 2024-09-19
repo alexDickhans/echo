@@ -66,7 +66,7 @@ inline void subsystemInit() {
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
 	// drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(),
-	// 						pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())));
+	// 						pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())))
 
 	drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
@@ -215,6 +215,8 @@ inline void subsystemInit() {
 		})
 	}));
 
+	primary.getTrigger(DIGITAL_UP)->onTrue(new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s)}));
+
 	PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
 	PathCommands::registerCommand("intakeAllianceStakes", loadOneRingLow->andThen(loadOneRingLow));
 	PathCommands::registerCommand("scoreNeutral", new Sequence(
@@ -234,7 +236,14 @@ inline void subsystemInit() {
 				 hook->positionCommand(0_deg),
 			 })}));
 	PathCommands::registerCommand("intakeGoal", new ParallelCommandGroup({topIntake->movePct(1.0), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
+	PathCommands::registerCommand("stopIntake", new ParallelCommandGroup({topIntake->movePct(0.0), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
 	PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
 	PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
-	PathCommands::registerCommand("outtake", topIntake->movePct(-1.0)->withTimeout(0.5_s));
+	PathCommands::registerCommand("outtake", topIntake->movePct(0.0)->withTimeout(0.5_s));
+	PathCommands::registerCommand("index",
+			new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s)}));
+	PathCommands::registerCommand("dejam", new ParallelCommandGroup({
+		bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
+		topIntake->movePct(-1.0)
+	}));
 }
