@@ -66,7 +66,7 @@ public:
                                         0.0, true),
                 new ScheduleCommand(goalClampTrue),
                 new Ramsete(drivetrain, &skills_4),
-                drivetrain->pct(0.15, 0.15)->withTimeout(1.0_s),
+                drivetrain->pct(0.0, 0.0)->withTimeout(1.0_s),
                 drivetrain->pct(0.15, 0.15)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
