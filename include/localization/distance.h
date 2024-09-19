@@ -31,7 +31,7 @@ public:
 	void update() override {
 		const auto measuredMM = distance.get();
 
-		exit = measuredMM == 9999 || distance.get_object_size() < 30;
+		exit = measuredMM == 9999 || distance.get_object_size() < 70;
 
 		measured = measuredMM * millimetre;
 

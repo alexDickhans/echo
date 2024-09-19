@@ -58,6 +58,8 @@ public:
 
 		this->velocityProfile.calculate();
 
+		anglePid.setTarget(targetAngle.getValue());
+
 		anglePid.reset();
 	}
 
@@ -91,8 +93,8 @@ public:
 
 			const double turnPower = std::clamp(anglePid.update(drivetrain->getPose().z()), -1.0, 1.0);
 
-			leftVoltage += turnPower;
-			rightVoltage -= turnPower;
+			leftVoltage -= turnPower;
+			rightVoltage += turnPower;
 		}
 
 		// send to motors

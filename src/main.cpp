@@ -63,7 +63,7 @@ void on_center_button() {
         //         TELEMETRY.send("]]\n");
         // }
 
-        pros::c::task_delay_until(&start_time, 50);
+        pros::c::task_delay_until(&start_time, 100);
     }
 }
 
