@@ -13,7 +13,7 @@ namespace CONFIG {
 	constexpr QLength DRIVE_RADIUS = 3.25_in/2.0;
 	constexpr float DRIVE_RATIO = 48.0/36.0;
 	constexpr double LIFT_RATIO = 8.0;
-	constexpr QLength TRACK_WIDTH = 11_in;
+	constexpr QLength TRACK_WIDTH = 12_in;
 	constexpr size_t NUM_PARTICLES = 500;
 	constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
 	constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
@@ -39,8 +39,8 @@ namespace CONFIG {
 
 	constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-	constexpr float RAMSETE_ZETA = 0.5;
-	constexpr float RAMSETE_BETA = 30.0;
+	constexpr float RAMSETE_ZETA = 0.55;
+	constexpr float RAMSETE_BETA = 28.0;
 
 	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 193, 255, 136, 12, 0.61);
 }
