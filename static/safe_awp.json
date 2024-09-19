@@ -1,0 +1,94 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.685,
+          "y": 0.596
+        },
+        {
+          "x": -0.781,
+          "y": 0.599
+        },
+        {
+          "x": -0.974,
+          "y": 0.602
+        },
+        {
+          "x": -1.123,
+          "y": 0.601
+        }
+      ],
+      "constraints": {
+        "velocity": 0.9,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.123,
+          "y": 0.601
+        },
+        {
+          "x": -0.693,
+          "y": 0.602
+        },
+        {
+          "x": -0.57,
+          "y": 1.54
+        },
+        {
+          "x": -1.232,
+          "y": 1.521
+        }
+      ],
+      "constraints": {
+        "velocity": 0.9,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.232,
+          "y": 1.521
+        },
+        {
+          "x": 0.097,
+          "y": 1.559
+        },
+        {
+          "x": 1.004,
+          "y": 1.14
+        },
+        {
+          "x": 1.132,
+          "y": 1.325
+        }
+      ],
+      "constraints": {
+        "velocity": 0.9,
+        "accel": 3.048
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.0,
+      "name": "intakeGoal"
+    },
+    {
+      "t": 1.914,
+      "name": "declamp"
+    }
+  ]
+}

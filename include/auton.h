@@ -1,2 +1,2 @@
-#define AUTON Auton::SKILLS
+#define AUTON Auton::AWP
 #define ALLIANCE Alliance::RED

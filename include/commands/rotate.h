@@ -19,11 +19,11 @@ public:
 		  static_voltage(static_voltage),
 		  finish(finish) {
 		this->pid.setTarget((flip ? -1.0f : 1.0f) * angle.getValue());
-		this->pid.setTurnPid(true);
 	}
 
 	void initialize() override {
 		pid.reset();
+		this->pid.setTurnPid(true);
 	}
 
 	void execute() override {

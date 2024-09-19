@@ -1,7 +1,5 @@
 #include "main.h"
 
-// BEZIER_MP_ASSET(skills);
-BEZIER_MIRRORED_MP_ASSET(test);
 
 Command* autonCommand;
 
@@ -63,7 +61,7 @@ void on_center_button() {
         //         TELEMETRY.send("]]\n");
         // }
 
-        pros::c::task_delay_until(&start_time, 50);
+        pros::c::task_delay_until(&start_time, 100);
     }
 }
 
