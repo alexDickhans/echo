@@ -17,7 +17,7 @@ inline float cheap_norm_pdf(const float x) {// Approximation of the standard nor
 }
 
 inline Angle angleDifference(const Angle x, const Angle y) {
-    return fmod((x.Convert(radian) - y.Convert(radian) + M_PI), M_TWOPI) - M_PI;
+    return fmod(fmod(x.Convert(radian) - y.Convert(radian), M_TWOPI) + M_TWOPI + M_PI, M_TWOPI) - M_PI;
 }
 
 inline float sinc(const Angle angle) {
