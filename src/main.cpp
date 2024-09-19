@@ -1,7 +1,5 @@
 #include "main.h"
 
-// BEZIER_MP_ASSET(skills);
-BEZIER_MIRRORED_MP_ASSET(test);
 
 Command* autonCommand;
 

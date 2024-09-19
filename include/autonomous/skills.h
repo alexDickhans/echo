@@ -16,7 +16,7 @@ public:
                 drivetrain->setNorm(Eigen::Vector2f(0.0, (64_in).getValue()), Eigen::Matrix2f::Identity() * 0.05,
                                     -90_deg, false),
                 new ScheduleCommand(SharedCommands::scoreAlliance()),
-                (new Rotate(drivetrain, -90_deg, false, -2000, false))->withTimeout(0.5_s),
+                (new Rotate(drivetrain, -90_deg, false, -0.5, false))->withTimeout(0.5_s),
                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 15_in, false, -90_deg,
                                         0.0),
                 (new Rotate(drivetrain, 180_deg, false, 0.0))->withTimeout(0.8_s),
