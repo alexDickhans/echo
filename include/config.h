@@ -26,7 +26,7 @@ namespace CONFIG {
 	inline PID DISTANCE_PID = PID(18.0, 0.00, 0.0);
 
 	inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
-		return (velocity / 85_in/second).getValue() + (accel / (800_in/second/second)).getValue() + copysign(0.08, velocity.getValue());
+		return (velocity / 85_in/second).getValue() + (accel / (800_in/second/second)).getValue() + copysign(0.05, velocity.getValue());
 	}
 
 	const Eigen::Vector2f LINE_SENSOR_1_OFFSET((-1.2_in).getValue(), (-0.3_in).getValue());
