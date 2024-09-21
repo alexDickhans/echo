@@ -4,6 +4,7 @@
 #include "subsystems/subsystems.h"
 
 BEZIER_MP_ASSET(skills_1);
+BEZIER_MP_ASSET(skills_1_1);
 BEZIER_MP_ASSET(skills_2);
 BEZIER_MP_ASSET(skills_3);
 BEZIER_MP_ASSET(skills_4);
@@ -22,9 +23,35 @@ public:
                 (new Rotate(drivetrain, 180_deg, false, 0.0))->withTimeout(0.8_s),
                 new ScheduleCommand(goalClamp->levelCommand(false)),
                 new TankMotionProfiling(drivetrain, {35_in / second, 50_in / second / second}, -24_in, false, 180_deg,
-                                        0.0, true, 0.0, 0_in / second, [](QTime a) {return sin(a.getValue() * 2.0  * M_TWOPI) * 1_deg;}),
+                                        0.0, true, 0.0, 0_in / second,
+                                        [](QTime a) { return sin(a.getValue() * 2.0 * M_TWOPI) * 1_deg; }),
                 new ScheduleCommand(goalClampTrue),
                 new Ramsete(drivetrain, &skills_1),
+                drivetrain->pct(0.15, 0.15)
+                        ->race((new Sequence({new ParallelRaceGroup({
+                                                      bottomIntake->movePct(0.0),
+                                                      lift->moveToPosition(33_deg, 0.3_deg),
+                                                      topIntake->movePct(0.0),
+                                                      hook->positionCommand(5_deg),
+                                              }),
+                                              new ParallelRaceGroup({
+                                                      bottomIntake->movePct(0.0),
+                                                      lift->moveToPosition(33_deg, 1_deg),
+                                                      topIntake->movePct(0.0),
+                                                      hook->positionCommand(0_deg),
+                                              }),
+                                              (new ParallelCommandGroup({
+                                                       bottomIntake->movePct(0.0),
+                                                       lift->positionCommand(33_deg),
+                                                       topIntake->movePct(-1.0),
+                                                       hook->positionCommand(0_deg),
+                                               }))
+                                                      ->withTimeout(0.8_s)}))
+                                       ->asProxy()),
+                new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, -18_in, false, 0_deg,
+                                        0.0, true),
+                (new Rotate(drivetrain, -90_deg, false, 0.0))->withTimeout(0.8_s),
+                new Ramsete(drivetrain, &skills_1_1),
                 drivetrain->pct(0.15, 0.15)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
