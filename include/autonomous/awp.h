@@ -7,6 +7,12 @@ class AWP {
 public:
     static Command *awp(const bool flip) {
         return new Sequence({
+                new TankMotionProfiling(drivetrain, {60_in / second, 100_in / second / second}, 30_in, flip, 0_deg, 0.0,
+                                        true, 0.0, 10_in / second),
+                new TankMotionProfiling(drivetrain, {10_in / second, 100_in / second / second}, 20_in, flip, 0_deg, 0.0,
+                                        true, 10_in / second, 0.0),
+        });
+        return new Sequence({
                 drivetrain->setNorm(Eigen::Vector2f((12_in).getValue(), (60_in).getValue()),
                                     Eigen::Matrix2f::Identity() * 0.2, -180_deg, flip),
                 new ScheduleCommand(bottomIntake->movePct(1.0)),
@@ -25,11 +31,11 @@ public:
                                         0.0),
                 new ScheduleCommand(goalClampTrue),
                 (new Rotate(drivetrain, 180_deg, false, 0.0))->withTimeout(0.8_s),
-          new Ramsete(drivetrain, flip ? &safe_awp_1_blue : &safe_awp_1_red),
-          new TankMotionProfiling(drivetrain, {65_in / second, 60_in / second / second}, -40_in, flip, 50_deg,
-                                  0.0),
-          new ScheduleCommand(goalClampTrue),
-          new Ramsete(drivetrain, flip ? &safe_awp_2_blue : &safe_awp_2_red),
+                new Ramsete(drivetrain, flip ? &safe_awp_1_blue : &safe_awp_1_red),
+                new TankMotionProfiling(drivetrain, {65_in / second, 60_in / second / second}, -40_in, flip, 50_deg,
+                                        0.0),
+                new ScheduleCommand(goalClampTrue),
+                new Ramsete(drivetrain, flip ? &safe_awp_2_blue : &safe_awp_2_red),
         });
     }
 };

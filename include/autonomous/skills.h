@@ -22,7 +22,7 @@ public:
                 (new Rotate(drivetrain, 180_deg, false, 0.0))->withTimeout(0.8_s),
                 new ScheduleCommand(goalClamp->levelCommand(false)),
                 new TankMotionProfiling(drivetrain, {35_in / second, 50_in / second / second}, -24_in, false, 180_deg,
-                                        0.0, true, 0.0, 0_in / second),
+                                        0.0, true, 0.0, 0_in / second, [](QTime a) {return sin(a.getValue() * 2.0  * M_TWOPI) * 1_deg;}),
                 new ScheduleCommand(goalClampTrue),
                 new Ramsete(drivetrain, &skills_1),
                 drivetrain->pct(0.15, 0.15)
@@ -88,7 +88,7 @@ public:
                                                }))
                                                       ->withTimeout(0.8_s)}))
                                        ->asProxy()),
-          new Ramsete(drivetrain, &skills_5),
+                new Ramsete(drivetrain, &skills_5),
         });
     }
 };
