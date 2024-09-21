@@ -257,6 +257,10 @@
     {
       "t": 6.651,
       "name": "intakeNeutralStakes"
+    },
+    {
+      "t": 8.09,
+      "name": "primeLift"
     }
   ]
 }
