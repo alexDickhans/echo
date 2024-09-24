@@ -219,6 +219,7 @@ inline void subsystemInit() {
 
 	PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
 	PathCommands::registerCommand("intakeAllianceStakes", loadOneRingLow->andThen(loadOneRingLow));
+	PathCommands::registerCommand("intakeAllianceStakesOne", loadOneRingLow->andThen(new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s)})));
 	PathCommands::registerCommand("scoreNeutral", new Sequence(
 			{
 			 new ParallelRaceGroup({
