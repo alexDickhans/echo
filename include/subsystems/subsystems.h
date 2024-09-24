@@ -246,5 +246,5 @@ inline void subsystemInit() {
 		bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
 		topIntake->movePct(-1.0)
 	}));
-	PathCommands::registerCommand("primeLift", lift->positionCommand(33.0_deg)->with(hook->positionCommand(5.0_deg)));
+	PathCommands::registerCommand("primeLift", new ParallelCommandGroup({topIntake->movePct(0.0), bottomIntake->movePct(0.0), lift->positionCommand(33.0_deg)}));
 }

@@ -23,10 +23,10 @@ namespace CONFIG {
 
 	inline PID TURN_PID = PID(1.3, 0.00, 9.0);
 	inline PID GOAL_PID = PID(1.2, 0.00, 9.0);
-	inline PID DISTANCE_PID = PID(18.0, 0.00, 0.0);
+	inline PID DISTANCE_PID = PID(4.0, 0.00, 0.0);
 
 	inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
-		return (velocity / 85_in/second).getValue() + (accel / (800_in/second/second)).getValue() + copysign(0.05, velocity.getValue());
+		return (velocity / 75_in/second).getValue() + (accel / (800_in/second/second)).getValue() + copysign(0.05, velocity.getValue());
 	}
 
 	const Eigen::Vector2f LINE_SENSOR_1_OFFSET((-1.2_in).getValue(), (-0.3_in).getValue());
