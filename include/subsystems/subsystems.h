@@ -218,7 +218,7 @@ inline void subsystemInit() {
 	primary.getTrigger(DIGITAL_UP)->onTrue(new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s)}));
 
 	PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
-	PathCommands::registerCommand("intakeAllianceStakes", loadOneRingLow->andThen(loadOneRingLow));
+	PathCommands::registerCommand("intakeAllianceStakes", loadOneRingLow->andThen(new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s), bottomIntake->movePct(0.0)})));
 	PathCommands::registerCommand("scoreNeutral", new Sequence(
 			{
 			 new ParallelRaceGroup({
@@ -236,12 +236,12 @@ inline void subsystemInit() {
 				 hook->positionCommand(0_deg),
 			 })}));
 	PathCommands::registerCommand("intakeGoal", new ParallelCommandGroup({topIntake->movePct(1.0), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
-	PathCommands::registerCommand("stopIntake", new ParallelCommandGroup({topIntake->movePct(0.0), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
+	PathCommands::registerCommand("stopIntake", new ParallelCommandGroup({topIntake->moveToPositionFwd(1.0), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
 	PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
 	PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
 	PathCommands::registerCommand("outtake", topIntake->movePct(0.0)->withTimeout(0.5_s));
-	PathCommands::registerCommand("index",
-			new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s)}));
+	PathCommands::registerCommand("indexTwo",
+			new ParallelCommandGroup({topIntake->moveToPositionFwd(2.1)}));
 	PathCommands::registerCommand("dejam", new ParallelCommandGroup({
 		bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
 		topIntake->movePct(-1.0)
