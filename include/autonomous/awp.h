@@ -7,12 +7,6 @@ class AWP {
 public:
     static Command *awp(const bool flip) {
         return new Sequence({
-                new TankMotionProfiling(drivetrain, {60_in / second, 100_in / second / second}, 30_in, flip, 0_deg, 0.0,
-                                        true, 0.0, 10_in / second),
-                new TankMotionProfiling(drivetrain, {10_in / second, 100_in / second / second}, 20_in, flip, 0_deg, 0.0,
-                                        true, 10_in / second, 0.0),
-        });
-        return new Sequence({
                 drivetrain->setNorm(Eigen::Vector2f((12_in).getValue(), (60_in).getValue()),
                                     Eigen::Matrix2f::Identity() * 0.2, -180_deg, flip),
                 new ScheduleCommand(bottomIntake->movePct(1.0)),

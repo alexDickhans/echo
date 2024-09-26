@@ -23,7 +23,7 @@ namespace CONFIG {
 
 	inline PID TURN_PID = PID(1.3, 0.00, 9.0);
 	inline PID GOAL_PID = PID(1.2, 0.00, 9.0);
-	inline PID DISTANCE_PID = PID(18.0, 0.00, 0.0);
+	inline PID DISTANCE_PID = PID(36.0, 0.00, 0.0);
 
 	inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
 		return (velocity / 85_in/second).getValue() + (accel / (800_in/second/second)).getValue() + copysign(0.05, velocity.getValue());
