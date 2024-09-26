@@ -218,7 +218,18 @@ inline void subsystemInit() {
 	primary.getTrigger(DIGITAL_UP)->onTrue(new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s)}));
 
 	PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
-	PathCommands::registerCommand("intakeAllianceStakes", loadOneRingLow->andThen(new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s), bottomIntake->movePct(0.0)})));
+	PathCommands::registerCommand("liftArm", new ParallelRaceGroup({
+				 bottomIntake->movePct(0.0),
+				 lift->positionCommand(33_deg),
+				 topIntake->movePct(0.0),
+				 hook->positionCommand(5_deg),
+			 }));
+	PathCommands::registerCommand("intakeAllianceStakes",
+		new Sequence({
+			loadOneRingLow,
+			new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s), bottomIntake->movePct(0.0)}),
+			new ParallelCommandGroup({topIntake->movePct(0.0), bottomIntake->movePct(-0.1)})}
+			));
 	PathCommands::registerCommand("scoreNeutral", new Sequence(
 			{
 			 new ParallelRaceGroup({
