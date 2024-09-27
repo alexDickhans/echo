@@ -251,7 +251,7 @@ inline void subsystemInit() {
 	PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
 	PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
 	PathCommands::registerCommand("outtake", topIntake->movePct(0.0)->withTimeout(0.5_s));
-	PathCommands::registerCommand("hang", lift->positionCommand(15_deg));
+	PathCommands::registerCommand("hang", lift->positionCommand(20_deg));
 	PathCommands::registerCommand("indexTwo",
 			new ParallelCommandGroup({topIntake->moveToPositionFwd(2.1), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
 	PathCommands::registerCommand("dejam", new ParallelCommandGroup({

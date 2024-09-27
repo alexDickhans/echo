@@ -24,7 +24,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.15,
+        "velocity": 1.225,
         "accel": 2.54
       }
     },
@@ -50,7 +50,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.15,
+        "velocity": 1.225,
         "accel": 2.54
       }
     },
@@ -76,7 +76,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.175,
+        "velocity": 1.225,
         "accel": 2.54
       }
     },
@@ -171,11 +171,11 @@
           "y": -1.175
         },
         {
-          "x": -0.066,
+          "x": -0.069,
           "y": -1.424
         },
         {
-          "x": -0.074,
+          "x": -0.077,
           "y": -1.765
         }
       ],
@@ -189,6 +189,10 @@
     {
       "t": 0.0,
       "name": "intakeAllianceStakes"
+    },
+    {
+      "t": 0.0,
+      "name": "bottomOuttake"
     }
   ]
 }
