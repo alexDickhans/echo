@@ -24,7 +24,7 @@
         }
       ],
       "constraints": {
-        "velocity": 0.975,
+        "velocity": 1.225,
         "accel": 2.54
       }
     },
@@ -50,7 +50,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.05,
+        "velocity": 1.2,
         "accel": 2.54
       }
     },
@@ -67,8 +67,8 @@
           "y": 0.214
         },
         {
-          "x": 1.197,
-          "y": 0.37
+          "x": 1.246,
+          "y": 0.374
         },
         {
           "x": 1.201,
@@ -89,7 +89,7 @@
           "y": 0.625
         },
         {
-          "x": 1.205,
+          "x": 1.154,
           "y": 0.881
         },
         {
@@ -128,7 +128,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.05,
+        "velocity": 1.1,
         "accel": 2.54
       }
     },
@@ -180,7 +180,7 @@
         }
       ],
       "constraints": {
-        "velocity": 0.975,
+        "velocity": 1.2,
         "accel": 2.54
       }
     },
@@ -257,6 +257,10 @@
     {
       "t": 6.651,
       "name": "intakeNeutralStakes"
+    },
+    {
+      "t": 7.848,
+      "name": "liftArm"
     }
   ]
 }

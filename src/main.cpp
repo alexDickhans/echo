@@ -3,21 +3,6 @@
 
 Command* autonCommand;
 
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button() {
-    static bool pressed = false;
-    pressed = !pressed;
-    if (pressed) {
-    } else {
-        pros::lcd::clear_line(2);
-    }
-}
-
 [[noreturn]] void update_loop() {
     while (true) {
         auto start_time = pros::millis();
