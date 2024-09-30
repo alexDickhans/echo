@@ -27,7 +27,7 @@ backslash_char = "\\ "
 
 if len(sys.argv) > 1:
 
-    i = auton_list.index(list(filter(lambda x: x[0] in (sys.argv[1]), auton_list))[0])
+    i = int(sys.argv[1])# auton_list.index(list(filter(lambda x: x[0] in sys.argv[1], auton_list))[0])
     f = open("./include/auton.h", "w")
     f.write("#define AUTON Auton::" + auton_list[i][0] + "\n")
     f.write("#define ALLIANCE Alliance::" + auton_list[i][1] + "\n")
