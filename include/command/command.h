@@ -163,7 +163,7 @@ public:
 	 * @param duration The maximum running duration of the Command
 	 * @return \refitem ParallelRaceGroup with this and \refitem WaitCommand of the desired duration
 	 */
-	Command *withTimeout(QTime duration);
+	Command *withTimeout(units::QTime duration);
 
 	/**
 	 * @brief Run the command until a condition is met

@@ -467,7 +467,7 @@
                 "version": "4.1.0"
             },
             "libcommand": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.1.7",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libcommand@0.1.8",
                 "metadata": {
                     "origin": "local"
                 },
@@ -475,30 +475,30 @@
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
                 "supported_kernels": "^4.1.0",
                 "system_files": [
+                    "include/command/commandScheduler.h",
+                    "include/command/scheduleCommand.h",
+                    "include/command/conditionalCommand.h",
+                    "include/command/trigger.h",
+                    "include/command/repeatCommand.h",
+                    "include/command/instantCommand.h",
                     "include/command/command.h",
-                    "include/command/runCommand.h",
-                    "include/command/subsystem.h",
                     "include/command/functionalCommand.h",
                     "include/command/proxyCommand.h",
-                    "include/command/commandController.h",
-                    "include/command/parallelCommandGroup.h",
-                    "include/command/sequence.h",
-                    "include/command/instantCommand.h",
-                    "include/command/parallelRaceGroup.h",
-                    "include/command/trigger.h",
-                    "include/command/waitUntilCommand.h",
-                    "include/command/includes.h",
-                    "include/command/eventLoop.h",
-                    "include/command/commandScheduler.h",
+                    "include/command/subsystem.h",
                     "include/command/waitCommand.h",
-                    "include/command/scheduleCommand.h",
-                    "firmware/libcommand.a",
-                    "include/command/conditionalCommand.h",
-                    "include/command/repeatCommand.h"
+                    "include/command/runCommand.h",
+                    "include/command/eventLoop.h",
+                    "include/command/sequence.h",
+                    "include/command/commandController.h",
+                    "include/command/includes.h",
+                    "include/command/parallelRaceGroup.h",
+                    "include/command/parallelCommandGroup.h",
+                    "include/command/waitUntilCommand.h",
+                    "firmware/libcommand.a"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.1.7"
+                "version": "0.1.8"
             },
             "libjson": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/libjson@3.11.5",
@@ -716,9 +716,9 @@
                 "version": "8.3.8"
             },
             "libunit": {
-                "location": "/Users/alex/Library/Application Support/PROS/templates/libunit@1.0.1",
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libunit@1.1.0",
                 "metadata": {
-                    "origin": "local"
+                    "origin": "units-stable"
                 },
                 "name": "libunit",
                 "py/object": "pros.conductor.templates.local_template.LocalTemplate",
@@ -729,7 +729,7 @@
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "1.0.1"
+                "version": "1.1.0"
             },
             "telemetry": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/telemetry@1.0.0",

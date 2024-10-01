@@ -3,6 +3,8 @@
 #include <iostream>
 #include "units/units.hpp"
 
+using namespace units;
+
 struct ProfileConstraints {
 	QVelocity maxVelocity;
 	QAcceleration maxAcceleration;

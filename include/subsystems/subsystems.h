@@ -177,7 +177,7 @@ inline void subsystemInit() {
 		new ScheduleCommand(goalClamp->levelCommand(false)),
 		(new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))->until([&]() { return goalClampDistanceSensor.get_distance() < 10; })->withTimeout(2_s),
 		new ScheduleCommand(goalClampTrue),
-	}))
+	}));
 	partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup({
 		new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8), lift->positionCommand(8.0_deg),
 		topIntake->movePct(-1.0)

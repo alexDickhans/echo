@@ -3,7 +3,7 @@
 #include "functionalCommand.h"
 
 /**
- * @brief WaitUntilCommand creates a command that ends once a condition is finished. This command has no requirements.
+ * @brief WaitUntilCommand creates a command that ends once a condition is finished (condition turns true). This command has no requirements.
  */
 class WaitUntilCommand : public FunctionalCommand {
 public:

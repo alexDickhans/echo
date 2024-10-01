@@ -1,5 +1,7 @@
 #pragma once
 
+using namespace units;
+
 BEZIER_MIRRORED_MP_ASSET(safe_awp_1);
 BEZIER_MIRRORED_MP_ASSET(safe_awp_2);
 
