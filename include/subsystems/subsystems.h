@@ -177,8 +177,7 @@ inline void subsystemInit() {
 		new ScheduleCommand(goalClamp->levelCommand(false)),
 		(new DriveToGoal(drivetrain, CONFIG::GOAL_PID, -0.6))->until([&]() { return goalClampDistanceSensor.get_distance() < 10; })->withTimeout(2_s),
 		new ScheduleCommand(goalClampTrue),
-	}));
-
+	}))
 	partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup({
 		new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8), lift->positionCommand(8.0_deg),
 		topIntake->movePct(-1.0)
@@ -214,8 +213,6 @@ inline void subsystemInit() {
 			hook->positionCommand(0_deg),
 		})
 	}));
-
-	primary.getTrigger(DIGITAL_UP)->onTrue(new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s)}));
 
 	PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
 	PathCommands::registerCommand("liftArm", new ParallelRaceGroup({
