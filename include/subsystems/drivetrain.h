@@ -6,7 +6,6 @@
 #include "localization/particleFilter.h"
 #include "subsystems.h"
 #include "telemetry/telemetry.h"
-#include "vex/v5_vcs.h"
 
 #include "localization/gps.h"
 
@@ -17,7 +16,6 @@ class Drivetrain : public Subsystem {
 private:
 	pros::MotorGroup left11W, right11W, left5W, right5W;
 	pros::Imu imu;
-	vex::aivision AIVision1;
 
 	QLength leftChange, rightChange;
 	QLength lastLeft, lastRight;
@@ -36,7 +34,6 @@ public:
 		  right11W(right11_w),
 		  left5W(left5_w),
 		  right5W(right5_w),
-		  AIVision1(12, CONFIG::GOAL_COLOR_DESC),
 		  imu(std::move(imu)), particleFilter([this, imu]() {
 			  const Angle angle = -imu.get_rotation() * degree;
 			  return isfinite(angle.getValue()) ? angle : 0.0;
@@ -55,35 +52,11 @@ public:
 		left5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 		right5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
-		this->AIVision1.colorDetection(true, false);
-		this->AIVision1.startAwb();
-
 		imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled() || AUTON == SKILLS);
 	}
 
 	void addLocalizationSensor(Sensor *sensor) {
 		particleFilter.addSensor(sensor);
-	}
-
-	std::optional<Angle> getGoalAngle() {
-		AIVision1.takeSnapshot(CONFIG::GOAL_COLOR_DESC);
-
-		if (AIVision1.objectCount > 0) {
-			return -(AIVision1.largestObject.centerX - 158.0) * CONFIG::AI_VISION_PIXELS_TO_DEGREES;
-		}
-
-		return std::nullopt;
-	}
-
-	std::optional<double> getLargestObjectAspectRatio() {
-		AIVision1.takeSnapshot(CONFIG::GOAL_COLOR_DESC);
-
-		if (AIVision1.objectCount > 0) {
-			return static_cast<double>(AIVision1.largestObject.width) / static_cast<double>(AIVision1.largestObject.
-				       height);
-		}
-
-		return std::nullopt;
 	}
 
 	void periodic() override {
