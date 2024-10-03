@@ -25,6 +25,7 @@
 #include "pros/adi.hpp"
 #include "motionProfiling/pathCommands.h"
 #include "command/proxyCommand.h"
+#include "hang.h"
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;
@@ -32,6 +33,7 @@ BottomIntake *bottomIntake;
 LiftSubsystem *lift;
 GoalClamp *goalClamp;
 Hook *hook;
+Hang *hang;
 
 Command *loadOneRingHigh;
 Command *loadOneRingLow;
@@ -59,6 +61,7 @@ inline void subsystemInit() {
 	lift = new LiftSubsystem(pros::Motor(1), PID(30.0, 0.0, 50.0));
 	goalClamp = new GoalClamp(pros::adi::DigitalOut('a'));
 	hook = new Hook(pros::Motor(-8));
+	hang = new Hang(pros::adi::DigitalOut('c'));
 
 	// drivetrain->addLocalizationSensor(new LineSensor(CONFIG::LINE_SENSOR_1_OFFSET, pros::adi::LineSensor('b')));
 	drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
@@ -81,6 +84,7 @@ inline void subsystemInit() {
 	                                                                 [&]() { return hasRings; }));
 	CommandScheduler::registerSubsystem(goalClamp, goalClamp->levelCommand(false));
 	CommandScheduler::registerSubsystem(hook, hook->positionCommand(0.0));
+	CommandScheduler::registerSubsystem(hang, hang->levelCommand(false));
 
 	goalClampTrue = goalClamp->levelCommand(true);
 
@@ -171,6 +175,7 @@ inline void subsystemInit() {
 	}));
 
 	primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
+	primary.getTrigger(DIGITAL_LEFT)->toggleOnTrue(hang->levelCommand(true));
 
 	partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup({
 		new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8), lift->positionCommand(8.0_deg),
@@ -242,7 +247,7 @@ inline void subsystemInit() {
 	PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
 	PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
 	PathCommands::registerCommand("outtake", topIntake->movePct(0.0)->withTimeout(0.5_s));
-	PathCommands::registerCommand("hang", lift->positionCommand(20_deg));
+	PathCommands::registerCommand("hang", hang->levelCommand(true));
 	PathCommands::registerCommand("indexTwo",
 			new ParallelCommandGroup({topIntake->moveToPositionFwd(2.1), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
 	PathCommands::registerCommand("dejam", new ParallelCommandGroup({

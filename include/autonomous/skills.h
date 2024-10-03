@@ -48,7 +48,7 @@ public:
                                        ->asProxy()),
                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, -18_in, false, 0_deg,
                                         0.0, true),
-                (new Rotate(drivetrain, -90_deg, false, 0.0))->withTimeout(0.7_s),
+                (new Rotate(drivetrain, -90_deg, false, 0.0))->withTimeout(0.65_s),
                 new Ramsete(drivetrain, &skills_2),
                 new ScheduleCommand(SharedCommands::scoreAlliance2()),
                 (new Rotate(drivetrain, 90_deg, false, -2000, false))->withTimeout(1.0_s),
