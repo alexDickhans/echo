@@ -4,7 +4,6 @@
 
 #include "units/units.hpp"
 #include "feedback/pid.h"
-#include "vex/v5_vcs.h"
 
 namespace CONFIG {
 	constexpr double INTAKE_RATIO = 66.0/96.0; // 66 chain links
@@ -41,6 +40,4 @@ namespace CONFIG {
 
 	constexpr float RAMSETE_ZETA = 0.6;
 	constexpr float RAMSETE_BETA = 12.0;
-
-	inline vex::aivision::colordesc GOAL_COLOR_DESC(1, 193, 255, 136, 12, 0.61);
 }
