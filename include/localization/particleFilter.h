@@ -84,9 +84,6 @@ public:
 			particle[1] += prediction.y();
 		}
 
-		// std::cout << "prediction: " << pros::micros() - start << std::endl;
-		// start = pros::micros();
-
 		distanceSinceUpdate += predictionFunction().norm();
 
 		if (distanceSinceUpdate < maxDistanceSinceUpdate && maxUpdateInterval > pros::millis() * millisecond) {
@@ -96,9 +93,6 @@ public:
 		for (auto && sensor : this->sensors) {
 			sensor->update();
 		}
-
-		// std::cout << "sensor updates: " << pros::micros() - start << std::endl;
-		// start = pros::micros();
 
 		double totalWeight = 0.0;
 
@@ -118,13 +112,10 @@ public:
 				}
 			}
 
-			weights[i] = weights[i] + LOCO_CONFIG::minWeight;
+			weights[i] = weights[i];
 
 			totalWeight = totalWeight + weights[i];
 		}
-
-		// std::cout << "weight particles: " << pros::micros() - start << std::endl;
-		// start = pros::micros();
 
 		if (totalWeight == 0.0) {
 			std::cout << "Warning: Total weight equal to 0" << std::endl;
