@@ -11,6 +11,8 @@
 
 template<size_t L>
 class ParticleFilter {
+	// Ensure particle count is less than the max of 500 particles
+	static_assert(std::less_equal<size_t>()(L, 500), "Too many particles, reduce the number of particles to 500 or less particle to avoid issues with prolonged frame times. ");
 private:
 	std::array<std::array<float, 2>, L> particles;
 	std::array<std::array<float, 2>, L> oldParticles;

@@ -176,6 +176,7 @@ inline void subsystemInit() {
 
 	primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 	primary.getTrigger(DIGITAL_LEFT)->toggleOnTrue(hang->levelCommand(true));
+	primary.getTrigger(DIGITAL_UP)->whileTrue(hang->levelCommand(true)->with(new TankMotionProfiling(drivetrain, {15_in/second, 100_in/second/second}, 30_in, false, 0.0, 0.0, false, 0.0, 15_in/second)));
 
 	partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup({
 		new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8), lift->positionCommand(8.0_deg),
