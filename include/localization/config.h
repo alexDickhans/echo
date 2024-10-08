@@ -7,7 +7,4 @@ namespace LOCO_CONFIG {
 	constexpr float DISTANCE_WEIGHT = 1.0;
 	constexpr float GPS_WEIGHT = 1.0;
 	constexpr float LINE_WEIGHT = 1.0;
-
-	constexpr float minWeight = 0.0;
-
 }
