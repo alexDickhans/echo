@@ -2,6 +2,7 @@
 
 enum Auton_ {
   AWP,
+  AWP_PUSH,
   SKILLS,
   NONE
 } typedef Auton;

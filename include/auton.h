@@ -1,2 +1,2 @@
-#define AUTON Auton::SKILLS
-#define ALLIANCE Alliance::RED
+#define AUTON Auton::AWP_PUSH
+#define ALLIANCE Alliance::BLUE

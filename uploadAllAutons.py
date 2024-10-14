@@ -8,7 +8,7 @@ import time
 
 # os.system("pros v5 rm-all")
 
-autons = {"AWP": True, "SKILLS": False}
+autons = {"AWP": True, "AWP_PUSH": True, "SKILLS": False}
 
 auton_list = []
 
