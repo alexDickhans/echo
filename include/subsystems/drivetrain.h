@@ -132,6 +132,10 @@ public:
 		this->particleFilter.initUniform(minX, minY, maxX, maxY);
 	}
 
+	Angle getRoll() const {
+		return imu.get_roll() * 1_deg;
+	}
+
 	InstantCommand *setUniform(QLength minX, QLength minY, QLength maxX, QLength maxY, Angle angle, bool flip) {
 		return new InstantCommand([this, minX, minY, maxX, maxY, angle, flip]() {
 			this->initUniform(minX, minY, maxX, maxY, angle, flip);
@@ -172,6 +176,10 @@ public:
 
 	RunCommand *pct(double left, double right) {
 		return new RunCommand([this, left, right]() { this->setPct(left, right); }, {this});
+	}
+
+	RunCommand *velocityCommand(const QVelocity left, const QVelocity right) {
+		return new RunCommand([this, left, right]() { this->setVelocity(left, right); }, {this});
 	}
 
 	~Drivetrain() override = default;
