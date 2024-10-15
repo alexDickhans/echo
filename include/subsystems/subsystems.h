@@ -258,5 +258,5 @@ inline void subsystemInit() {
 		topIntake->movePct(-1.0)
 	}));
 	PathCommands::registerCommand("awpLiftUp",
-			lift->positionCommand(25_deg)->with(topIntake->movePct(-0.3)));
+			lift->positionCommand(30_deg)->with(topIntake->movePct(-0.3)));
 }
