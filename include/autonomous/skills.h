@@ -59,7 +59,7 @@ public:
                                          0.0, true),
                  new ScheduleCommand(goalClampTrue),
                  new Ramsete(drivetrain, &skills_3),
-                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 15.5_in, false,
+                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 16.2_in, false,
                                          -45_deg, 0.0, true),
                  (new Rotate(drivetrain, 180_deg, false, 0, true))->withTimeout(1.0_s),
                  new TankMotionProfiling(drivetrain, {25_in / second, 50_in / second / second}, -24_in, false, 180_deg,
@@ -90,7 +90,7 @@ public:
                                         ->asProxy()),
                  new Ramsete(drivetrain, &skills_5),
                  (new ScheduleCommand(hang->levelCommand(true)))
-                         ->with(drivetrain->velocityCommand(38_in / second, 38_in / second)
+                         ->with(drivetrain->velocityCommand(36_in / second, 36_in / second)
                                         ->until([]() { return Qabs(drivetrain->getRoll()) > 8_deg; })
                                         ->andThen((drivetrain->pct(-1.0, -1.0)
                                                            ->withTimeout(300_ms)
