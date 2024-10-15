@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 Command* autonCommand;
 
 [[noreturn]] void update_loop() {

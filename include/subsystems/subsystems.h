@@ -121,6 +121,8 @@ inline void subsystemInit() {
 		new InstantCommand([&]() { hasRings = false; }, {}),
 	});
 
+	Trigger([]() {return intakeDistance.get() < 100;}).onTrue(new InstantCommand([] () { primary.print(0, 0, std::to_string(bottomIntake->getRingColor()).c_str()); }, {}));
+
 	primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcade(primary));
 
 	primary.getTrigger(DIGITAL_L1)->toggleOnTrue(
@@ -176,7 +178,7 @@ inline void subsystemInit() {
 
 	primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 	primary.getTrigger(DIGITAL_LEFT)->toggleOnTrue(hang->levelCommand(true));
-	primary.getTrigger(DIGITAL_UP)->whileTrue(hang->levelCommand(true)->with(new TankMotionProfiling(drivetrain, {15_in/second, 100_in/second/second}, 30_in, false, 0.0, 0.0, false, 0.0, 15_in/second)));
+	primary.getTrigger(DIGITAL_UP)->whileTrue((new ScheduleCommand(hang->levelCommand(true)))->with(drivetrain->velocityCommand(37_in/second, 37_in/second)->until([] () { return Qabs(drivetrain->getRoll()) > 8_deg; })->andThen((drivetrain->pct(-1.0, -1.0)->with(hook->pctCommand(1.0))->withTimeout(300_ms)->andThen(drivetrain->pct(1.0, 1.0)->with(hook->pctCommand(-1.0))->withTimeout(300_ms)))->repeatedly()->until([] () { return Qabs(drivetrain->getRoll()) < 5_deg; }))));
 
 	partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup({
 		new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8), lift->positionCommand(8.0_deg),
@@ -256,5 +258,5 @@ inline void subsystemInit() {
 		topIntake->movePct(-1.0)
 	}));
 	PathCommands::registerCommand("awpLiftUp",
-			lift->positionCommand(25_deg)->with(topIntake->movePct(-0.3)));
+			lift->positionCommand(30_deg)->with(topIntake->movePct(-0.3)));
 }
