@@ -121,6 +121,8 @@ inline void subsystemInit() {
 		new InstantCommand([&]() { hasRings = false; }, {}),
 	});
 
+	Trigger([]() {return intakeDistance.get() < 100;}).onTrue(new InstantCommand([] () { primary.print(0, 0, std::to_string(bottomIntake->getRingColor()).c_str()); }, {}));
+
 	primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcade(primary));
 
 	primary.getTrigger(DIGITAL_L1)->toggleOnTrue(
