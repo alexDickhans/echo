@@ -19,8 +19,16 @@ public:
 		motor.move_absolute(angle.Convert(revolution) * 2.0, 200);
 	}
 
+	void setPct(const float pct) {
+		motor.move_voltage(12000.0f * pct);
+	}
+
 	FunctionalCommand* positionCommand(Angle angle) {
 		return new FunctionalCommand([this, angle]() { this->setPosition(angle); }, []() {}, [](bool _) {}, []() {return false;}, {this});
+	}
+
+	FunctionalCommand* pctCommand(const float pct) {
+		return new FunctionalCommand([this, pct]() { this->setPct(pct); }, []() {}, [](bool _) {}, []() {return false;}, {this});
 	}
 
 	~Hook() override = default;
