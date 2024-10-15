@@ -143,7 +143,7 @@ inline void subsystemInit() {
 		})
 	);
 
-	primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal->until([]() {return intakeDistance.get() < 100;})->andThen(topIntake->moveToPositionFwd(2.5)));
+	primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
 	primary.getTrigger(DIGITAL_R1)->onTrue(new Sequence({
 		new InstantCommand([&]() { outtakeWallStake = false; }, {}),
 		new ParallelRaceGroup({
