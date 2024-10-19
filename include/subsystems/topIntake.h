@@ -1,17 +1,28 @@
 #pragma once
+
 #include "config.h"
 
 #include "command/command.h"
 #include "command/runCommand.h"
+#include "vex/v5_vcs.h"
+
+
+enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
+
+inline vex::aivision::colordesc RED_COLOR_DESC(1, 255, 0, 0, 50, 0.61);
+inline vex::aivision::colordesc BLUE_COLOR_DESC(2, 0, 0, 255, 50, 0.61);
 
 class TopIntake : public Subsystem {
 	pros::Motor intakeMotor;
+	vex::aivision vision;
+	pros::Distance intakeDistance;
 
 public:
-	explicit TopIntake(pros::Motor intake_motor)
-		: intakeMotor(std::move(intake_motor)) {
+	explicit TopIntake(pros::Motor intake_motor, pros::Distance intakeDistance)
+		: intakeMotor(std::move(intake_motor)), vision(12, RED_COLOR_DESC, BLUE_COLOR_DESC), intakeDistance(std::move(intakeDistance)) {
 		intakeMotor.set_encoder_units(pros::MotorEncoderUnits::rotations);
 		intakeMotor.set_gearing(pros::MotorGears::green);
+		vision.colorDetection(true, true);
 	}
 
 	void periodic() override {
@@ -32,6 +43,10 @@ public:
 
 	double error() {
 		return this->getPosition() - this->intakeMotor.get_target_position() / CONFIG::INTAKE_RATIO;
+	}
+
+	bool ringPresent() {
+		return intakeDistance.get() < 100;
 	}
 
 	RunCommand *stopIntake() {
@@ -76,6 +91,12 @@ public:
 
 	RunCommand* controller(pros::Controller* controller) {
 		return new RunCommand([this, controller]() { this->setPct(controller->get_analog(ANALOG_RIGHT_Y) / 127.0); }, {this});
+	}
+
+	RingColor getRingColor() {
+		vision.takeSnapshot(vex::aivision::ALL_COLORS);
+
+		return static_cast<RingColor>(vision.largestObject.id);
 	}
 
 	~TopIntake() override = default;

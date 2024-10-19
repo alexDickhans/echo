@@ -1,31 +1,33 @@
 #pragma once
 
-#include "command/commandScheduler.h"
-#include "lift.h"
-#include "topIntake.h"
-#include "goalClamp.h"
 #include "bottomIntake.h"
-#include "drivetrain.h"
 #include "command/commandController.h"
+#include "command/commandScheduler.h"
+#include "command/conditionalCommand.h"
 #include "command/parallelCommandGroup.h"
 #include "command/parallelRaceGroup.h"
-#include "command/sequence.h"
-#include "command/waitUntilCommand.h"
-#include "hook.h"
+#include "command/proxyCommand.h"
 #include "command/repeatCommand.h"
+#include "command/scheduleCommand.h"
+#include "command/sequence.h"
 #include "command/waitCommand.h"
-#include "commands/ramsete.h"
+#include "command/waitUntilCommand.h"
 #include "commands/driveMove.h"
-#include "command/conditionalCommand.h"
+#include "commands/ramsete.h"
 #include "commands/rotate.h"
-#include "localization/line.h"
+#include "drivetrain.h"
+#include "goalClamp.h"
+#include "hang.h"
+#include "hook.h"
+#include "lift.h"
 #include "localization/distance.h"
 #include "localization/gps.h"
-#include "command/scheduleCommand.h"
-#include "pros/adi.hpp"
+#include "localization/line.h"
 #include "motionProfiling/pathCommands.h"
-#include "command/proxyCommand.h"
-#include "hang.h"
+#include "pros/adi.hpp"
+#include "topIntake.h"
+
+#include <queue>
 
 Drivetrain *drivetrain;
 TopIntake *topIntake;
@@ -44,7 +46,6 @@ Command *goalClampTrue;
 CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
-pros::Distance intakeDistance(21);
 pros::Distance goalClampDistanceSensor(20);
 
 GpsSensor* gpsSensor;
@@ -56,7 +57,7 @@ inline void subsystemInit() {
 	TELEMETRY.setSerial(new pros::Serial(19, 921600));
 
 	drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16));
-	topIntake = new TopIntake(pros::Motor(-5));
+	topIntake = new TopIntake(pros::Motor(-5), pros::Distance(21));
 	bottomIntake = new BottomIntake(pros::Motor(-10));
 	lift = new LiftSubsystem(pros::Motor(1), PID(30.0, 0.0, 50.0));
 	goalClamp = new GoalClamp(pros::adi::DigitalOut('a'));
@@ -71,8 +72,6 @@ inline void subsystemInit() {
 	// 						pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())))
 
 	drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
-
-	// drivetrain->initNorm(Eigen::Vector2f::Constant(0.0), Eigen::Matrix2f::Identity() * 0.01, 0.0, false);
 
 	CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
 	CommandScheduler::registerSubsystem(
@@ -93,7 +92,7 @@ inline void subsystemInit() {
 			bottomIntake->movePct(1.0),
 			lift->positionCommand(0.0_deg),
 			topIntake->positionCommandFwd(0.3),
-			new WaitUntilCommand([&]() { return intakeDistance.get() < 100; })
+			new WaitUntilCommand([&]() { return topIntake->ringPresent(); })
 		}),
 		new ParallelRaceGroup({
 			bottomIntake->movePct(1.0),
@@ -106,7 +105,7 @@ inline void subsystemInit() {
 			bottomIntake->movePct(1.0),
 			lift->positionCommand(6.0_deg),
 			topIntake->positionCommandRwd(-0.1),
-			new WaitUntilCommand([&]() { return intakeDistance.get() < 100; })
+			new WaitUntilCommand([&]() { return topIntake->ringPresent(); })
 		}),
 		new ParallelRaceGroup({
 			bottomIntake->movePct(1.0),
@@ -121,7 +120,11 @@ inline void subsystemInit() {
 		new InstantCommand([&]() { hasRings = false; }, {}),
 	});
 
-	Trigger([]() {return intakeDistance.get() < 100;}).onTrue(new InstantCommand([] () { primary.print(0, 0, std::to_string(bottomIntake->getRingColor()).c_str()); }, {}));
+	std::queue<RingColor> rings;
+
+	Trigger([]() { return topIntake->ringPresent(); }).onFalse(new InstantCommand([] () { primary.print(0, 0, std::to_string(topIntake->getRingColor()).c_str()); }, {}));
+
+	Trigger([]() { return std::fmod(topIntake->getPosition(), 1.0) > 0.7; }).onTrue(ConditionalCommand(new InstantCommand([] () {}, {}), new InstantCommand([] () {}, {}), [] () { return }));
 
 	primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcade(primary));
 
@@ -249,8 +252,8 @@ inline void subsystemInit() {
 	PathCommands::registerCommand("stopIntake", new ParallelCommandGroup({topIntake->moveToPositionFwd(1.1), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
 	PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
 	PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
-	PathCommands::registerCommand("outtake", topIntake->movePct(-0.5)->withTimeout(0.5_s));
-	PathCommands::registerCommand("hang", hang->levelCommand(true));
+	PathCommands::registerCommand("outtake", topIntake->movePct(-1.0)->withTimeout(0.5_s));
+	PathCommands::registerCommand("hang", hang->levelCommand(true)->with(new ScheduleCommand(topIntake->movePct(0.0))));
 	PathCommands::registerCommand("indexTwo",
 			new ParallelCommandGroup({topIntake->moveToPositionFwd(2.1), bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
 	PathCommands::registerCommand("dejam", new ParallelCommandGroup({
