@@ -129,7 +129,7 @@ inline void subsystemInit() {
     Trigger([]() mutable {
         // std::cout << (std::find(ejectionPoints.begin(), ejectionPoints.end(),
         // static_cast<int>(std::floor(topIntake->getPosition()))) != std::end(ejectionPoints)) << std::endl;
-        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.42 && intakeOntoGoal->scheduled() &&
+        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.45 && intakeOntoGoal->scheduled() &&
                std::find(ejectionPoints.begin(), ejectionPoints.end(),
                          static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
     })
