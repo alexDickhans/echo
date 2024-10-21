@@ -68,10 +68,28 @@ public:
 	}
 
 	Eigen::Vector3f getParticle(size_t i) {
-		return {this->particles[i][0], this->particles[i][1], angleFunction().getValue()};
-	}
+        return {this->particles[i][0], this->particles[i][1], angleFunction().getValue()};
+    }
 
-	void update(const std::function<Eigen::Vector2f()>& predictionFunction) {
+    float weightParticle(const Eigen::Vector3f &particle) {
+        float totalWeight = 1.0;
+
+        for (const auto sensor: sensors) {
+            if (auto weight = sensor->p(particle); weight.has_value() && isfinite(weight.value())) {
+                totalWeight = totalWeight * weight.value();
+            }
+        }
+
+        return totalWeight;
+    }
+
+    void updateSensors() {
+        for (auto &&sensor: this->sensors) {
+            sensor->update();
+        }
+    }
+
+    void update(const std::function<Eigen::Vector2f()>& predictionFunction) {
 		if (!isfinite(angleFunction().getValue())) {
 			return;
 		}
@@ -92,15 +110,11 @@ public:
 			return;
 		}
 
-		for (auto && sensor : this->sensors) {
-			sensor->update();
-		}
+		updateSensors();
 
 		double totalWeight = 0.0;
 
 		for (size_t i = 0; i < L; i++) {
-			weights[i] = 1.0;
-
 			if (outOfField(particles[i])) {
 				particles[i][0] = fieldDist(de);
 				particles[i][1] = fieldDist(de);
@@ -108,13 +122,7 @@ public:
 
 			auto particle = Eigen::Vector3f(particles[i][0], particles[i][1], angle.getValue());
 
-			for (const auto sensor : sensors) {
-				if (auto weight = sensor->p(particle); weight.has_value() && isfinite(weight.value())) {
-					weights[i] = weights[i] * weight.value();
-				}
-			}
-
-			weights[i] = weights[i];
+			weights[i] = weightParticle(particle);
 
 			totalWeight = totalWeight + weights[i];
 		}

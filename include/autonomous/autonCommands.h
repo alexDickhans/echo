@@ -13,9 +13,9 @@ public:
             case SKILLS:
                 return Skills::skills();
             case AWP:
-                return AWP::awp(ALLIANCE == BLUE);
+                return AWP::awp();
             case AWP_PUSH:
-                return AWP::push_awp(ALLIANCE == BLUE);
+                return AWP::push_awp();
             default:
                 return new InstantCommand([]() { std::cout << "No auton" << std::endl; }, {});
         }

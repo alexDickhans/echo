@@ -8,6 +8,6 @@ enum Auton_ {
 } typedef Auton;
 
 enum Alliance_ {
-  RED,
-  BLUE
+  RED = 1,
+  BLUE = 2
 } typedef Alliance;

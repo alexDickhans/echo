@@ -23,12 +23,22 @@ Command* autonCommand;
 
         auto pose = drivetrain->getPose();
 
-        pros::lcd::set_text(2, std::to_string(pose.x() * metre.Convert(inch)) + ", " +
+        pros::lcd::set_text(1, std::to_string(pose.x() * metre.Convert(inch)) + ", " +
                                        std::to_string(pose.y() * metre.Convert(inch)) + ", " +
                                        std::to_string(pose.z() * radian.Convert(degree)));
 
-        TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," +
-                       std::to_string(pose.z()) + "]]\n");
+        switch (ALLIANCE) {
+            case RED:
+                pros::lcd::set_text(2, "RED");
+                break;
+            case BLUE:
+                pros::lcd::set_text(2, "BLUE");
+                break;
+
+        }
+
+        // TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," +
+        //                std::to_string(pose.z()) + "]]\n");
 
         // TELEMETRY.send("[");
         // for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {

@@ -8,16 +8,7 @@ import time
 
 # os.system("pros v5 rm-all")
 
-autons = {"AWP": True, "AWP_PUSH": True, "SKILLS": False}
-
-auton_list = []
-
-for auton in autons:
-    if autons[auton]:
-        auton_list.append([auton, "RED"])
-        auton_list.append([auton, "BLUE"])
-    else:
-        auton_list.append([auton, "RED"])
+autons = ["AWP", "AWP_PUSH", "SKILLS"]
 
 offset = 1
 def getFilePath():
@@ -29,10 +20,12 @@ if len(sys.argv) > 1:
 
     i = int(sys.argv[1])# auton_list.index(list(filter(lambda x: x[0] in sys.argv[1], auton_list))[0])
     f = open("./include/auton.h", "w")
-    f.write("#define AUTON Auton::" + auton_list[i][0] + "\n")
-    f.write("#define ALLIANCE Alliance::" + auton_list[i][1] + "\n")
+    f.write("#pragma once\n")
+    f.write("#include \"autonomous/autons.h\"\n")
+    f.write("#define AUTON Auton::" + autons[i] + "\n")
+    f.write("auto ALLIANCE=RED;\n")
     f.close()
-    command = f"pros mu --slot " + str(i+offset) + " --name \"" + auton_list[i][1][0] + auton_list[i][0] + "\""
+    command = f"pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\""
     print (command)
 
     result = os.system(command)
@@ -41,13 +34,15 @@ if len(sys.argv) > 1:
         os._exit(2)
 
 else:
-    for i in range(len(auton_list)):
+    for i in range(len(autons)):
         f = open("./include/auton.h", "w")
-        f.write("#define AUTON Auton::" + auton_list[i][0] + "\n")
-        f.write("#define ALLIANCE Alliance::" + auton_list[i][1] + "\n")
+        f.write("#pragma once\n")
+        f.write("#include \"autonomous/autons.h\"\n")
+        f.write("#define AUTON Auton::" + autons[i] + "\n")
+        f.write("auto ALLIANCE=RED;\n")
         f.close()
 
-        command = f"pros mu --slot " + str(i+offset) + " --name \"" + auton_list[i][1][0] + auton_list[i][0] + "\""
+        command = f"pros mu --slot " + str(i+offset) + " --name \"" + autons[i] + "\""
         print(command)
 
         result = os.system(command)

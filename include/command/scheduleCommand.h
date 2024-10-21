@@ -1,6 +1,7 @@
 #pragma once
 
 #include "command.h"
+#include "instantCommand.h"
 
 /**
  * @brief This \refitem InstantCommand schedules a \refitem Command on object initialization

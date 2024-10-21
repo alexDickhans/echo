@@ -1,2 +1,4 @@
-#define AUTON Auton::SKILLS
-#define ALLIANCE Alliance::RED
+#pragma once
+#include "autonomous/autons.h"
+#define AUTON Auton::AWP
+auto ALLIANCE=RED;
