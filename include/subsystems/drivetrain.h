@@ -161,6 +161,23 @@ public:
 		return std::move(particleFilter.getParticle(i));
 	}
 
+	void updateAllianceColor(Eigen::Vector3f redPosition) {
+		auto bluePosition = Eigen::Vector3f(redPosition.x(), -redPosition.y(), -redPosition.z());
+
+		particleFilter.updateSensors();
+
+        auto redWeight = particleFilter.weightParticle(redPosition);
+		auto blueWeight = particleFilter.weightParticle(bluePosition);
+
+		std::cout << redWeight << " " << blueWeight << std::endl;
+
+		if (redWeight >= blueWeight) {
+			ALLIANCE = RED;
+		} else {
+			ALLIANCE = BLUE;
+		}
+	}
+
 	RunCommand *tank(pros::Controller &controller) {
 		return new RunCommand([this, controller]() mutable {
 			this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0, controller.get_analog(ANALOG_RIGHT_Y) / 127.0);

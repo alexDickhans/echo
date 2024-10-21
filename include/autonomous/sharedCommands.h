@@ -1,5 +1,7 @@
 #pragma once
 
+#include "subsystems/subsystems.h"
+
 class SharedCommands {
 public:
     static Command *scoreAlliance() {
@@ -47,9 +49,5 @@ public:
                                       hook->positionCommand(0_deg),
                               }))
                                      ->withTimeout(500_ms)});
-    }
-
-    static void updateAllianceColor() {
-        // TODO
     }
 };

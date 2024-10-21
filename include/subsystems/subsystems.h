@@ -118,7 +118,7 @@ inline void subsystemInit() {
     Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
             .onFalse(new InstantCommand(
                     []() mutable {
-                        auto ringColor = topIntake->getRingColor();
+                        const auto ringColor = topIntake->getRingColor();
                         primary.print(0, 0, std::to_string(ringColor).c_str());
                         if (ringColor != ALLIANCE && ringColor != RingColor::None)
                             ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
@@ -127,8 +127,6 @@ inline void subsystemInit() {
                     {}));
 
     Trigger([]() mutable {
-        // std::cout << (std::find(ejectionPoints.begin(), ejectionPoints.end(),
-        // static_cast<int>(std::floor(topIntake->getPosition()))) != std::end(ejectionPoints)) << std::endl;
         return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.45 && intakeOntoGoal->scheduled() &&
                std::find(ejectionPoints.begin(), ejectionPoints.end(),
                          static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
