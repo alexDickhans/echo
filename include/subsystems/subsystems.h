@@ -52,6 +52,7 @@ GpsSensor *gpsSensor;
 
 bool outtakeWallStake = false;
 bool hasRings = false;
+std::vector<int> ejectionPoints{};
 
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(19, 921600));
@@ -114,25 +115,27 @@ inline void subsystemInit() {
             new InstantCommand([&]() { hasRings = false; }, {}),
     });
 
-    std::vector<int> ejectionPoints{};
-
     Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
             .onFalse(new InstantCommand(
-                    [ejectionPoints]() mutable {
+                    []() mutable {
                         auto ringColor = topIntake->getRingColor();
                         primary.print(0, 0, std::to_string(ringColor).c_str());
                         if (ringColor != ALLIANCE && ringColor != RingColor::None)
-                            ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())));
+                            ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
+                        std::cout << ejectionPoints.size() << std::endl;
                     },
                     {}));
 
-    Trigger([ejectionPoints]() {
-        return std::fmod(topIntake->getPosition(), 1.0) > 0.7 && intakeOntoGoal->scheduled() &&
-               std::ranges::find(ejectionPoints,
+    Trigger([]() mutable {
+        // std::cout << (std::find(ejectionPoints.begin(), ejectionPoints.end(),
+        // static_cast<int>(std::floor(topIntake->getPosition()))) != std::end(ejectionPoints)) << std::endl;
+        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.42 && intakeOntoGoal->scheduled() &&
+               std::find(ejectionPoints.begin(), ejectionPoints.end(),
                          static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
     })
             .onTrue((new InstantCommand(
-                             [ejectionPoints]() mutable {
+                             []() mutable {
+                                 std::cout << ejectionPoints.size() << std::endl;
                                  std::erase(ejectionPoints, static_cast<int>(std::floor(topIntake->getPosition())));
                              },
                              {}))

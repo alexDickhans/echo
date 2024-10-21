@@ -27,8 +27,8 @@ Command* autonCommand;
                                        std::to_string(pose.y() * metre.Convert(inch)) + ", " +
                                        std::to_string(pose.z() * radian.Convert(degree)));
 
-        TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," +
-                       std::to_string(pose.z()) + "]]\n");
+        // TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," +
+        //                std::to_string(pose.z()) + "]]\n");
 
         // TELEMETRY.send("[");
         // for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {
