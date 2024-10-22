@@ -50,4 +50,6 @@ public:
                               }))
                                      ->withTimeout(500_ms)});
     }
+
+    static Command *descoreCorner() { return new Sequence({}); }
 };
