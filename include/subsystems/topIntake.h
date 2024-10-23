@@ -9,8 +9,8 @@
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
-inline vex::aivision::colordesc RED_COLOR_DESC(1, 255, 0, 0, 50, 0.61);
-inline vex::aivision::colordesc BLUE_COLOR_DESC(2, 0, 0, 255, 50, 0.61);
+inline vex::aivision::colordesc RED_COLOR_DESC(1, 255, 0, 0, 70, 0.61);
+inline vex::aivision::colordesc BLUE_COLOR_DESC(2, 0, 0, 255, 70, 0.61);
 
 class TopIntake : public Subsystem {
 	pros::Motor intakeMotor;
@@ -46,7 +46,7 @@ public:
 	}
 
 	bool ringPresent() {
-		return intakeDistance.get() < 100;
+		return intakeDistance.get() < 40;
 	}
 
 	RunCommand *stopIntake() {

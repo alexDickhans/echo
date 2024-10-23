@@ -50,4 +50,20 @@ public:
                               }))
                                      ->withTimeout(500_ms)});
     }
+
+    static Command *descoreCorner() {
+        Angle startAngle = drivetrain->getAngle();
+        return new Sequence({
+                new InstantCommand([&startAngle]() { startAngle = drivetrain->getAngle(); }, {}),
+                new ScheduleCommand(hook->positionCommand(0.58)),
+                drivetrain->pct(0.4, 0.4)->withTimeout(0.5_s),
+                new ScheduleCommand(intakeOntoGoal),
+                drivetrain->pct(-0.18, 0.18)->withTimeout(0.5_s),
+                drivetrain->pct(-0.4, 0.25)->until(
+                        [&startAngle]() { return Qabs(angleDifference(drivetrain->getAngle(), startAngle)) > 80_deg; }),
+                new ScheduleCommand(hook->positionCommand(0.0)),
+                drivetrain->pct(-0.3, -0.3)->withTimeout(0.5_s),
+                drivetrain->pct(0.3, 0.3)->withTimeout(2_s),
+        });
+    }
 };

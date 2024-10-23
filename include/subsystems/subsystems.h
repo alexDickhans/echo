@@ -53,6 +53,7 @@ GpsSensor *gpsSensor;
 bool outtakeWallStake = false;
 bool hasRings = false;
 std::vector<int> ejectionPoints{};
+RingColor lastColor;
 
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(19, 921600));
@@ -65,12 +66,9 @@ inline void subsystemInit() {
     hook = new Hook(pros::Motor(-8));
     hang = new Hang(pros::adi::DigitalOut('c'));
 
-    // drivetrain->addLocalizationSensor(new LineSensor(CONFIG::LINE_SENSOR_1_OFFSET, pros::adi::LineSensor('b')));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
-    // drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(),
-    // 						pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())))
 
     drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
@@ -99,12 +97,12 @@ inline void subsystemInit() {
             }),
     });
     loadOneRingHigh = new Sequence({
-            new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(6.0_deg),
+            new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(5.0_deg),
                                    topIntake->positionCommandRwd(-0.1),
                                    new WaitUntilCommand([&]() { return topIntake->ringPresent(); })}),
             new ParallelRaceGroup({
                     bottomIntake->movePct(1.0),
-                    lift->positionCommand(6.0_deg),
+                    lift->positionCommand(5.0_deg),
                     new ParallelCommandGroup({topIntake->moveToPositionRwd(-1.1), new WaitCommand(0.5_s)}),
             }),
     });
@@ -116,24 +114,22 @@ inline void subsystemInit() {
     });
 
     Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
-            .onFalse(new InstantCommand(
+            .onTrue(new InstantCommand([]() { lastColor = topIntake->getRingColor(); }, {}))
+            ->onFalse(new InstantCommand(
                     []() mutable {
-                        const auto ringColor = topIntake->getRingColor();
-                        primary.print(0, 0, std::to_string(ringColor).c_str());
-                        if (ringColor != ALLIANCE && ringColor != RingColor::None)
+                        primary.print(0, 0, std::to_string(lastColor).c_str());
+                        if (lastColor != ALLIANCE && lastColor != RingColor::None)
                             ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
-                        std::cout << ejectionPoints.size() << std::endl;
                     },
                     {}));
 
     Trigger([]() mutable {
-        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.45 && intakeOntoGoal->scheduled() &&
+        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.43 && intakeOntoGoal->scheduled() &&
                std::find(ejectionPoints.begin(), ejectionPoints.end(),
                          static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
     })
             .onTrue((new InstantCommand(
                              []() mutable {
-                                 std::cout << ejectionPoints.size() << std::endl;
                                  std::erase(ejectionPoints, static_cast<int>(std::floor(topIntake->getPosition())));
                              },
                              {}))
@@ -152,27 +148,27 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
     primary.getTrigger(DIGITAL_R1)
-            ->onTrue(new Sequence(
-                    {new InstantCommand([&]() { outtakeWallStake = false; }, {}),
-                     new ParallelRaceGroup({
-                             bottomIntake->movePct(0.0),
-                             lift->moveToPosition(33_deg, 0.3_deg),
-                             topIntake->movePct(0.0),
-                     }),
-                     new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(33_deg),
-                                            topIntake->movePct(0.0),
-                                            new WaitUntilCommand([&]() { return primary.get_digital(DIGITAL_Y); })}),
-                     new InstantCommand(
-                             [&]() {
-                                 outtakeWallStake = true;
-                                 hasRings = false;
-                             },
-                             {}),
-                     new ParallelCommandGroup({
-                             bottomIntake->movePct(0.0),
-                             lift->positionCommand(33_deg),
-                             topIntake->movePct(-1.0),
-                     })}))
+            ->onTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
+                                   new ParallelRaceGroup({
+                                           bottomIntake->movePct(0.0),
+                                           lift->moveToPosition(33_deg, 0.3_deg),
+                                           topIntake->movePct(0.0),
+                                   }),
+                                   new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(33_deg),
+                                                          topIntake->movePct(0.0), new WaitUntilCommand([&]() {
+                                                              return primary.get_digital(DIGITAL_Y);
+                                                          })}),
+                                   new InstantCommand(
+                                           [&]() {
+                                               outtakeWallStake = true;
+                                               hasRings = false;
+                                           },
+                                           {}),
+                                   new ParallelCommandGroup({
+                                           bottomIntake->movePct(0.0),
+                                           lift->positionCommand(33_deg),
+                                           topIntake->movePct(-1.0),
+                                   })}))
             ->onFalse(new ParallelRaceGroup({
                     bottomIntake->movePct(0.0),
                     lift->moveToPosition(0_deg, 10_deg),
@@ -288,18 +284,16 @@ inline void subsystemInit() {
                                                                         lift->positionCommand(33_deg),
                                                                         topIntake->movePct(-1.0),
                                                                 })}));
-    PathCommands::registerCommand("intakeGoal",
-                                  new ParallelCommandGroup({topIntake->movePct(1.0), bottomIntake->movePct(1.0),
-                                                            lift->positionCommand(0.0)}));
+    PathCommands::registerCommand("intakeGoal", intakeOntoGoal);
     PathCommands::registerCommand("stopIntake",
                                   new ParallelCommandGroup({topIntake->moveToPositionFwd(1.1),
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
-    PathCommands::registerCommand("outtake", topIntake->movePct(-1.0)->withTimeout(0.5_s));
-    PathCommands::registerCommand("hang", hang->levelCommand(true)->with(new ScheduleCommand(topIntake->movePct(0.0))));
+    PathCommands::registerCommand("outtake", topIntake->movePct(-1.0)->withTimeout(0.01_s));
+    PathCommands::registerCommand("hang", hang->levelCommand(true)->with(new ScheduleCommand(topIntake->moveToPositionFwd(0.0))));
     PathCommands::registerCommand("indexTwo",
-                                  new ParallelCommandGroup({topIntake->moveToPositionFwd(2.1),
+                                  new ParallelCommandGroup({topIntake->moveToPositionFwd(1.8),
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("dejam",
                                   new ParallelCommandGroup({bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),

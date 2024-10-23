@@ -136,6 +136,8 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+    primary.getTrigger(DIGITAL_DOWN)->whileTrue(SharedCommands::descoreCorner());
+
     if (AUTON == Auton::SKILLS) {
         CommandScheduler::schedule(autonCommand->until([&]() {return primary.get_digital(DIGITAL_A);}));
     }

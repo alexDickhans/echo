@@ -3,6 +3,8 @@
 enum Auton_ {
   AWP,
   AWP_PUSH,
+  POS_ELIM,
+  NEG_ELIM,
   SKILLS,
   NONE
 } typedef Auton;
