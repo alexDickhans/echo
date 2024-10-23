@@ -58,7 +58,7 @@ public:
                              new TankMotionProfiling(drivetrain, {62_in / second, 100_in / second / second}, 17_in,
                                                      false, -45_deg, 0.0, true),
                              (new Rotate(drivetrain, 180_deg, false, 0, true))->withTimeout(1.0_s),
-                             new TankMotionProfiling(drivetrain, {28_in / second, 50_in / second / second}, -24_in,
+                             new TankMotionProfiling(drivetrain, {28_in / second, 50_in / second / second}, -26_in,
                                                      false, 180_deg, 0.0, true),
                              new ScheduleCommand(goalClampTrue),
                              new Ramsete(drivetrain, &skills_4),
