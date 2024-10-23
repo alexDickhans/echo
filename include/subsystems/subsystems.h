@@ -291,16 +291,12 @@ inline void subsystemInit() {
     PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
     PathCommands::registerCommand("outtake", topIntake->movePct(-1.0)->withTimeout(0.01_s));
-    PathCommands::registerCommand("hang", hang->levelCommand(true)->with(new ScheduleCommand(topIntake->movePct(0.0))));
+    PathCommands::registerCommand("hang", hang->levelCommand(true)->with(new ScheduleCommand(topIntake->moveToPositionFwd(0.0))));
     PathCommands::registerCommand("indexTwo",
                                   new ParallelCommandGroup({topIntake->moveToPositionFwd(1.8),
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("dejam",
                                   new ParallelCommandGroup({bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
                                                             topIntake->movePct(-1.0)}));
-    PathCommands::registerCommand("dejam2",
-                                  (new ParallelCommandGroup({bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
-                                                             topIntake->movePct(-1.0)}))
-                                          ->withTimeout(0.5_s));
     PathCommands::registerCommand("awpLiftUp", lift->positionCommand(30_deg)->with(topIntake->movePct(-0.3)));
 }
