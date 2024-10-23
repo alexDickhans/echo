@@ -65,12 +65,9 @@ inline void subsystemInit() {
     hook = new Hook(pros::Motor(-8));
     hang = new Hang(pros::adi::DigitalOut('c'));
 
-    // drivetrain->addLocalizationSensor(new LineSensor(CONFIG::LINE_SENSOR_1_OFFSET, pros::adi::LineSensor('b')));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
-    // drivetrain->addLocalizationSensor(new GpsSensor(CONFIG::GPS_OFFSET.z(),
-    // 						pros::Gps(12, -CONFIG::GPS_OFFSET.y(), CONFIG::GPS_OFFSET.x())))
 
     drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
@@ -122,18 +119,16 @@ inline void subsystemInit() {
                         primary.print(0, 0, std::to_string(ringColor).c_str());
                         if (ringColor != ALLIANCE && ringColor != RingColor::None)
                             ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
-                        std::cout << ejectionPoints.size() << std::endl;
                     },
                     {}));
 
     Trigger([]() mutable {
-        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.45 && intakeOntoGoal->scheduled() &&
+        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.43 && intakeOntoGoal->scheduled() &&
                std::find(ejectionPoints.begin(), ejectionPoints.end(),
                          static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
     })
             .onTrue((new InstantCommand(
                              []() mutable {
-                                 std::cout << ejectionPoints.size() << std::endl;
                                  std::erase(ejectionPoints, static_cast<int>(std::floor(topIntake->getPosition())));
                              },
                              {}))
