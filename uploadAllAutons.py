@@ -8,7 +8,7 @@ import time
 
 # os.system("pros v5 rm-all")
 
-autons = ["AWP", "AWP_PUSH", "SKILLS"]
+autons = ["AWP", "AWP_PUSH", "POS_ELIM", "NEG_ELIM", "SKILLS"]
 
 offset = 1
 def getFilePath():

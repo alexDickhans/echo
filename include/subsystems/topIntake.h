@@ -46,7 +46,7 @@ public:
 	}
 
 	bool ringPresent() {
-		return intakeDistance.get() < 100;
+		return intakeDistance.get() < 40;
 	}
 
 	RunCommand *stopIntake() {

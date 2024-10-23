@@ -24,9 +24,8 @@ public:
                 (new Rotate(drivetrain, -90_deg, flip, -2000, false))->withTimeout(1.0_s),
                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 5_in, flip, -90_deg,
                                         0.0),
-                (new Rotate(drivetrain, 0_deg, flip, 0.0))->withTimeout(0.8_s),
+                (new Rotate(drivetrain, 180_deg, flip, 0.0))->withTimeout(0.8_s),
                 new Ramsete(drivetrain, flip ? &positive_1_blue : &positive_1_red),
-                SharedCommands::descoreCorner()
         });
     }
 
@@ -51,7 +50,6 @@ public:
                                         0.0),
                 (new Rotate(drivetrain, 0_deg, flip, 0.0))->withTimeout(0.8_s),
                 new Ramsete(drivetrain, flip ? &negative_1_blue : &safe_awp_2_red),
-                SharedCommands::descoreCorner()
         });
     }
 };
