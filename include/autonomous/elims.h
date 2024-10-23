@@ -49,7 +49,7 @@ public:
                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 5_in, flip, -90_deg,
                                         0.0),
                 (new Rotate(drivetrain, 0_deg, flip, 0.0))->withTimeout(0.8_s),
-                new Ramsete(drivetrain, flip ? &negative_1_blue : &safe_awp_2_red),
+                new Ramsete(drivetrain, flip ? &negative_1_blue : &negative_1_red),
         });
     }
 };
