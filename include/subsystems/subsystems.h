@@ -97,12 +97,12 @@ inline void subsystemInit() {
             }),
     });
     loadOneRingHigh = new Sequence({
-            new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(6.0_deg),
+            new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(5.0_deg),
                                    topIntake->positionCommandRwd(-0.1),
                                    new WaitUntilCommand([&]() { return topIntake->ringPresent(); })}),
             new ParallelRaceGroup({
                     bottomIntake->movePct(1.0),
-                    lift->positionCommand(6.0_deg),
+                    lift->positionCommand(5.0_deg),
                     new ParallelCommandGroup({topIntake->moveToPositionRwd(-1.1), new WaitCommand(0.5_s)}),
             }),
     });
@@ -290,13 +290,17 @@ inline void subsystemInit() {
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
-    PathCommands::registerCommand("outtake", topIntake->movePct(-1.0)->withTimeout(0.5_s));
+    PathCommands::registerCommand("outtake", topIntake->movePct(-1.0)->withTimeout(0.01_s));
     PathCommands::registerCommand("hang", hang->levelCommand(true)->with(new ScheduleCommand(topIntake->movePct(0.0))));
     PathCommands::registerCommand("indexTwo",
-                                  new ParallelCommandGroup({topIntake->moveToPositionFwd(2.1),
+                                  new ParallelCommandGroup({topIntake->moveToPositionFwd(1.8),
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("dejam",
                                   new ParallelCommandGroup({bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
                                                             topIntake->movePct(-1.0)}));
+    PathCommands::registerCommand("dejam2",
+                                  (new ParallelCommandGroup({bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
+                                                             topIntake->movePct(-1.0)}))
+                                          ->withTimeout(0.5_s));
     PathCommands::registerCommand("awpLiftUp", lift->positionCommand(30_deg)->with(topIntake->movePct(-0.3)));
 }
