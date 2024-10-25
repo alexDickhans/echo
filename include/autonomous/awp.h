@@ -12,7 +12,7 @@ public:
         const bool flip = ALLIANCE != RED;
 
         return new Sequence({
-                drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.2, startPose.z(), flip),
+                drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
                 new ScheduleCommand(bottomIntake->movePct(0.0)->with(topIntake->movePct(0.0))),
                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 12_in, flip, -180_deg,
                                         0.0),
@@ -37,7 +37,7 @@ public:
       const bool flip = ALLIANCE != RED;
 
       return new Sequence({
-              drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.2, startPose.z(), flip),
+              drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
                 new ScheduleCommand(bottomIntake->movePct(0.0)->with(topIntake->movePct(0.0))),
                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 12_in, flip, -180_deg,
                                         0.0),
