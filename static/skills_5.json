@@ -206,7 +206,7 @@
         }
       ],
       "constraints": {
-        "velocity": 0.575,
+        "velocity": 0.475,
         "accel": 3.048
       }
     },
@@ -269,7 +269,7 @@
       "name": "intakeGoal"
     },
     {
-      "t": 8.73,
+      "t": 8.7,
       "name": "declamp"
     },
     {

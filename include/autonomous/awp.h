@@ -12,7 +12,7 @@ public:
         const bool flip = ALLIANCE != RED;
 
         return new Sequence({
-                drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.2, startPose.z(), flip),
+                drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
                 new ScheduleCommand(bottomIntake->movePct(0.0)->with(topIntake->movePct(0.0))),
                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 12_in, flip, -180_deg,
                                         0.0),
@@ -37,13 +37,13 @@ public:
       const bool flip = ALLIANCE != RED;
 
       return new Sequence({
-              drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.2, startPose.z(), flip),
+              drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
                 new ScheduleCommand(bottomIntake->movePct(0.0)->with(topIntake->movePct(0.0))),
                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 12_in, flip, -180_deg,
                                         0.0),
                 (new Rotate(drivetrain, -90_deg, flip, 0.0))->withTimeout(1.2_s),
                 new ScheduleCommand(bottomIntake->movePct(-1.0)),
-                new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, -8_in, flip, -90_deg,
+                new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, -4_in, flip, -90_deg,
                                         0.0),
                 new ScheduleCommand(SharedCommands::scoreAlliance()),
                 (new Rotate(drivetrain, -90_deg, flip, -2000, false))->withTimeout(1.0_s),
