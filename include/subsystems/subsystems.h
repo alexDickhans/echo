@@ -179,7 +179,7 @@ inline void subsystemInit() {
     primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
     primary.getTrigger(DIGITAL_LEFT)->toggleOnTrue(hang->levelCommand(true));
     primary.getTrigger(DIGITAL_UP)
-            ->whileTrue((new ScheduleCommand(hang->levelCommand(true)))
+            ->whileTrue((new ScheduleCommand(hang->levelCommand(true)->with(goalClamp->levelCommand(false))))
                                 ->with(drivetrain->velocityCommand(37_in / second, 37_in / second)
                                                ->until([]() { return Qabs(drivetrain->getRoll()) > 8_deg; })
                                                ->andThen((drivetrain->pct(-1.0, -1.0)
@@ -290,8 +290,7 @@ inline void subsystemInit() {
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
-    PathCommands::registerCommand("outtake", topIntake->movePct(-1.0)->withTimeout(0.01_s));
-    PathCommands::registerCommand("hang", hang->levelCommand(true)->with(new ScheduleCommand(topIntake->moveToPositionFwd(0.0))));
+    PathCommands::registerCommand("hang", new ParallelCommandGroup({hang->levelCommand(true), new ScheduleCommand(topIntake->moveToPositionFwd(0.0)), lift->positionCommand(0.0_deg)}));
     PathCommands::registerCommand("indexTwo",
                                   new ParallelCommandGroup({topIntake->moveToPositionFwd(1.8),
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
