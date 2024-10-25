@@ -76,7 +76,7 @@
         }
       ],
       "constraints": {
-        "velocity": 0.925,
+        "velocity": 0.75,
         "accel": 3.048
       }
     },
@@ -109,7 +109,7 @@
   ],
   "commands": [
     {
-      "t": 0.0,
+      "t": 0.4,
       "name": "intakeGoal"
     },
     {

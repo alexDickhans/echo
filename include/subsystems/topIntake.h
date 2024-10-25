@@ -77,6 +77,14 @@ public:
 			}, [this]() { return false; }, {this});
 	}
 
+	FunctionalCommand *positionCommandClose(double position) {
+		return new FunctionalCommand(
+			[this, position]() mutable {
+				this->setPosition(std::round(this->getPosition()) + position);
+			}, [this]() {  }, [](bool _) {
+			}, [this]() { return false; }, {this});
+	}
+
 	FunctionalCommand *moveToPositionFwd(double position) {
 		return new FunctionalCommand(
 			[this, position]() mutable {
