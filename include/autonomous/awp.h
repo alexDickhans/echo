@@ -43,7 +43,7 @@ public:
                                         0.0),
                 (new Rotate(drivetrain, -90_deg, flip, 0.0))->withTimeout(1.2_s),
                 new ScheduleCommand(bottomIntake->movePct(-1.0)),
-                new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, -8_in, flip, -90_deg,
+                new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, -4_in, flip, -90_deg,
                                         0.0),
                 new ScheduleCommand(SharedCommands::scoreAlliance()),
                 (new Rotate(drivetrain, -90_deg, flip, -2000, false))->withTimeout(1.0_s),
