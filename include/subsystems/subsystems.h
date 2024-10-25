@@ -152,7 +152,7 @@ inline void subsystemInit() {
                                    new ParallelRaceGroup({
                                            bottomIntake->movePct(0.0),
                                            lift->moveToPosition(33_deg, 0.3_deg),
-                                           topIntake->movePct(0.0),
+                                           topIntake->positionCommandClose(-0.1),
                                    }),
                                    new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(33_deg),
                                                           topIntake->movePct(0.0), new WaitUntilCommand([&]() {
@@ -261,7 +261,7 @@ inline void subsystemInit() {
     PathCommands::registerCommand("liftArm", new ParallelRaceGroup({
                                                      bottomIntake->movePct(0.0),
                                                      lift->positionCommand(33_deg),
-                                                     topIntake->movePct(0.0),
+                                                     topIntake->positionCommandClose(-0.1),
                                              }));
     PathCommands::registerCommand(
             "intakeAllianceStakes",
@@ -295,7 +295,7 @@ inline void subsystemInit() {
             new ParallelCommandGroup({hang->levelCommand(true), new ScheduleCommand(topIntake->moveToPositionFwd(0.0)),
                                       lift->positionCommand(0.0_deg)}));
     PathCommands::registerCommand("indexTwo",
-                                  new ParallelCommandGroup({topIntake->moveToPositionFwd(1.8),
+                                  new ParallelCommandGroup({topIntake->moveToPositionFwd(1.7),
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("dejam",
                                   new ParallelCommandGroup({bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
