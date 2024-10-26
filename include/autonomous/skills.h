@@ -83,7 +83,7 @@ public:
                                                     ->asProxy()),
                              new Ramsete(drivetrain, &skills_5),
                              (new ScheduleCommand(hang->levelCommand(true)))
-                                     ->with(drivetrain->velocityCommand(37_in / second, 37_in / second)
+                                     ->with(drivetrain->velocityCommand(39_in / second, 39_in / second)
                                                     ->until([]() { return Qabs(drivetrain->getRoll()) > 8_deg; })
                                                     ->andThen((drivetrain->pct(-1.0, -1.0)
                                                                        ->with(hook->pctCommand(1.0)->asProxy())

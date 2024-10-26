@@ -180,7 +180,7 @@ inline void subsystemInit() {
     primary.getTrigger(DIGITAL_LEFT)->toggleOnTrue(hang->levelCommand(true));
     primary.getTrigger(DIGITAL_UP)
             ->whileTrue((new ScheduleCommand(hang->levelCommand(true)->with(goalClamp->levelCommand(false))))
-                                ->with(drivetrain->velocityCommand(37_in / second, 37_in / second)
+                                ->with(drivetrain->velocityCommand(39_in / second, 39_in / second)
                                                ->until([]() { return Qabs(drivetrain->getRoll()) > 8_deg; })
                                                ->andThen((drivetrain->pct(-1.0, -1.0)
                                                                   ->with(hook->pctCommand(1.0))
