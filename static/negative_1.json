@@ -183,32 +183,6 @@
         "velocity": 1.651,
         "accel": 3.048
       }
-    },
-    {
-      "inverted": true,
-      "stop_end": false,
-      "path": [
-        {
-          "x": 1.358,
-          "y": 0.248
-        },
-        {
-          "x": 1.346,
-          "y": 0.354
-        },
-        {
-          "x": 1.367,
-          "y": 0.761
-        },
-        {
-          "x": 1.275,
-          "y": 0.911
-        }
-      ],
-      "constraints": {
-        "velocity": 1.651,
-        "accel": 3.048
-      }
     }
   ],
   "commands": [
@@ -217,7 +191,7 @@
       "name": "clamp"
     },
     {
-      "t": 2.043,
+      "t": 2.296,
       "name": "intakeGoal"
     }
   ]
