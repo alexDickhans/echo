@@ -133,7 +133,7 @@ inline void subsystemInit() {
                                  std::erase(ejectionPoints, static_cast<int>(std::floor(topIntake->getPosition())));
                              },
                              {}))
-                            ->andThen(topIntake->movePct(-1.0)->withTimeout(0.1_s)->andThen(
+                            ->andThen(topIntake->movePct(-1.0)->withTimeout(0.05_s)->andThen(
                                     new ScheduleCommand(intakeOntoGoal))));
 
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcade(primary));
@@ -263,6 +263,11 @@ inline void subsystemInit() {
                                                      lift->positionCommand(33_deg),
                                                      topIntake->positionCommandClose(-0.1),
                                              }));
+    PathCommands::registerCommand("liftArm2", new ParallelRaceGroup({
+                                                      bottomIntake->movePct(0.0),
+                                                      lift->positionCommand(33_deg),
+                                                      topIntake->movePct(0.0),
+                                              }));
     PathCommands::registerCommand(
             "intakeAllianceStakes",
             new Sequence({loadOneRingLow,
@@ -301,7 +306,7 @@ inline void subsystemInit() {
                                   new ParallelCommandGroup({bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
                                                             topIntake->movePct(-1.0)}));
     PathCommands::registerCommand("dejam2",
-                                  new ParallelCommandGroup({bottomIntake->movePct(-0.8), lift->positionCommand(7.0_deg),
+                                  new ParallelCommandGroup({bottomIntake->movePct(-1.0), lift->positionCommand(7.0_deg),
                                                             topIntake->movePct(0.0)}));
     PathCommands::registerCommand("awpLiftUp", lift->positionCommand(30_deg)->with(topIntake->movePct(-0.3)));
 }

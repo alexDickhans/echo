@@ -9,8 +9,8 @@
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
-inline vex::aivision::colordesc RED_COLOR_DESC(1, 255, 0, 0, 70, 0.61);
-inline vex::aivision::colordesc BLUE_COLOR_DESC(2, 0, 0, 255, 70, 0.61);
+inline vex::aivision::colordesc RED_COLOR_DESC(1, 243, 104, 122, 17, 0.2);
+inline vex::aivision::colordesc BLUE_COLOR_DESC(2, 92, 229, 247, 20, 0.2);
 
 class TopIntake : public Subsystem {
 	pros::Motor intakeMotor;
@@ -23,6 +23,7 @@ public:
 		intakeMotor.set_encoder_units(pros::MotorEncoderUnits::rotations);
 		intakeMotor.set_gearing(pros::MotorGears::green);
 		vision.colorDetection(true, true);
+		vision.startAwb();
 	}
 
 	void periodic() override {
