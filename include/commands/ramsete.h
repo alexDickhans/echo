@@ -6,6 +6,9 @@
 #include "units/units.hpp"
 #include "utils/utils.h"
 
+/**
+ * Class to follow motion profiled paths
+ */
 class Ramsete : public Command {
 private:
     Drivetrain *drivetrain;

@@ -5,6 +5,9 @@
 #include "command/command.h"
 #include <iostream>
 
+/**
+* This code is designed to use the AI vision sensor to track and grab the goal
+*/
 class DriveToGoal : public Command {
 private:
 	Drivetrain *drivetrain;

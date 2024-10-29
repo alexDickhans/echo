@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <utility>
 
 #include "command/command.h"
@@ -8,6 +7,9 @@
 #include "subsystems/drivetrain.h"
 #include "velocityProfile/trapezoidalVelocityProfile.hpp"
 
+/**
+* 1D Motion Profiled movements for moving straight lines and simple arcs
+*/
 class TankMotionProfiling : public Command {
 private:
     Drivetrain *drivetrain;

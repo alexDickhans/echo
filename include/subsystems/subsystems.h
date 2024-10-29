@@ -118,8 +118,6 @@ inline void subsystemInit() {
                             ->andThen(new InstantCommand(
                                     []() {
                                         lastColor = topIntake->getRingColor();
-                                            std::cout << lastColor << " " << pros::millis() << std::endl;
-                                        primary.print(0, 0, (std::to_string(lastColor) + " " + std::to_string(pros::millis())).c_str());
                                     },
                                     {})))
             ->onFalse(new InstantCommand(

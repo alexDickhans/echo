@@ -4,8 +4,6 @@
 #include "command/command.h"
 #include "command/runCommand.h"
 
-
-
 class BottomIntake : public Subsystem {
     pros::Motor intakeMotor;
 

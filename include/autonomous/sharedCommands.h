@@ -2,8 +2,16 @@
 
 #include "subsystems/subsystems.h"
 
+/**
+ * Commands that are shared between multiple skills or auton routines
+ */
 class SharedCommands {
 public:
+    /**
+     * Build command to score on alliance stakes
+     *
+     * @return Command that scores on alliance
+     */
     static Command *scoreAlliance() {
         return new Sequence({new ParallelRaceGroup({
                                      bottomIntake->movePct(0.0),
@@ -28,6 +36,12 @@ public:
     }
 
 
+    /**
+     * Build command to score on alliance stakes, but throw the ring
+     * slightly less
+     *
+     * @return Command that scores on alliance
+     */
     static Command *scoreAlliance2() {
         return new Sequence({new ParallelRaceGroup({
                                      bottomIntake->movePct(0.0),
@@ -51,6 +65,11 @@ public:
                                      ->withTimeout(500_ms)});
     }
 
+    /**
+     * Command to get rings out of the corner
+     *
+     * @return Command that removes rings from the corner
+     */
     static Command *descoreCorner() {
         Angle startAngle = drivetrain->getAngle();
         return new Sequence({
@@ -59,8 +78,9 @@ public:
                 drivetrain->pct(0.4, 0.4)->withTimeout(0.5_s),
                 new ScheduleCommand(intakeOntoGoal),
                 drivetrain->pct(-0.18, 0.18)->withTimeout(0.5_s),
-                drivetrain->pct(-0.4, 0.25)->until(
-                        [&startAngle]() { return Qabs(angleDifference(drivetrain->getAngle(), startAngle)) > 80_deg; }),
+                drivetrain->pct(-0.4, 0.25)->until([&startAngle]() {
+                    return Qabs(angleDifference(drivetrain->getAngle(), startAngle)) > 80_deg;
+                }),
                 new ScheduleCommand(hook->positionCommand(0.0)),
                 drivetrain->pct(-0.3, -0.3)->withTimeout(0.5_s),
                 drivetrain->pct(0.3, 0.3)->withTimeout(2_s),

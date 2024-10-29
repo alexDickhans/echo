@@ -3,10 +3,18 @@
 BEZIER_MIRRORED_MP_ASSET(positive_1);
 BEZIER_MIRRORED_MP_ASSET(negative_1);
 
+/**
+ * Define elim autons
+ */
 class Elims {
 public:
+    /**
+     * Positive corner eliminations auton
+     *
+     * @return Command for auton
+     */
     static Command *pos_elim() {
-      Eigen::Vector3f startPose{(-12_in).getValue(), (60_in).getValue(), (0_deg).getValue()};
+        Eigen::Vector3f startPose{(-12_in).getValue(), (60_in).getValue(), (0_deg).getValue()};
 
         drivetrain->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
@@ -29,14 +37,19 @@ public:
         });
     }
 
-  static Command *neg_elim() {
-      Eigen::Vector3f startPose{(12_in).getValue(), (60_in).getValue(), (-180_deg).getValue()};
+    /**
+     * Negative corner eliminations auton
+     *
+     * @return Command for auton
+     */
+    static Command *neg_elim() {
+        Eigen::Vector3f startPose{(12_in).getValue(), (60_in).getValue(), (-180_deg).getValue()};
 
-      drivetrain->updateAllianceColor(startPose);
-      const bool flip = ALLIANCE != RED;
+        drivetrain->updateAllianceColor(startPose);
+        const bool flip = ALLIANCE != RED;
 
-      return new Sequence({
-              drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
+        return new Sequence({
+                drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
                 new ScheduleCommand(bottomIntake->movePct(0.0)->with(topIntake->movePct(0.0))),
                 new TankMotionProfiling(drivetrain, {62_in / second, 100_in / second / second}, 12_in, flip, -180_deg,
                                         0.0),

@@ -3,10 +3,18 @@
 BEZIER_MIRRORED_MP_ASSET(safe_awp_1);
 BEZIER_MIRRORED_MP_ASSET(safe_awp_2);
 
+/**
+ * Defines AWP autons
+ */
 class AWP {
 public:
+    /**
+     * Non-push AWP
+     *
+     * @return Command for AWP auton
+     */
     static Command *awp() {
-      Eigen::Vector3f startPose{(12_in).getValue(), (60_in).getValue(), (-180_deg).getValue()};
+        Eigen::Vector3f startPose{(12_in).getValue(), (60_in).getValue(), (-180_deg).getValue()};
 
         drivetrain->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
@@ -30,14 +38,18 @@ public:
         });
     }
 
-  static Command *push_awp() {
-      Eigen::Vector3f startPose{(12_in).getValue(), (60_in).getValue(), (-180_deg).getValue()};
+    /**
+     * Adds a push to the same AWP
+     * @return Command for auton
+     */
+    static Command *push_awp() {
+        Eigen::Vector3f startPose{(12_in).getValue(), (60_in).getValue(), (-180_deg).getValue()};
 
-      drivetrain->updateAllianceColor(startPose);
-      const bool flip = ALLIANCE != RED;
+        drivetrain->updateAllianceColor(startPose);
+        const bool flip = ALLIANCE != RED;
 
-      return new Sequence({
-              drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
+        return new Sequence({
+                drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
                 new ScheduleCommand(bottomIntake->movePct(0.0)->with(topIntake->movePct(0.0))),
                 new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 12_in, flip, -180_deg,
                                         0.0),

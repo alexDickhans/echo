@@ -5,6 +5,9 @@
 #include "command/command.h"
 #include <iostream>
 
+/**
+ * Turn on point code
+ */
 class Rotate : public Command {
 private:
 	Drivetrain *drivetrain;
