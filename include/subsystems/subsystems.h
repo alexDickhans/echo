@@ -114,17 +114,23 @@ inline void subsystemInit() {
     });
 
     Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
-            .onTrue(new InstantCommand([]() { lastColor = topIntake->getRingColor(); }, {}))
+            .onTrue((new WaitCommand(70_ms))
+                            ->andThen(new InstantCommand(
+                                    []() {
+                                        lastColor = topIntake->getRingColor();
+                                            std::cout << lastColor << " " << pros::millis() << std::endl;
+                                        primary.print(0, 0, (std::to_string(lastColor) + " " + std::to_string(pros::millis())).c_str());
+                                    },
+                                    {})))
             ->onFalse(new InstantCommand(
                     []() mutable {
-                        primary.print(0, 0, std::to_string(lastColor).c_str());
                         if (lastColor != ALLIANCE && lastColor != RingColor::None)
                             ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
                     },
                     {}));
 
     Trigger([]() mutable {
-        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.43 && intakeOntoGoal->scheduled() &&
+        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.38 && intakeOntoGoal->scheduled() &&
                std::find(ejectionPoints.begin(), ejectionPoints.end(),
                          static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
     })
@@ -133,7 +139,7 @@ inline void subsystemInit() {
                                  std::erase(ejectionPoints, static_cast<int>(std::floor(topIntake->getPosition())));
                              },
                              {}))
-                            ->andThen(topIntake->movePct(-1.0)->withTimeout(0.05_s)->andThen(
+                            ->andThen(topIntake->movePct(-1.0)->withTimeout(0.07_s)->andThen(
                                     new ScheduleCommand(intakeOntoGoal))));
 
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcade(primary));

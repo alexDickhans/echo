@@ -22,7 +22,7 @@ public:
 		: intakeMotor(std::move(intake_motor)), vision(12, RED_COLOR_DESC, BLUE_COLOR_DESC), intakeDistance(std::move(intakeDistance)) {
 		intakeMotor.set_encoder_units(pros::MotorEncoderUnits::rotations);
 		intakeMotor.set_gearing(pros::MotorGears::green);
-		vision.colorDetection(true, true);
+		vision.colorDetection(true, false);
 		vision.startAwb();
 	}
 
@@ -103,9 +103,9 @@ public:
 	}
 
 	RingColor getRingColor() {
-		vision.takeSnapshot(vex::aivision::ALL_COLORS);
-
-		return static_cast<RingColor>(vision.largestObject.id);
+		if (vision.takeSnapshot(vex::aivision::ALL_COLORS))
+			return static_cast<RingColor>(vision.largestObject.id);
+		return RingColor::None;
 	}
 
 	~TopIntake() override = default;
