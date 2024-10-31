@@ -7,6 +7,9 @@
 #include "awp.h"
 #include "elims.h"
 
+/**
+ * Allows easy selection of autonomous routines given a AUTON object, called on initialization to build states
+ */
 class AutonomousCommands {
 public:
     static Command *getAuton() {

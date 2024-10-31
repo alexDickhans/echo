@@ -1,5 +1,8 @@
 #pragma once
 
+/**
+ * Elim to define different auton routines
+ */
 enum Auton_ {
   AWP,
   AWP_PUSH,
@@ -9,6 +12,9 @@ enum Auton_ {
   NONE
 } typedef Auton;
 
+/**
+ * Defines which alliance we are on
+ */
 enum Alliance_ {
   RED = 1,
   BLUE = 2
