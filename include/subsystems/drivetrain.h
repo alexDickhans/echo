@@ -184,10 +184,10 @@ public:
 		}, {this});
 	}
 
-	RunCommand *arcade(pros::Controller &controller) {
-		return new RunCommand([this, controller]() mutable {
-			this->setPct((controller.get_analog(ANALOG_LEFT_Y) + controller.get_analog(ANALOG_RIGHT_X)) / 127.0,
-			             (controller.get_analog(ANALOG_LEFT_Y) - controller.get_analog(ANALOG_RIGHT_X)) / 127.0);
+	RunCommand *arcade(pros::Controller &controller, float pct = 1.0, float turnSensitivity = 1.0) {
+		return new RunCommand([this, controller, pct, turnSensitivity]() mutable {
+			this->setPct((controller.get_analog(ANALOG_LEFT_Y) + controller.get_analog(ANALOG_RIGHT_X) * turnSensitivity) * pct / 127.0,
+			             (controller.get_analog(ANALOG_LEFT_Y) - controller.get_analog(ANALOG_RIGHT_X) * turnSensitivity) * pct / 127.0);
 		}, {this});
 	}
 

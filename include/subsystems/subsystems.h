@@ -72,7 +72,7 @@ inline void subsystemInit() {
 
     drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
-    CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
+    CommandScheduler::registerSubsystem(drivetrain, drivetrain->arcade(primary));
     CommandScheduler::registerSubsystem(topIntake, new ConditionalCommand(topIntake->stopIntake(),
                                                                           topIntake->positionCommandFwd(0.0),
                                                                           [&]() { return hasRings; }));
@@ -113,153 +113,8 @@ inline void subsystemInit() {
             new InstantCommand([&]() { hasRings = false; }, {}),
     });
 
-    Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
-            .onTrue((new WaitCommand(70_ms))
-                            ->andThen(new InstantCommand(
-                                    []() {
-                                        lastColor = topIntake->getRingColor();
-                                    },
-                                    {})))
-            ->onFalse(new InstantCommand(
-                    []() mutable {
-                        if (lastColor != ALLIANCE && lastColor != RingColor::None)
-                            ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
-                    },
-                    {}));
-
-    Trigger([]() mutable {
-        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.38 && intakeOntoGoal->scheduled() &&
-               std::find(ejectionPoints.begin(), ejectionPoints.end(),
-                         static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
-    })
-            .onTrue((new InstantCommand(
-                             []() mutable {
-                                 std::erase(ejectionPoints, static_cast<int>(std::floor(topIntake->getPosition())));
-                             },
-                             {}))
-                            ->andThen(topIntake->movePct(-1.0)->withTimeout(0.07_s)->andThen(
-                                    new ScheduleCommand(intakeOntoGoal))));
-
-    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcade(primary));
-
-    primary.getTrigger(DIGITAL_L1)
-            ->toggleOnTrue(new Sequence({new InstantCommand([&]() { hasRings = true; }, {}),
-                                         new Sequence({loadOneRingHigh, loadOneRingHigh})}));
-
-    primary.getTrigger(DIGITAL_L2)
-            ->toggleOnTrue(new Sequence(
-                    {new InstantCommand([&]() { hasRings = false; }, {}), loadOneRingLow, loadOneRingLow}));
-
-    primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
-    primary.getTrigger(DIGITAL_R1)
-            ->onTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
-                                   new ParallelRaceGroup({
-                                           bottomIntake->movePct(0.0),
-                                           lift->moveToPosition(33_deg, 0.3_deg),
-                                           topIntake->positionCommandClose(-0.1),
-                                   }),
-                                   new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(33_deg),
-                                                          topIntake->movePct(0.0), new WaitUntilCommand([&]() {
-                                                              return primary.get_digital(DIGITAL_Y);
-                                                          })}),
-                                   new InstantCommand(
-                                           [&]() {
-                                               outtakeWallStake = true;
-                                               hasRings = false;
-                                           },
-                                           {}),
-                                   new ParallelCommandGroup({
-                                           bottomIntake->movePct(0.0),
-                                           lift->positionCommand(33_deg),
-                                           topIntake->movePct(-1.0),
-                                   })}))
-            ->onFalse(new ParallelRaceGroup({
-                    bottomIntake->movePct(0.0),
-                    lift->moveToPosition(0_deg, 10_deg),
-                    new ConditionalCommand(topIntake->movePct(1.0), topIntake->movePct(0.0),
-                                           [&]() { return outtakeWallStake; }),
-            }));
-
-    primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
-    primary.getTrigger(DIGITAL_LEFT)->toggleOnTrue(hang->levelCommand(true));
-    primary.getTrigger(DIGITAL_UP)
-            ->whileTrue((new ScheduleCommand(hang->levelCommand(true)->with(goalClamp->levelCommand(false))))
-                                ->with(drivetrain->velocityCommand(39_in / second, 39_in / second)
-                                               ->until([]() { return Qabs(drivetrain->getRoll()) > 8_deg; })
-                                               ->andThen((drivetrain->pct(-1.0, -1.0)
-                                                                  ->with(hook->pctCommand(1.0))
-                                                                  ->withTimeout(300_ms)
-                                                                  ->andThen(drivetrain->pct(1.0, 1.0)
-                                                                                    ->with(hook->pctCommand(-1.0))
-                                                                                    ->withTimeout(300_ms)))
-                                                                 ->repeatedly()
-                                                                 ->until([]() {
-                                                                     return Qabs(drivetrain->getRoll()) < 5_deg;
-                                                                 }))));
-
-    partner.getTrigger(DIGITAL_A)->whileTrue(
-            new ParallelCommandGroup({new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8),
-                                      lift->positionCommand(8.0_deg), topIntake->movePct(-1.0)}));
-
-    partner.getTrigger(DIGITAL_RIGHT)->onTrue(new InstantCommand([]() { ALLIANCE = RED; }, {}));
-    partner.getTrigger(DIGITAL_LEFT)->onTrue(new InstantCommand([]() { ALLIANCE = BLUE; }, {}));
-
-    partner.getTrigger(DIGITAL_DOWN)->whileTrue(hook->positionCommand(0.58));
-    partner.getTrigger(DIGITAL_UP)->whileTrue(lift->controller(&partner));
-    Trigger([&]() { return abs(partner.get_analog(ANALOG_RIGHT_Y)) > 15; }, CommandScheduler::getTeleopEventLoop())
-            .whileTrue(topIntake->controller(&partner));
-    partner.getTrigger(DIGITAL_X)->whileTrue(bottomIntake->movePct(1.0));
-    partner.getTrigger(DIGITAL_B)->whileTrue(bottomIntake->movePct(-1.0));
-    partner.getTrigger(DIGITAL_Y)
-            ->onTrue(new ParallelCommandGroup({
-                    bottomIntake->movePct(0.0),
-                    lift->positionCommand(7_deg),
-                    topIntake->movePct(0.0),
-            }))
-            ->onFalse((new ParallelCommandGroup({
-                               bottomIntake->movePct(0.0),
-                               lift->positionCommand(0_deg),
-                               topIntake->movePct(1.0),
-                       }))
-                              ->withTimeout(500_ms));
-
-    partner.getTrigger(DIGITAL_L1)
-            ->toggleOnTrue(new Sequence({new InstantCommand([&]() { hasRings = true; }, {}),
-                                         new Sequence({loadOneRingHigh, loadOneRingHigh})}));
-
-    partner.getTrigger(DIGITAL_L2)
-            ->toggleOnTrue(new Sequence(
-                    {new InstantCommand([&]() { hasRings = false; }, {}), loadOneRingLow, loadOneRingLow}));
-
-    partner.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
-    partner.getTrigger(DIGITAL_R1)
-            ->onTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
-                                   new ParallelRaceGroup({
-                                           bottomIntake->movePct(0.0),
-                                           lift->moveToPosition(33_deg, 0.3_deg),
-                                           topIntake->movePct(0.0),
-                                   }),
-                                   new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(33_deg),
-                                                          topIntake->movePct(0.0), new WaitUntilCommand([&]() {
-                                                              return primary.get_digital(DIGITAL_Y);
-                                                          })}),
-                                   new InstantCommand(
-                                           [&]() {
-                                               outtakeWallStake = true;
-                                               hasRings = false;
-                                           },
-                                           {}),
-                                   new ParallelCommandGroup({
-                                           bottomIntake->movePct(0.0),
-                                           lift->positionCommand(33_deg),
-                                           topIntake->movePct(-1.0),
-                                   })}))
-            ->onFalse(new ParallelRaceGroup({
-                    bottomIntake->movePct(0.0),
-                    lift->moveToPosition(0_deg, 10_deg),
-                    new ConditionalCommand(topIntake->movePct(1.0), topIntake->movePct(0.0),
-                                           [&]() { return outtakeWallStake; }),
-            }));
+    primary.getTrigger(DIGITAL_R1)->whileTrue(drivetrain->arcade(partner, 0.4, 0.5));
+    primary.getTrigger(DIGITAL_R2)->whileTrue(drivetrain->arcade(partner, 0.6, 0.5));
 
     PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
     PathCommands::registerCommand("liftArm", new ParallelRaceGroup({
@@ -308,7 +163,7 @@ inline void subsystemInit() {
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("dejam",
                                   new ParallelCommandGroup({bottomIntake->movePct(0.8), lift->positionCommand(7.0_deg),
-                                                            topIntake->movePct(-1.0)}));
+                                                            topIntake->movePct(1.0)}));
     PathCommands::registerCommand("dejam2",
                                   new ParallelCommandGroup({bottomIntake->movePct(-1.0), lift->positionCommand(7.0_deg),
                                                             topIntake->movePct(0.0)}));
