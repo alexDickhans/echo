@@ -205,7 +205,7 @@ inline void subsystemInit() {
     partner.getTrigger(DIGITAL_LEFT)->onTrue(new InstantCommand([]() { ALLIANCE = BLUE; }, {}));
 
     partner.getTrigger(DIGITAL_DOWN)->whileTrue(hook->positionCommand(0.58));
-    partner.getTrigger(DIGITAL_UP)->whileTrue(lift->controller(&partner));
+    partner.getTrigger(DIGITAL_UP)->whileTrue(hook->positionCommand(0.25));
     Trigger([&]() { return abs(partner.get_analog(ANALOG_RIGHT_Y)) > 15; }, CommandScheduler::getTeleopEventLoop())
             .whileTrue(topIntake->controller(&partner));
     partner.getTrigger(DIGITAL_X)->whileTrue(bottomIntake->movePct(1.0));
