@@ -24,7 +24,7 @@ public:
                                      lift->positionCommand(8_deg),
                                      topIntake->movePct(1.0),
                                      hook->positionCommand(5_deg),
-                                     new WaitCommand(70_ms),
+                                     new WaitCommand(30_ms),
                              }),
                              (new ParallelCommandGroup({
                                       bottomIntake->movePct(0.0),
