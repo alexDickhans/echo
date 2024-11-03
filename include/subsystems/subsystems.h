@@ -184,7 +184,7 @@ inline void subsystemInit() {
     primary.getTrigger(DIGITAL_LEFT)->toggleOnTrue(hang->levelCommand(true));
     primary.getTrigger(DIGITAL_UP)
             ->whileTrue((new ScheduleCommand(hang->levelCommand(true)->with(goalClamp->levelCommand(false))))
-                                ->with(drivetrain->velocityCommand(39_in / second, 39_in / second)
+                                ->with(drivetrain->velocityCommand(37_in / second, 37_in / second)
                                                ->until([]() { return Qabs(drivetrain->getRoll()) > 8_deg; })
                                                ->andThen((drivetrain->pct(-1.0, -1.0)
                                                                   ->with(hook->pctCommand(1.0))
@@ -205,7 +205,7 @@ inline void subsystemInit() {
     partner.getTrigger(DIGITAL_LEFT)->onTrue(new InstantCommand([]() { ALLIANCE = BLUE; }, {}));
 
     partner.getTrigger(DIGITAL_DOWN)->whileTrue(hook->positionCommand(0.58));
-    partner.getTrigger(DIGITAL_UP)->whileTrue(lift->controller(&partner));
+    partner.getTrigger(DIGITAL_UP)->whileTrue(hook->positionCommand(0.25));
     Trigger([&]() { return abs(partner.get_analog(ANALOG_RIGHT_Y)) > 15; }, CommandScheduler::getTeleopEventLoop())
             .whileTrue(topIntake->controller(&partner));
     partner.getTrigger(DIGITAL_X)->whileTrue(bottomIntake->movePct(1.0));
@@ -275,9 +275,9 @@ inline void subsystemInit() {
     PathCommands::registerCommand(
             "intakeAllianceStakes",
             new Sequence({loadOneRingLow,
-                          new ParallelCommandGroup({topIntake->moveToPositionFwd(1.3), new WaitCommand(0.5_s),
+                          new ParallelCommandGroup({topIntake->moveToPositionFwd(1.2), new WaitCommand(0.5_s),
                                                     bottomIntake->movePct(0.0)}),
-                          new ParallelCommandGroup({topIntake->movePct(0.0), bottomIntake->movePct(-0.1)})}));
+                          new ParallelCommandGroup({topIntake->movePct(0.0), bottomIntake->movePct(-0.2)})}));
     PathCommands::registerCommand("scoreNeutral", new Sequence({new ParallelRaceGroup({
                                                                         bottomIntake->movePct(0.0),
                                                                         lift->moveToPosition(33_deg, 0.3_deg),

@@ -59,7 +59,7 @@ public:
                  (new Rotate(drivetrain, -90_deg, false, 0.0))->withTimeout(0.65_s),
                  new Ramsete(drivetrain, &skills_2),
                  new ScheduleCommand(SharedCommands::scoreAlliance2()),
-                 (new Rotate(drivetrain, 90_deg, false, -1500, false))->withTimeout(1.0_s),
+                 (new Rotate(drivetrain, 90_deg, false, -0.5, false))->withTimeout(1.0_s),
                  new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 18_in, false, 90_deg,
                                          0.0, true),
                  (new Rotate(drivetrain, -20_deg, false, 0, true))->withTimeout(0.8_s),
@@ -95,7 +95,7 @@ public:
                                         ->asProxy()),
                  new Ramsete(drivetrain, &skills_5),
                  (new ScheduleCommand(hang->levelCommand(true)))
-                         ->with(drivetrain->velocityCommand(36_in / second, 36_in / second)
+                         ->with(drivetrain->velocityCommand(37_in / second, 37_in / second)
                                         ->until([]() { return Qabs(drivetrain->getRoll()) > 8_deg; })
                                         ->andThen(
                                                 (drivetrain->pct(-1.0, -1.0)
