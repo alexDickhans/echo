@@ -56,7 +56,7 @@ std::vector<int> ejectionPoints{};
 RingColor lastColor;
 
 inline void subsystemInit() {
-    TELEMETRY.setSerial(new pros::Serial(19, 921600));
+    TELEMETRY.setSerial(new pros::Serial(12, 921600));
 
     drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16));
     topIntake = new TopIntake(pros::Motor(-5), pros::Distance(21));
@@ -115,11 +115,7 @@ inline void subsystemInit() {
 
     Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
             .onTrue((new WaitCommand(70_ms))
-                            ->andThen(new InstantCommand(
-                                    []() {
-                                        lastColor = topIntake->getRingColor();
-                                    },
-                                    {})))
+                            ->andThen(new InstantCommand([]() { lastColor = topIntake->getRingColor(); }, {})))
             ->onFalse(new InstantCommand(
                     []() mutable {
                         if (lastColor != ALLIANCE && lastColor != RingColor::None)
