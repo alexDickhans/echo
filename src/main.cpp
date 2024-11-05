@@ -55,22 +55,22 @@ Command* autonCommand;
         // TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," +
         //                std::to_string(pose.z()) + "]]\n");
 
-        // TELEMETRY.send("[");
-        // for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {
-        //     auto particle = drivetrain->getParticle(i);
-        //     TELEMETRY.send("[");
-        //     TELEMETRY.send(std::to_string(particle.x()));
-        //     TELEMETRY.send(",");
-        //     TELEMETRY.send(std::to_string(particle.y()));
-        //     TELEMETRY.send(",");
-        //     TELEMETRY.send(std::to_string(particle.z()));
-        //     if (i <= CONFIG::NUM_PARTICLES - 52)
-        //         TELEMETRY.send("],");
-        //     else
-        //         TELEMETRY.send("]]\n");
-        // }
+        TELEMETRY.send("{\"time\": " + std::to_string(pros::millis()/1000.0) + ", \"data\":[");
+        for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {
+            auto particle = drivetrain->getParticle(i);
+            TELEMETRY.send("[");
+            TELEMETRY.send(std::to_string(particle.x()));
+            TELEMETRY.send(",");
+            TELEMETRY.send(std::to_string(particle.y()));
+            TELEMETRY.send(",");
+            TELEMETRY.send(std::to_string(particle.z()));
+            if (i <= CONFIG::NUM_PARTICLES - 52)
+                TELEMETRY.send("],");
+            else
+                TELEMETRY.send("]]}\n");
+        }
 
-        pros::c::task_delay_until(&start_time, 100);
+        pros::c::task_delay_until(&start_time, 20);
     }
 }
 
@@ -136,8 +136,6 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-    primary.getTrigger(DIGITAL_DOWN)->whileTrue(SharedCommands::descoreCorner());
-
     if (AUTON == Auton::SKILLS) {
         CommandScheduler::schedule(autonCommand->until([&]() {return primary.get_digital(DIGITAL_A);}));
     }
