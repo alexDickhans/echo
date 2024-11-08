@@ -56,6 +56,13 @@ Command* autonCommand;
         //                std::to_string(pose.z()) + "]]\n");
 
         TELEMETRY.send("{\"time\": " + std::to_string(pros::millis()/1000.0) + ", \"data\":[");
+        TELEMETRY.send("[");
+        TELEMETRY.send(std::to_string(pose.x()));
+        TELEMETRY.send(",");
+        TELEMETRY.send(std::to_string(pose.y()));
+        TELEMETRY.send(",");
+        TELEMETRY.send(std::to_string(pose.z()));
+        TELEMETRY.send("],");
         for (size_t i = particle_dist(de); i < CONFIG::NUM_PARTICLES; i += 50) {
             auto particle = drivetrain->getParticle(i);
             TELEMETRY.send("[");

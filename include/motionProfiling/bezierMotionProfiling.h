@@ -87,7 +87,7 @@ public:
 
 	void calculate(const QVelocity startSpeed, const QVelocity endSpeed) {
 		std::vector<QLength> distance{0.0};
-		std::vector<QVelocity> velocity{std::min(limitSpeed(beziers[0].getCurvature(0.0)) * 62_in/second, startSpeed)};
+		std::vector<QVelocity> velocity{std::min(limitSpeed(beziers[0].getCurvature(0.0)) * CONFIG::MAX_SPEED, startSpeed)};
 		std::vector<QAcceleration> accel{0.0};
 
 		QLength accumulatedDistance = 0.0;
@@ -106,7 +106,7 @@ public:
 				const auto curvature = beziers[i].getCurvature(t);
 
 				distance.emplace_back(accumulatedDistance + beziers[i].getDistanceAtT(t));
-				velocity.emplace_back(std::min(limitSpeed(curvature) * 62_in/second, beziers[i].velocity));
+				velocity.emplace_back(std::min(limitSpeed(curvature) * CONFIG::MAX_SPEED, beziers[i].velocity));
 				accel.emplace_back(beziers[i].acceleration);
 			}
 
