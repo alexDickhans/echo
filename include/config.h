@@ -38,6 +38,6 @@ namespace CONFIG {
 
 	constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-	constexpr float RAMSETE_ZETA = 0.8;
-	constexpr float RAMSETE_BETA = 18.0;
+	constexpr float RAMSETE_ZETA = 0.9;
+	constexpr float RAMSETE_BETA = 20.0;
 }

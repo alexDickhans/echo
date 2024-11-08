@@ -61,24 +61,6 @@ public:
 
             drivetrain->setPct(CONFIG::DRIVETRAIN_FEEDFORWARD(currentLeft, accelLeft),
                                CONFIG::DRIVETRAIN_FEEDFORWARD(currentRight, accelRight));
-
-            if (pros::millis() / 10 % 3 == 0) {
-                TELEMETRY.send("{\"time\": " + std::to_string(pros::millis()/1000.0) + ", \"data\":[");
-                TELEMETRY.send("[");
-                TELEMETRY.send(std::to_string(currentPose.x()));
-                TELEMETRY.send(",");
-                TELEMETRY.send(std::to_string(currentPose.y()));
-                TELEMETRY.send(",");
-                TELEMETRY.send(std::to_string(currentPose.z()));
-                TELEMETRY.send("],");
-                TELEMETRY.send("[");
-                TELEMETRY.send(std::to_string(desiredPose.x()));
-                TELEMETRY.send(",");
-                TELEMETRY.send(std::to_string(desiredPose.y()));
-                TELEMETRY.send(",");
-                TELEMETRY.send(std::to_string(desiredPose.z()));
-                TELEMETRY.send("]]}\n");
-            }
         }
     }
 
