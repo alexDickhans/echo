@@ -8,6 +8,7 @@
 #include "json/asset.hpp"
 #include "combinedMotionProfile.h"
 #include "config.h"
+#include "utils/motor.h"
 
 class BezierMotionProfile : public MotionProfile {
 private:
@@ -31,7 +32,7 @@ private:
 			QLength deltaDistance = Qabs(distance[i] - distance[i-1]);
 
 			result.emplace_back(
-				std::min(Qsqrt(Qsq(result[i - 1]) + 2.0 * accel[i] * deltaDistance),
+				std::min(MOTOR11W::torquePercent((Qabs(result[i-1])/CONFIG::MAX_SPEED).getValue()) * Qsqrt(Qsq(result[i - 1]) + 2.0 * accel[i] * deltaDistance),
                     velocity[i]));
 		}
 

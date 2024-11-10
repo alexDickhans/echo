@@ -6,6 +6,7 @@
 #include "command/subsystem.h"
 #include "units/units.hpp"
 #include "feedback/pid.h"
+#include "feedback/lqr.h"
 #include "config.h"
 
 class LiftSubsystem : public Subsystem {
