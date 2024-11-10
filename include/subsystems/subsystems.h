@@ -26,6 +26,7 @@
 #include "motionProfiling/pathCommands.h"
 #include "pros/adi.hpp"
 #include "topIntake.h"
+#include "commands/ltvUnicycleController.h"
 
 #include <queue>
 

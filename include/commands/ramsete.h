@@ -54,7 +54,7 @@ public:
             QVelocity currentRight = velocity_commanded + angular_wheel_velocity_commanded;
 
             QAcceleration accelLeft = (currentLeft - lastLeft) / 10_ms;
-            QAcceleration accelRight = (currentRight - currentRight) / 10_ms;
+            QAcceleration accelRight = (currentRight - lastRight) / 10_ms;
 
             lastLeft = currentLeft;
             lastRight = currentRight;
