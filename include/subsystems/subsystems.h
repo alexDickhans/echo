@@ -17,7 +17,6 @@
 #include "commands/rotate.h"
 #include "drivetrain.h"
 #include "goalClamp.h"
-#include "hang.h"
 #include "lift.h"
 #include "localization/distance.h"
 #include "localization/gps.h"
@@ -35,7 +34,6 @@ TopIntake *topIntake;
 BottomIntake *bottomIntake;
 LiftSubsystem *lift;
 GoalClamp *goalClamp;
-Hang *hang;
 
 Command *loadOneRingHigh;
 Command *loadOneRingLow;
@@ -63,7 +61,6 @@ inline void subsystemInit() {
     bottomIntake = new BottomIntake(pros::Motor(-10));
     lift = new LiftSubsystem(pros::Motor(1), PID(30.0, 0.0, 50.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('a'));
-    hang = new Hang(pros::adi::DigitalOut('c'));
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(14)));
@@ -80,7 +77,6 @@ inline void subsystemInit() {
                                                                      lift->positionCommand(0.0_deg),
                                                                      [&]() { return hasRings; }));
     CommandScheduler::registerSubsystem(goalClamp, goalClamp->levelCommand(false));
-    CommandScheduler::registerSubsystem(hang, hang->levelCommand(false));
 
     goalClampTrue = goalClamp->levelCommand(true);
 
@@ -175,19 +171,6 @@ inline void subsystemInit() {
             }));
 
     primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
-    primary.getTrigger(DIGITAL_LEFT)->toggleOnTrue(hang->levelCommand(true));
-    primary.getTrigger(DIGITAL_UP)
-            ->whileTrue((new ScheduleCommand(hang->levelCommand(true)->with(goalClamp->levelCommand(false))))
-                                ->with(drivetrain->velocityCommand(37_in / second, 37_in / second)
-                                               ->until([]() { return Qabs(drivetrain->getRoll()) > 8_deg; })
-                                               ->andThen((drivetrain->pct(-1.0, -1.0)
-                                                                  ->withTimeout(300_ms)
-                                                                  ->andThen(drivetrain->pct(1.0, 1.0)
-                                                                                    ->withTimeout(300_ms)))
-                                                                 ->repeatedly()
-                                                                 ->until([]() {
-                                                                     return Qabs(drivetrain->getRoll()) < 5_deg;
-                                                                 }))));
 
     partner.getTrigger(DIGITAL_A)->whileTrue(
             new ParallelCommandGroup({new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8),
@@ -289,10 +272,6 @@ inline void subsystemInit() {
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
-    PathCommands::registerCommand(
-            "hang",
-            new ParallelCommandGroup({hang->levelCommand(true), new ScheduleCommand(TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 0.0)),
-                                      lift->positionCommand(0.0_deg)}));
     PathCommands::registerCommand("indexTwo",
                                   new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 1.7),
                                                             bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
