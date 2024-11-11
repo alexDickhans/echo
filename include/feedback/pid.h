@@ -134,7 +134,7 @@ public:
 	}
 
 	void reset() {
-		this->prevError = 0;
+		this->prevInput = 0;
 		this->error = 0;
 		this->derivitive = 0;
 	}
