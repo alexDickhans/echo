@@ -10,11 +10,11 @@
 
 class LiftSubsystem : public Subsystem {
 private:
-	pros::Motor motor;
+	pros::MotorGroup motor;
 
 	PID pid;
 public:
-	explicit LiftSubsystem(pros::Motor motor, const PID& pid) : motor(std::move(motor)), pid(pid) {
+	explicit LiftSubsystem(const std::initializer_list<int8_t> &motors, const PID& pid) : motor(motors), pid(pid) {
 		motor.set_encoder_units(pros::MotorEncoderUnits::rotations);
 	}
 
@@ -28,7 +28,7 @@ public:
 	}
 
 	Angle getPosition() const {
-		return motor.get_position() / CONFIG::LIFT_RATIO * revolution;
+		return (motor.get_position(0) + motor.get_position(1)) / (CONFIG::LIFT_RATIO * 2.0) * revolution;
 	}
 
 	RunCommand* positionCommand(Angle angle) {

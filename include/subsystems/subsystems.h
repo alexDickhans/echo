@@ -59,7 +59,7 @@ inline void subsystemInit() {
     drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16));
     topIntake = new TopIntake({-5}, pros::Distance(21));
     bottomIntake = new BottomIntake(pros::Motor(-10));
-    lift = new LiftSubsystem(pros::Motor(1), PID(30.0, 0.0, 50.0));
+    lift = new LiftSubsystem({1, -2}, PID(15.0, 0.0, 25.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('a'));
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));

@@ -39,7 +39,7 @@ public:
 	}
 
 	double getPosition() {
-		return (this->intakeMotor.get_position(0) + this->intakeMotor.get_position(1)) / CONFIG::INTAKE_RATIO;
+		return (this->intakeMotor.get_position(0) + this->intakeMotor.get_position(1)) / (2 * CONFIG::INTAKE_RATIO);
 	}
 
 	bool ringPresent() {
