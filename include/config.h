@@ -20,8 +20,10 @@ namespace CONFIG {
 
     constexpr QVelocity MAX_SPEED = 62_in / second;
 
-    inline PID TURN_PID = PID(1.3, 0.00, 9.0);
-    inline PID GOAL_PID = PID(1.2, 0.00, 9.0);
+    inline PID TOP_INTAKE_PID = PID(1.0, 0.0, 0.0);
+
+    inline PID TURN_PID = PID(1.3, 0.0, 9.0);
+    inline PID GOAL_PID = PID(1.2, 0.0, 9.0);
     inline PID DISTANCE_PID = PID(36.0, 0.00, 0.0);
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
