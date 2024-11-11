@@ -18,7 +18,6 @@
 #include "drivetrain.h"
 #include "goalClamp.h"
 #include "hang.h"
-#include "hook.h"
 #include "lift.h"
 #include "localization/distance.h"
 #include "localization/gps.h"
@@ -36,7 +35,6 @@ TopIntake *topIntake;
 BottomIntake *bottomIntake;
 LiftSubsystem *lift;
 GoalClamp *goalClamp;
-Hook *hook;
 Hang *hang;
 
 Command *loadOneRingHigh;
@@ -65,7 +63,6 @@ inline void subsystemInit() {
     bottomIntake = new BottomIntake(pros::Motor(-10));
     lift = new LiftSubsystem(pros::Motor(1), PID(30.0, 0.0, 50.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('a'));
-    hook = new Hook(pros::Motor(-8));
     hang = new Hang(pros::adi::DigitalOut('c'));
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
@@ -83,7 +80,6 @@ inline void subsystemInit() {
                                                                      lift->positionCommand(0.0_deg),
                                                                      [&]() { return hasRings; }));
     CommandScheduler::registerSubsystem(goalClamp, goalClamp->levelCommand(false));
-    CommandScheduler::registerSubsystem(hook, hook->positionCommand(0.0));
     CommandScheduler::registerSubsystem(hang, hang->levelCommand(false));
 
     goalClampTrue = goalClamp->levelCommand(true);
@@ -185,10 +181,8 @@ inline void subsystemInit() {
                                 ->with(drivetrain->velocityCommand(37_in / second, 37_in / second)
                                                ->until([]() { return Qabs(drivetrain->getRoll()) > 8_deg; })
                                                ->andThen((drivetrain->pct(-1.0, -1.0)
-                                                                  ->with(hook->pctCommand(1.0))
                                                                   ->withTimeout(300_ms)
                                                                   ->andThen(drivetrain->pct(1.0, 1.0)
-                                                                                    ->with(hook->pctCommand(-1.0))
                                                                                     ->withTimeout(300_ms)))
                                                                  ->repeatedly()
                                                                  ->until([]() {
@@ -202,8 +196,6 @@ inline void subsystemInit() {
     partner.getTrigger(DIGITAL_RIGHT)->onTrue(new InstantCommand([]() { ALLIANCE = RED; }, {}));
     partner.getTrigger(DIGITAL_LEFT)->onTrue(new InstantCommand([]() { ALLIANCE = BLUE; }, {}));
 
-    partner.getTrigger(DIGITAL_DOWN)->whileTrue(hook->positionCommand(0.58));
-    partner.getTrigger(DIGITAL_UP)->whileTrue(hook->positionCommand(0.25));
     Trigger([&]() { return abs(partner.get_analog(ANALOG_RIGHT_Y)) > 15; }, CommandScheduler::getTeleopEventLoop())
             .whileTrue(topIntake->controllerCommand(&partner));
     partner.getTrigger(DIGITAL_X)->whileTrue(bottomIntake->movePct(1.0));
