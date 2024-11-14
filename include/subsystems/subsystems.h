@@ -57,9 +57,9 @@ inline void subsystemInit() {
     // TELEMETRY.setSerial(new pros::Serial(19, 921600));
 
     drivetrain = new Drivetrain({-8, -9}, {3, 4}, {10}, {-2}, pros::Imu(14));
-    topIntake = new TopIntake({-5}, pros::Distance(21));
+    topIntake = new TopIntake({-12, 13}, pros::Distance(17));
     bottomIntake = new BottomIntake(pros::Motor(-1));
-    lift = new LiftSubsystem({-5, 7}, pros::Rotation(-18), PID(8.5, 0.0, 6.0));
+    lift = new LiftSubsystem({-5, 7}, PID(6.0, 0.0, 4.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('a'));
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
