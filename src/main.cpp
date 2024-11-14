@@ -54,7 +54,7 @@ Command* autonCommand;
 
         // TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," +
         //                std::to_string(pose.z()) + "]]\n");
-
+        continue;
         TELEMETRY.send("{\"time\": " + std::to_string(pros::millis()/1000.0) + ", \"data\":[");
         TELEMETRY.send("[");
         TELEMETRY.send(std::to_string(pose.x()));

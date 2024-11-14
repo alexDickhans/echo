@@ -11,16 +11,18 @@
 class LiftSubsystem : public Subsystem {
 private:
 	pros::MotorGroup motor;
+	pros::Rotation rotation;
 
 	PID pid;
 public:
-	explicit LiftSubsystem(const std::initializer_list<int8_t> &motors, const PID& pid) : motor(motors), pid(pid) {
-		motor.set_encoder_units(pros::MotorEncoderUnits::rotations);
+	explicit LiftSubsystem(const std::initializer_list<int8_t> &motors, pros::Rotation rotation, const PID& pid) : motor(motors), pid(pid), rotation(rotation) {
+		motor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 	}
 
 	void periodic() override {
 		auto command = pid.update(this->getPosition().Convert(radian));
 		motor.move_voltage(command * 12000.0);
+		std::cout << getPosition().Convert(degree) << std::endl;
 	}
 
 	void setTarget(Angle angle) {
@@ -28,7 +30,7 @@ public:
 	}
 
 	Angle getPosition() const {
-		return (motor.get_position(0) + motor.get_position(1)) / (CONFIG::LIFT_RATIO * 2.0) * revolution;
+		return angleDifference((rotation.get_angle() / 100.0) * degree, 0_deg);
 	}
 
 	RunCommand* positionCommand(Angle angle) {

@@ -54,12 +54,12 @@ std::vector<int> ejectionPoints{};
 RingColor lastColor;
 
 inline void subsystemInit() {
-    TELEMETRY.setSerial(new pros::Serial(12, 921600));
+    // TELEMETRY.setSerial(new pros::Serial(19, 921600));
 
-    drivetrain = new Drivetrain({-2, -3}, {6, 7}, {4}, {-9}, pros::Imu(16));
+    drivetrain = new Drivetrain({-8, -9}, {3, 4}, {10}, {-2}, pros::Imu(14));
     topIntake = new TopIntake({-5}, pros::Distance(21));
-    bottomIntake = new BottomIntake(pros::Motor(-10));
-    lift = new LiftSubsystem({1, -2}, PID(15.0, 0.0, 25.0));
+    bottomIntake = new BottomIntake(pros::Motor(-1));
+    lift = new LiftSubsystem({-5, 7}, pros::Rotation(-18), PID(8.5, 0.0, 6.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('a'));
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
@@ -145,10 +145,10 @@ inline void subsystemInit() {
             ->onTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
                                    new ParallelRaceGroup({
                                            bottomIntake->movePct(0.0),
-                                           lift->moveToPosition(33_deg, 0.3_deg),
+                                           lift->moveToPosition(100_deg, 0.3_deg),
                                            TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.1, 0.0),
                                    }),
-                                   new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(33_deg),
+                                   new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(100_deg),
                                                           topIntake->pctCommand(0.0), new WaitUntilCommand([&]() {
                                                               return primary.get_digital(DIGITAL_Y);
                                                           })}),
@@ -160,7 +160,7 @@ inline void subsystemInit() {
                                            {}),
                                    new ParallelCommandGroup({
                                            bottomIntake->movePct(0.0),
-                                           lift->positionCommand(33_deg),
+                                           lift->positionCommand(100_deg),
                                            topIntake->pctCommand(-1.0),
                                    })}))
             ->onFalse(new ParallelRaceGroup({

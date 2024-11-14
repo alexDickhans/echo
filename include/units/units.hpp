@@ -356,8 +356,8 @@ constexpr float operator"" _pi(unsigned long long int x)
 
 // Predefined angle units:
 constexpr Angle radian(1.0);
-constexpr Angle revolution = static_cast<float>(2) * radian;
-constexpr Angle degree = static_cast<float>(2_pi / 360.0) * radian;
+constexpr Angle revolution = 2_pi;
+constexpr Angle degree = 1_pi / 180.0 * radian;
 
 // literals for angle units
 constexpr Angle operator"" _rad(long double x) { return Angle(x); };
