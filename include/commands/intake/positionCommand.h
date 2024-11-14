@@ -23,15 +23,15 @@ public:
         this->pid.setTarget(setpoint);
     }
 
-    static TopIntakePositionCommand* fromReversePositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.1, PID pid = CONFIG::TOP_INTAKE_PID) {
+    static TopIntakePositionCommand* fromReversePositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.01, PID pid = CONFIG::TOP_INTAKE_PID) {
         return new TopIntakePositionCommand(intake, tolerance, [setpoint] (float position) { return static_cast<float>(std::ceil(position) + setpoint); }, pid);
     }
 
-    static TopIntakePositionCommand* fromForwardPositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.1, PID pid = CONFIG::TOP_INTAKE_PID) {
+    static TopIntakePositionCommand* fromForwardPositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.01, PID pid = CONFIG::TOP_INTAKE_PID) {
         return new TopIntakePositionCommand(intake, tolerance, [setpoint] (float position) { return static_cast<float>(std::floor(position) + setpoint); }, pid);
     }
 
-    static TopIntakePositionCommand* fromClosePositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.1, PID pid = CONFIG::TOP_INTAKE_PID) {
+    static TopIntakePositionCommand* fromClosePositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.01, PID pid = CONFIG::TOP_INTAKE_PID) {
         return new TopIntakePositionCommand(intake, tolerance, [setpoint] (float position) { return static_cast<float>(std::round(position) + setpoint); }, pid);
     }
 

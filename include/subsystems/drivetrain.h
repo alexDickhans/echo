@@ -21,6 +21,7 @@ class Drivetrain : public Subsystem {
 private:
     pros::MotorGroup left11W, right11W, left5W, right5W;
     pros::Imu imu;
+    pros::ADIDigitalOut pto;
 
     QLength leftChange, rightChange;
     QLength lastLeft, lastRight;
@@ -34,8 +35,8 @@ private:
 public:
     Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
-               pros::Imu imu) :
-        left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)),
+               pros::Imu imu, pros::ADIDigitalOut pto) :
+        left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)), pto(pto),
         particleFilter([this, imu]() {
             const Angle angle = -imu.get_rotation() * degree;
             return isfinite(angle.getValue()) ? angle : 0.0;
@@ -127,6 +128,10 @@ public:
     }
 
     QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
+
+    auto setPto(const bool newValue) -> void {
+        this->pto.set_value(newValue);
+    }
 
     void setVelocity(const QVelocity left, const QVelocity right) {
         // std::cout << "Left: " << left.Convert(inch/second) << " Right: " << right.Convert(inch/second) << std::endl;
