@@ -19,13 +19,12 @@ namespace CONFIG {
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
     constexpr double DRIVETRAIN_TUNING_SCALAR = 1.0;
 
-    constexpr QVelocity MAX_SPEED = 62_in / second;
+    constexpr QVelocity MAX_SPEED = 60_in / second;
 
     inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 4.0);
 
-    inline PID TURN_PID = PID(1.3, 0.0, 9.0);
-    inline PID GOAL_PID = PID(1.2, 0.0, 9.0);
-    inline PID DISTANCE_PID = PID(15.0, 0.00, 2.0);
+    inline PID TURN_PID = PID(0.9, 0.0, 6.0);
+    inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 35_deg;
     constexpr Angle WALL_STAKE_SCORE_HEIGHT = 95_deg;

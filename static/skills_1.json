@@ -24,7 +24,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.225,
+        "velocity": 1.099,
         "accel": 2.54
       }
     },
@@ -50,7 +50,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.2,
+        "velocity": 1.099,
         "accel": 2.54
       }
     },
@@ -76,7 +76,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.125,
+        "velocity": 1.099,
         "accel": 2.54
       }
     },
@@ -102,7 +102,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.1,
+        "velocity": 1.099,
         "accel": 2.54
       }
     },
@@ -128,7 +128,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.1,
+        "velocity": 1.099,
         "accel": 2.54
       }
     },
@@ -154,7 +154,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.425,
+        "velocity": 1.099,
         "accel": 2.54
       }
     },
@@ -180,7 +180,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.2,
+        "velocity": 1.099,
         "accel": 2.54
       }
     },
@@ -206,7 +206,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.175,
+        "velocity": 1.099,
         "accel": 2.54
       }
     },
@@ -232,7 +232,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.025,
+        "velocity": 1.099,
         "accel": 3.048
       }
     }
