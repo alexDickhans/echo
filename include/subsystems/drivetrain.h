@@ -97,24 +97,25 @@ public:
         this->right5W.move_voltage(right * 8000.0);
     }
 
-    void setDriveSpeeds(DriveSpeeds speeds, DriveSpeeds lastDriveSpeeds = {0.0, 0.0}) {
-        const auto angular_wheel_velocity_commanded =
-                speeds.angularVelocity.getValue() * CONFIG::TRACK_WIDTH / 2.0 / second;
+    void setDriveSpeeds(DriveSpeeds lastSpeeds, DriveSpeeds nextDriveSpeeds = {0.0, 0.0}) {
+        QAngularAcceleration angularAcceleration =
+                (nextDriveSpeeds.angularVelocity - lastSpeeds.angularVelocity) / 10_ms;
+        QAcceleration linearAcceleration = (nextDriveSpeeds.linearVelocity - lastSpeeds.linearVelocity) / 10_ms;
 
-        QVelocity currentLeft = speeds.linearVelocity - angular_wheel_velocity_commanded;
-        QVelocity currentRight = speeds.linearVelocity + angular_wheel_velocity_commanded;
+        double uLinear = CONFIG::DRIVETRAIN_LINEAR_VELOCITY_FF *
+                         Eigen::Vector2d(nextDriveSpeeds.linearVelocity.getValue(), linearAcceleration.getValue());
+        double uAngular = CONFIG::DRIVETRAIN_ANGULAR_VELOCITY_FF *
+                          Eigen::Vector2d(nextDriveSpeeds.angularVelocity.getValue(), angularAcceleration.getValue());
 
-        const auto last_angular_wheel_velocity_commanded =
-                speeds.angularVelocity.getValue() * CONFIG::TRACK_WIDTH / 2.0 / second;
+        const auto angular_wheel_velocity_commanded = uAngular * CONFIG::TRACK_WIDTH.getValue() / 2.0;
 
-        QVelocity lastLeft = lastDriveSpeeds.linearVelocity - last_angular_wheel_velocity_commanded;
-        QVelocity lastRight = lastDriveSpeeds.linearVelocity + last_angular_wheel_velocity_commanded;
+        double left = uLinear - angular_wheel_velocity_commanded;
+        double right = uLinear + angular_wheel_velocity_commanded;
 
-        QAcceleration accelLeft = (currentLeft - lastLeft) / 10_ms;
-        QAcceleration accelRight = (currentRight - lastRight) / 10_ms;
+        left += signnum_c(left) * CONFIG::K_s;
+        right += signnum_c(right) * CONFIG::K_s;
 
-        this->setPct(CONFIG::DRIVETRAIN_FEEDFORWARD(currentLeft, accelLeft),
-                           CONFIG::DRIVETRAIN_FEEDFORWARD(currentRight, accelRight));
+        this->setPct(left, right);
     }
 
     QLength getLeftDistance() const {
@@ -129,9 +130,7 @@ public:
 
     QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
 
-    auto setPto(const bool newValue) -> void {
-        this->pto.set_value(newValue);
-    }
+    auto setPto(const bool newValue) -> void { this->pto.set_value(newValue); }
 
     void setVelocity(const QVelocity left, const QVelocity right) {
         // std::cout << "Left: " << left.Convert(inch/second) << " Right: " << right.Convert(inch/second) << std::endl;

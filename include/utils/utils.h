@@ -52,3 +52,12 @@ inline double interp(const std::vector<double>& x, const std::vector<double>& y,
 
 	return 0.0;
 }
+
+double signnum_c(double x) {
+	if (x > 0.0) {
+		return 1.0;
+	} else if (x < 0.0) {
+		return -1.0;
+	}
+	return 0.0;
+}

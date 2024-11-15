@@ -45,4 +45,9 @@ namespace CONFIG {
 
     Eigen::Matrix3f DEFAULT_DT_COST_Q = Eigen::Matrix3f({{1.0, 0.0, 0.0}, {0.0, 5.0, 0.0}, {0.0, 0.0, 7.0}});
     Eigen::Matrix2f DEFAULT_DT_COST_R = Eigen::Matrix2f::Identity();
+
+    double K_s = 0.025;
+
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF{0.582, 0.117};
+    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF{0.103, 0.0191};
 } // namespace CONFIG
