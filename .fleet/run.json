@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "python",
+            "name": "1",
+            "file": "uploadAllAutons.py",
+            "arguments": ["1"],
+        },
+
+    ]
+}

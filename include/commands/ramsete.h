@@ -49,7 +49,7 @@ public:
                     (command->desiredAngularVelocity.getValue() + k * errorAngle.getValue() +
                      this->beta * command->desiredVelocity.getValue() * sinc(errorAngle) * error.y());
 
-            drivetrain->setDriveSpeeds(lastSpeeds, {velocity_commanded, angular_wheel_velocity_commanded.getValue()});
+            drivetrain->setDriveSpeeds(lastSpeeds, {velocity_commanded, angular_wheel_velocity_commanded * radian/second});
             lastSpeeds = {velocity_commanded, angular_wheel_velocity_commanded};
         }
     }

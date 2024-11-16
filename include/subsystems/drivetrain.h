@@ -133,8 +133,6 @@ public:
     auto setPto(const bool newValue) -> void { this->pto.set_value(newValue); }
 
     void setVelocity(const QVelocity left, const QVelocity right) {
-        // std::cout << "Left: " << left.Convert(inch/second) << " Right: " << right.Convert(inch/second) << std::endl;
-
         this->left11W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 600.0);
         this->right11W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 600.0);
         this->left5W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 200.0);

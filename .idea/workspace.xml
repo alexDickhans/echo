@@ -33,9 +33,7 @@
     <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/commands/ramsete.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/commands/ramsete.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/config.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/subsystems/drivetrain.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/drivetrain.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/units/units.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/units/units.hpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +113,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Native Application.all">
+  <component name="RunManager">
     <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
@@ -146,14 +144,6 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="Native Application.all" />
-      <item itemvalue="Native Application.quick" />
-      <item itemvalue="Native Application.bin" />
-      <item itemvalue="Native Application.cc-sysroot" />
-      <item itemvalue="Native Application.cxx-sysroot" />
-      <item itemvalue="Native Application.Makefile" />
-    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -166,7 +156,10 @@
       <workItem from="1731550525382" duration="20553000" />
       <workItem from="1731624261434" duration="1033000" />
       <workItem from="1731626132604" duration="2235000" />
-      <workItem from="1731638282571" duration="1671000" />
+      <workItem from="1731638282571" duration="3380000" />
+      <workItem from="1731642326418" duration="1201000" />
+      <workItem from="1731679516597" duration="547000" />
+      <workItem from="1731781692705" duration="1000" />
     </task>
     <servers />
   </component>
