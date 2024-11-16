@@ -12,7 +12,7 @@ private:
 
 		double error;
 		double totalError = 0.0;
-		double prevError = 0.0;
+		double prevInput = 0.0;
 		double derivitive;
 
 		double integralBound = 3000.0;
@@ -31,7 +31,7 @@ private:
 				this->error = angleDifference(target, input).getValue();
 			}
 
-			this->derivitive = this->error - this->prevError;
+			this->derivitive = - (input - this->prevInput);
 
 			if (abs(error) < integralBound) {
 				totalError += error;
@@ -44,7 +44,7 @@ private:
 
 			this->power = (error * kP) + (derivitive * kD) + (totalError * kI);
 
-			this->prevError = this->error;
+			this->prevInput = input;
 
 			return this->power;
 		}
@@ -133,10 +133,8 @@ public:
 		this->maxIntegral = maxIntegral;
 	}
 
-
-
 	void reset() {
-		this->prevError = 0;
+		this->prevInput = 0;
 		this->error = 0;
 		this->derivitive = 0;
 	}

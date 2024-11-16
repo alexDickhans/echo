@@ -1,5 +1,7 @@
 #pragma once
 
+#include "units/units.hpp"
+
 inline double normal_pdf(const double x, const double mu, const double sigma) {
 	const auto exponent = -pow(x - mu, 2) / (2.0 * pow(sigma, 2));
 	return (1.0 / (sigma * sqrt(2.0 * M_PI))) * pow(M_E, exponent);
@@ -48,5 +50,14 @@ inline double interp(const std::vector<double>& x, const std::vector<double>& y,
 		}
 	}
 
+	return 0.0;
+}
+
+double signnum_c(double x) {
+	if (x > 0.0) {
+		return 1.0;
+	} else if (x < 0.0) {
+		return -1.0;
+	}
 	return 0.0;
 }
