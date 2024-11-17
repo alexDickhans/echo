@@ -23,7 +23,7 @@ class Drivetrain : public Subsystem {
 private:
     pros::MotorGroup left11W, right11W, left5W, right5W;
     pros::Imu imu;
-    pros::ADIDigitalOut pto;
+    pros::adi::DigitalOut pto;
 
     QLength leftChange, rightChange;
     QLength lastLeft, lastRight;
@@ -47,7 +47,7 @@ private:
 public:
     Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
-               pros::Imu imu, pros::ADIDigitalOut pto) :
+               pros::Imu imu, pros::adi::DigitalOut pto) :
         left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)), pto(pto),
         particleFilter([this, imu]() {
             const Angle angle = -imu.get_rotation() * degree;

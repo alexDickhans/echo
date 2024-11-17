@@ -12,7 +12,7 @@ public:
 
     OneDofVelocitySystem() = default;
 
-    void characterize(const std::vector<double>& x, const std::vector<double>& &u) {
+    void characterize(const std::vector<double>& x, const std::vector<double>& u) {
         Eigen::MatrixXd A = Eigen::MatrixXd::Zero(x.size() - 1, 3);
         Eigen::MatrixXd b = Eigen::VectorXd::Zero(x.size() - 1);
 
