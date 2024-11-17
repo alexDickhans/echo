@@ -43,7 +43,11 @@ public:
         pid.reset();
 
         if (positionCallback.has_value()) {
-            pid.setTarget(positionCallback.value()(this->intake->getPosition()));
+            if (profile.has_value()) {
+                profile.value().second = {positionCallback.value()(this->intake->getPosition()), profile.value().second.velocity};
+            } else {
+                pid.setTarget(positionCallback.value()(this->intake->getPosition()));
+            }
         }
     }
 
