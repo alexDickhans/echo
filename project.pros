@@ -715,6 +715,23 @@
                 "user_files": [],
                 "version": "8.3.8"
             },
+            "libsysid": {
+                "location": "/Users/alex/Library/Application Support/PROS/templates/libsysid@0.0.1",
+                "metadata": {
+                    "origin": "local"
+                },
+                "name": "libsysid",
+                "py/object": "pros.conductor.templates.local_template.LocalTemplate",
+                "supported_kernels": "^4.1.0",
+                "system_files": [
+                    "include/sysid/oneDofVelocitySystem.h",
+                    "firmware/libsysid.a",
+                    "include/sysid/utils.h"
+                ],
+                "target": "v5",
+                "user_files": [],
+                "version": "0.0.1"
+            },
             "libunit": {
                 "location": "/Users/alex/Library/Application Support/PROS/templates/libunit@1.0.1",
                 "metadata": {
