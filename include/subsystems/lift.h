@@ -19,7 +19,7 @@ public:
 	}
 
 	void periodic() override {
-		auto command = pid.update(this->getPosition().Convert(radian));
+		auto command = pid.update(this->getPosition().Convert(radian)) + cos(this->getPosition() - 70_deg) * 0.06;
 		motor.move_voltage(command * 12000.0);
 	}
 
