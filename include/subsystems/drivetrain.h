@@ -12,6 +12,8 @@
 #include "auton.h"
 #include "autonomous/autons.h"
 
+#include "sysid/oneDofVelocitySystem.h"
+
 struct DriveSpeeds {
     QVelocity linearVelocity = 0.0;
     QAngularVelocity angularVelocity = 0.0;
@@ -31,6 +33,16 @@ private:
     std::ranlux24_base de;
 
     GpsSensor *sensor;
+
+    double lastULinear = 0.0;
+    double lastUAngular = 0.0;
+
+    std::vector<double> uLinear;
+    std::vector<double> xLinear;
+    std::vector<double> uAngular;
+    std::vector<double> xAngular;
+
+    bool recording = false;
 
 public:
     Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
@@ -84,6 +96,15 @@ public:
 
             return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
         });
+
+        if (recording) {
+            uLinear.emplace_back(lastULinear);
+            uAngular.emplace_back(lastUAngular);
+
+            xLinear.emplace_back((leftChange + rightChange).Convert(metre) / 2.0);
+            xAngular.emplace_back((rightChange - leftChange).Convert(metre) /
+                                  (2.0 * CONFIG::TRACK_WIDTH.Convert(metre)));
+        }
     }
 
     Angle getAngle() const { return -imu.get_rotation() * degree; }
@@ -95,6 +116,9 @@ public:
         this->right11W.move_voltage(right * 12000.0);
         this->left5W.move_voltage(left * 8000.0); // 5.5W have a lower max voltage then the 11W motors
         this->right5W.move_voltage(right * 8000.0);
+
+        lastULinear = (left + right)/2.0;
+        lastUAngular = (right - left)/2.0;
     }
 
     void setDriveSpeeds(DriveSpeeds lastSpeeds, DriveSpeeds nextDriveSpeeds = {0.0, 0.0}) {
@@ -188,6 +212,10 @@ public:
         }
     }
 
+    void printData() {
+
+    }
+
     RunCommand *tank(pros::Controller &controller) {
         return new RunCommand(
                 [this, controller]() mutable {
@@ -205,6 +233,47 @@ public:
                                          127.0);
                 },
                 {this});
+    }
+
+    FunctionalCommand *arcadeRecord(pros::Controller &controller) {
+        return new FunctionalCommand(
+                [this]() mutable {
+                    this->recording = true;
+                    uAngular.clear();
+                    uLinear.clear();
+                    xLinear.clear();
+                    xAngular.clear();
+                },
+                [this, controller]() mutable {
+                    this->setPct((controller.get_analog(ANALOG_LEFT_Y) + controller.get_analog(ANALOG_RIGHT_X)) / 127.0,
+                                 (controller.get_analog(ANALOG_LEFT_Y) - controller.get_analog(ANALOG_RIGHT_X)) /
+                                         127.0);
+                },
+                [this](bool _) mutable {
+                    this->recording = false;
+                    printData();
+                },
+                [this]() mutable { return false; }, {this});
+    }
+
+    FunctionalCommand *tankRecord(pros::Controller &controller) {
+        return new FunctionalCommand(
+                [this]() mutable {
+                    this->recording = true;
+                    uAngular.clear();
+                    uLinear.clear();
+                    xLinear.clear();
+                    xAngular.clear();
+                },
+                [this, controller]() mutable {
+                    this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0,
+                                 controller.get_analog(ANALOG_RIGHT_Y) / 127.0);
+                },
+                [this](bool _) mutable {
+                    this->recording = false;
+                    printData();
+                },
+                [this]() mutable { return false; }, {this});
     }
 
     RunCommand *pct(double left, double right) {
