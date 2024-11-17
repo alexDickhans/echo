@@ -6,9 +6,10 @@
 #include "units/units.hpp"
 
 namespace CONFIG {
-    constexpr double INTAKE_RATIO = 66.0 / 96.0; // 66 chain links
+    constexpr double INTAKE_RATIO = 74.0 / 96.0; // 66 chain links
     constexpr float DRIVE_NOISE = 0.35;
     constexpr Angle ANGLE_NOISE = 8_deg;
+  
     constexpr QLength DRIVE_RADIUS = 3.25_in / 2.0;
     constexpr float DRIVE_RATIO = 48.0 / 36.0;
     constexpr double LIFT_RATIO = 5.0;
