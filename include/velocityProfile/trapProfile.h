@@ -33,7 +33,7 @@ private:
 public:
     explicit TrapProfile(const Constraints &constraints) : constraints(constraints) {}
 
-    State calculate(const double t, const State &initial, const State &end) {
+    State calculate(const QTime t, const State &initial, const State &end) {
         const double direction = shouldFlipAcceleration(initial, end) ? -1.0 : 1.0;
         auto current = direct(initial, direction);
         auto goal = direct(end, direction);
@@ -64,16 +64,16 @@ public:
         double endDecel = endFullspeed + accelerationTime - cutoffEnd;
         State result = State(current.position, current.velocity);
 
-        if (t < endAccel) {
-            result.velocity += t * constraints.maxAcceleration;
-            result.position += (current.velocity + t * constraints.maxAcceleration / 2.0) * t;
-        } else if (t < endFullspeed) {
+        if (t.getValue() < endAccel) {
+            result.velocity += t.getValue() * constraints.maxAcceleration;
+            result.position += (current.velocity + t.getValue() * constraints.maxAcceleration / 2.0) * t.getValue();
+        } else if (t.getValue() < endFullspeed) {
             result.velocity = constraints.maxVelocity;
             result.position += (current.velocity + endAccel * constraints.maxAcceleration / 2.0) * endAccel +
-                               constraints.maxVelocity * (t - endAccel);
-        } else if (t <= endDecel) {
-            result.velocity = goal.velocity + (endDecel - t) * constraints.maxAcceleration;
-            double timeLeft = endDecel - t;
+                               constraints.maxVelocity * (t.getValue() - endAccel);
+        } else if (t.getValue() <= endDecel) {
+            result.velocity = goal.velocity + (endDecel - t.getValue()) * constraints.maxAcceleration;
+            double timeLeft = endDecel - t.getValue();
             result.position =
                     goal.position - (goal.velocity + timeLeft * constraints.maxAcceleration / 2.0) * timeLeft;
         } else {

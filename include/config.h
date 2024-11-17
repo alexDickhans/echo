@@ -19,6 +19,8 @@ namespace CONFIG {
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
     constexpr double DRIVETRAIN_TUNING_SCALAR = 1.0;
 
+  constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
+
     constexpr QVelocity MAX_SPEED = 60_in / second;
 
     inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 4.0);

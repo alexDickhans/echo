@@ -32,8 +32,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/include/subsystems/drivetrain.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/drivetrain.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/sysid/oneDofVelocitySystem.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/sysid/oneDofVelocitySystem.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/commands/intake/trapTopPosition.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/subsystems/subsystems.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/subsystems.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +111,7 @@
     "cf.advertisement.text.overridden": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "add-motion-profile",
+    "git-widget-placeholder": "#38 on add-motion-profile",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
