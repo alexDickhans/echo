@@ -45,8 +45,6 @@ Command *goalClampTrue;
 CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
-pros::Distance goalClampDistanceSensor(20);
-
 GpsSensor *gpsSensor;
 
 bool outtakeWallStake = false;
@@ -58,7 +56,7 @@ inline void subsystemInit() {
     // TELEMETRY.setSerial(new pros::Serial(19, 921600));
 
     drivetrain = new Drivetrain({-8, -9}, {3, 4}, {10}, {-2}, pros::Imu(14), pros::ADIDigitalOut('a'));
-    topIntake = new TopIntake({-12, 13}, pros::Distance(17));
+    topIntake = new TopIntake({-12, 13}, pros::Distance(20));
     bottomIntake = new BottomIntake(pros::Motor(-1));
     lift = new LiftSubsystem({-5, 7}, PID(4.5, 0.0, 3.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('b'));
@@ -101,18 +99,18 @@ inline void subsystemInit() {
                     bottomIntake->movePct(1.0),
                     lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
                     new ParallelCommandGroup(
-                            {TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.1, 0.005)}),
+                            {TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.1, 0.005, TrapProfile(TrapProfile::Constraints(1.0, 5.0)))}),
             }),
     });
     loadTwoRingHigh = new Sequence({
             new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.43, 0.0),
+                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.1, 0.0),
                                    new WaitUntilCommand([&]() { return topIntake->ringPresent(); })}),
             new ParallelRaceGroup({
                     bottomIntake->movePct(1.0),
                     lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
                     new ParallelCommandGroup(
-                            {TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.43, 0.005)}),
+                            {TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.2, 0.005, TrapProfile(TrapProfile::Constraints(1.0, 5.0)))}),
             }),
             new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
                                    TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.43, 0.0),
@@ -158,7 +156,7 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_L1)
             ->toggleOnTrue(new Sequence({new InstantCommand([&]() { hasRings = true; }, {}),
-                                         loadTwoRingHigh}));
+                                         loadOneRingHigh, loadOneRingHigh}));
 
     primary.getTrigger(DIGITAL_L2)
             ->toggleOnTrue(new Sequence(
