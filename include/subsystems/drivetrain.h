@@ -213,7 +213,14 @@ public:
     }
 
     void printData() {
+        OneDofVelocitySystem linear;
+        OneDofVelocitySystem angular;
 
+        linear.characterize(xLinear, uLinear);
+        angular.characterize(xAngular, uAngular);
+
+        std::cout << "Linear: " << linear.getFF();
+        std::cout << "Angular: " << angular.getFF();
     }
 
     RunCommand *tank(pros::Controller &controller) {
