@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include "Eigen/Eigen"
 #include "command/instantCommand.h"
 #include "config.h"
@@ -44,15 +46,18 @@ private:
 
     bool recording = false;
 
+    std::function<bool()> hasGoal;
+
 public:
     Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
-               pros::Imu imu, pros::adi::DigitalOut pto) :
-        left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)), pto(pto),
-        particleFilter([this, imu]() {
+               pros::Imu imu, pros::adi::DigitalOut pto, std::function<bool()> hasGoal) :
+        left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)),
+        pto(std::move(pto)), particleFilter([this, imu]() {
             const Angle angle = -imu.get_rotation() * degree;
             return isfinite(angle.getValue()) ? angle : 0.0;
-        }) {
+        }),
+        hasGoal(std::move(hasGoal)) {
         this->leftChange = 0.0;
         this->rightChange = 0.0;
 
@@ -117,8 +122,8 @@ public:
         this->left5W.move_voltage(left * 8000.0); // 5.5W have a lower max voltage then the 11W motors
         this->right5W.move_voltage(right * 8000.0);
 
-        lastULinear = (left + right)/2.0;
-        lastUAngular = (right - left)/2.0;
+        lastULinear = (left + right) / 2.0;
+        lastUAngular = (right - left) / 2.0;
     }
 
     void setDriveSpeeds(DriveSpeeds lastSpeeds, DriveSpeeds nextDriveSpeeds = {0.0, 0.0}) {
@@ -126,10 +131,14 @@ public:
                 (nextDriveSpeeds.angularVelocity - lastSpeeds.angularVelocity) / 10_ms;
         QAcceleration linearAcceleration = (nextDriveSpeeds.linearVelocity - lastSpeeds.linearVelocity) / 10_ms;
 
-        double uLinear = CONFIG::DRIVETRAIN_LINEAR_VELOCITY_FF *
-                         Eigen::Vector2d(nextDriveSpeeds.linearVelocity.getValue(), linearAcceleration.getValue());
-        double uAngular = CONFIG::DRIVETRAIN_ANGULAR_VELOCITY_FF *
-                          Eigen::Vector2d(nextDriveSpeeds.angularVelocity.getValue(), angularAcceleration.getValue());
+        bool goal = hasGoal();
+
+        const double uLinear =
+                (goal ? CONFIG::DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL : CONFIG::DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL) *
+                Eigen::Vector2d(nextDriveSpeeds.linearVelocity.getValue(), linearAcceleration.getValue());
+        const double uAngular =
+                (goal ? CONFIG::DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL : CONFIG::DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL) *
+                Eigen::Vector2d(nextDriveSpeeds.angularVelocity.getValue(), angularAcceleration.getValue());
 
         const auto angular_wheel_velocity_commanded = uAngular * CONFIG::TRACK_WIDTH.getValue() / 2.0;
 

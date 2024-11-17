@@ -33,7 +33,7 @@ private:
 public:
     explicit TrapProfile(const Constraints &constraints) : constraints(constraints) {}
 
-    State calculate(const QTime t, const State &initial, const State &end) {
+    [[nodiscard]] State calculate(const QTime t, const State &initial, const State &end) const {
         const double direction = shouldFlipAcceleration(initial, end) ? -1.0 : 1.0;
         auto current = direct(initial, direction);
         auto goal = direct(end, direction);

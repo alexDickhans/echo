@@ -19,7 +19,7 @@ namespace CONFIG {
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
     constexpr double DRIVETRAIN_TUNING_SCALAR = 1.0;
 
-  constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
+    constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
 
     constexpr QVelocity MAX_SPEED = 60_in / second;
 
@@ -50,6 +50,8 @@ namespace CONFIG {
 
     double K_s = 0.025;
 
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF{0.582, 0.117};
-    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF{0.103, 0.0191};
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.582, 0.117};
+    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.103, 0.0191};
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.582, 0.117};
+    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.103, 0.0191};
 } // namespace CONFIG

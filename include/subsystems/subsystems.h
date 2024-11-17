@@ -102,27 +102,7 @@ inline void subsystemInit() {
                     bottomIntake->movePct(1.0),
                     lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
                     new ParallelCommandGroup(
-                            {TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.1, 0.005)}),
-            }),
-    });
-    loadTwoRingHigh = new Sequence({
-            new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.43, 0.0),
-                                   new WaitUntilCommand([&]() { return topIntake->ringPresent(); })}),
-            new ParallelRaceGroup({
-                    bottomIntake->movePct(1.0),
-                    lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                    new ParallelCommandGroup(
-                            {TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.43, 0.005)}),
-            }),
-            new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.43, 0.0),
-                                   new WaitUntilCommand([&]() { return topIntake->ringPresent(); })}),
-            new ParallelRaceGroup({
-                    bottomIntake->movePct(1.0),
-                    lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                    new ParallelCommandGroup(
-                            {TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.1, 0.005)}),
+                            {TrapTopPosition::fromReversePositionCommand(topIntake, -1.1, TrapProfile(TrapProfile::Constraints(1.0, 5.0)))}),
             }),
     });
     intakeOntoGoal = new ParallelCommandGroup({
