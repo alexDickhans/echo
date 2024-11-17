@@ -24,7 +24,7 @@
         }
       ],
       "constraints": {
-        "velocity": 0.925,
+        "velocity": 1.149,
         "accel": 3.048
       }
     },
@@ -50,7 +50,7 @@
         }
       ],
       "constraints": {
-        "velocity": 0.925,
+        "velocity": 1.149,
         "accel": 3.048
       }
     },
@@ -76,7 +76,7 @@
         }
       ],
       "constraints": {
-        "velocity": 0.75,
+        "velocity": 1.149,
         "accel": 3.048
       }
     },
@@ -94,7 +94,7 @@
         },
         {
           "x": -1.498,
-          "y": 1.579
+          "y": 1.571
         },
         {
           "x": -1.592,
@@ -102,7 +102,111 @@
         }
       ],
       "constraints": {
-        "velocity": 0.75,
+        "velocity": 1.149,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.592,
+          "y": 1.675
+        },
+        {
+          "x": -1.498,
+          "y": 1.571
+        },
+        {
+          "x": -0.79,
+          "y": 0.94
+        },
+        {
+          "x": -0.852,
+          "y": 0.815
+        }
+      ],
+      "constraints": {
+        "velocity": 1.149,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.852,
+          "y": 0.815
+        },
+        {
+          "x": -0.79,
+          "y": 0.941
+        },
+        {
+          "x": -0.717,
+          "y": 1.073
+        },
+        {
+          "x": -0.651,
+          "y": 1.185
+        }
+      ],
+      "constraints": {
+        "velocity": 1.149,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.651,
+          "y": 1.185
+        },
+        {
+          "x": -0.717,
+          "y": 1.073
+        },
+        {
+          "x": -1.116,
+          "y": 0.792
+        },
+        {
+          "x": -1.183,
+          "y": 0.612
+        }
+      ],
+      "constraints": {
+        "velocity": 1.149,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.183,
+          "y": 0.612
+        },
+        {
+          "x": -1.313,
+          "y": 0.417
+        },
+        {
+          "x": -1.371,
+          "y": -0.025
+        },
+        {
+          "x": -1.614,
+          "y": -0.002
+        }
+      ],
+      "constraints": {
+        "velocity": 1.149,
         "accel": 3.048
       }
     }

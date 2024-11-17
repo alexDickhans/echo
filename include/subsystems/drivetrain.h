@@ -228,8 +228,8 @@ public:
         linear.characterize(xLinear, uLinear);
         angular.characterize(xAngular, uAngular);
 
-        std::cout << "Linear: " << linear.getFF();
-        std::cout << "Angular: " << angular.getFF();
+        std::cout << "Linear: " << linear.getFF() << std::endl;
+        std::cout << "Angular: " << angular.getFF() << std::endl;
     }
 
     RunCommand *tank(pros::Controller &controller) {
