@@ -1,7 +1,10 @@
+#pragma once
+
 #include "config.h"
 #include "command/command.h"
 #include "feedback/pid.h"
 #include "subsystems/topIntake.h"
+#include "velocityProfile/trapProfile.h"
 
 class TopIntakePositionCommand : public Command {
 private:
@@ -11,6 +14,7 @@ private:
 
     std::optional<std::function<float(float)>> positionCallback;
 
+    std::optional<std::pair<TrapProfile, TrapProfile::State>> profile;
 public:
 
     TopIntakePositionCommand(TopIntake *intake, float tolerance,
@@ -23,15 +27,15 @@ public:
         this->pid.setTarget(setpoint);
     }
 
-    static TopIntakePositionCommand* fromReversePositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.01, PID pid = CONFIG::TOP_INTAKE_PID) {
+    static TopIntakePositionCommand* fromReversePositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.01, PID pid = CONFIG::TOP_INTAKE_PID, std::optional<std::pair<TrapProfile, TrapProfile::State>> profile = std::nullopt) {
         return new TopIntakePositionCommand(intake, tolerance, [setpoint] (float position) { return static_cast<float>(std::ceil(position) + setpoint); }, pid);
     }
 
-    static TopIntakePositionCommand* fromForwardPositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.01, PID pid = CONFIG::TOP_INTAKE_PID) {
+    static TopIntakePositionCommand* fromForwardPositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.01, PID pid = CONFIG::TOP_INTAKE_PID, std::optional<std::pair<TrapProfile, TrapProfile::State>> profile = std::nullopt) {
         return new TopIntakePositionCommand(intake, tolerance, [setpoint] (float position) { return static_cast<float>(std::floor(position) + setpoint); }, pid);
     }
 
-    static TopIntakePositionCommand* fromClosePositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.01, PID pid = CONFIG::TOP_INTAKE_PID) {
+    static TopIntakePositionCommand* fromClosePositionCommand(TopIntake *intake, float setpoint, float tolerance = 0.01, PID pid = CONFIG::TOP_INTAKE_PID, std::optional<std::pair<TrapProfile, TrapProfile::State>> profile = std::nullopt) {
         return new TopIntakePositionCommand(intake, tolerance, [setpoint] (float position) { return static_cast<float>(std::round(position) + setpoint); }, pid);
     }
 
@@ -44,8 +48,12 @@ public:
     }
 
     void execute() override {
-        intake->setPct(pid.update(intake->getPosition()));
-        std::cout << intake->getPosition() << std::endl;
+        if (profile.has_value()) {
+            pid.setTarget(profile->first.calculate(0.01, {intake->getPosition(), intake->getVelocity()}, profile->second).position);
+            intake->setPct(pid.update(intake->getPosition()));
+        } else {
+            intake->setPct(pid.update(intake->getPosition()));
+        }
     }
 
     bool isFinished() override {

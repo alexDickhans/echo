@@ -42,6 +42,10 @@ public:
 		return (this->intakeMotor.get_position(0) + this->intakeMotor.get_position(1)) / (2 * CONFIG::INTAKE_RATIO);
 	}
 
+	double getVelocity() {
+		return (this->intakeMotor.get_actual_velocity(0) + this->intakeMotor.get_actual_velocity(1)) / (2 * CONFIG::INTAKE_RATIO);
+	}
+
 	bool ringPresent() {
 		return intakeDistance.get() < 40;
 	}
