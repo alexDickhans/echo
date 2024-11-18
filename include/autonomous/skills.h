@@ -31,17 +31,17 @@ public:
                 drivetrain->pct(0.15, 0.15)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(33_deg, 0.3_deg),
+                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }),
                                               new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(33_deg, 1_deg),
+                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }),
                                               (new ParallelCommandGroup({
                                                        bottomIntake->movePct(0.0),
-                                                       lift->positionCommand(33_deg),
+                                                       lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                        topIntake->pctCommand(-1.0),
                                                }))
                                                       ->withTimeout(0.8_s)}))
@@ -67,22 +67,21 @@ public:
                 drivetrain->pct(0.15, 0.15)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(33_deg, 0.3_deg),
+                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }),
                                               new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(33_deg, 1_deg),
+                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }),
                                               (new ParallelCommandGroup({
                                                        bottomIntake->movePct(0.0),
-                                                       lift->positionCommand(33_deg),
+                                                       lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                        topIntake->pctCommand(-1.0),
                                                }))
                                                       ->withTimeout(0.8_s)}))
                                        ->asProxy()),
-                new Ramsete(drivetrain, &skills_5),
         });
     }
 };

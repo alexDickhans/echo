@@ -58,15 +58,15 @@ RingColor lastColor;
 inline void subsystemInit() {
     // TELEMETRY.setSerial(new pros::Serial(19, 921600));
 
-    topIntake = new TopIntake({-12, 13}, pros::Distance(17));
-    bottomIntake = new BottomIntake(pros::Motor(-1));
+    topIntake = new TopIntake({-12, 13}, pros::Distance(20));
+    bottomIntake = new BottomIntake(pros::Motor(-18));
     lift = new LiftSubsystem({-5, 7}, PID(4.5, 0.0, 3.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('b'));
     drivetrain = new Drivetrain({-8, -9}, {3, 4}, {10}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'), [] () { return goalClamp->getLastValue(); });
 
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
-    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, pros::Distance(20)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, pros::Distance(1)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
 
     drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
@@ -150,7 +150,7 @@ inline void subsystemInit() {
             ->whileTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
                                       new ParallelRaceGroup({
                                               bottomIntake->movePct(0.0),
-                                              lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT, 0.3_deg),
+                                              lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                               TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.1, 0.0),
                                       }),
                                       new ParallelRaceGroup({bottomIntake->movePct(0.0),
@@ -209,10 +209,10 @@ inline void subsystemInit() {
             ->onTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
                                    new ParallelRaceGroup({
                                            bottomIntake->movePct(0.0),
-                                           lift->moveToPosition(33_deg, 0.3_deg),
+                                           lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                            topIntake->pctCommand(0.0),
                                    }),
-                                   new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(33_deg),
+                                   new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                           topIntake->pctCommand(0.0), new WaitUntilCommand([&]() {
                                                               return primary.get_digital(DIGITAL_Y);
                                                           })}),
@@ -224,12 +224,12 @@ inline void subsystemInit() {
                                            {}),
                                    new ParallelCommandGroup({
                                            bottomIntake->movePct(0.0),
-                                           lift->positionCommand(33_deg),
+                                           lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                            topIntake->pctCommand(-1.0),
                                    })}))
             ->onFalse(new ParallelRaceGroup({
                     bottomIntake->movePct(0.0),
-                    lift->moveToPosition(0_deg, 10_deg),
+                    lift->moveToPosition(0_deg),
                     new ConditionalCommand(topIntake->pctCommand(1.0), topIntake->pctCommand(0.0),
                                            [&]() { return outtakeWallStake; }),
             }));
@@ -255,17 +255,17 @@ inline void subsystemInit() {
                      new ParallelCommandGroup({topIntake->pctCommand(0.0), bottomIntake->movePct(-0.2)})}));
     PathCommands::registerCommand("scoreNeutral", new Sequence({new ParallelRaceGroup({
                                                                         bottomIntake->movePct(0.0),
-                                                                        lift->moveToPosition(33_deg, 0.3_deg),
+                                                                        lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                                         topIntake->pctCommand(0.0),
                                                                 }),
                                                                 new ParallelRaceGroup({
                                                                         bottomIntake->movePct(0.0),
-                                                                        lift->moveToPosition(33_deg, 1_deg),
+                                                                        lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                                         topIntake->pctCommand(0.0),
                                                                 }),
                                                                 new ParallelCommandGroup({
                                                                         bottomIntake->movePct(0.0),
-                                                                        lift->positionCommand(33_deg),
+                                                                        lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                                         topIntake->pctCommand(-1.0),
                                                                 })}));
     PathCommands::registerCommand("intakeGoal", intakeOntoGoal);

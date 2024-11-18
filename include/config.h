@@ -29,7 +29,7 @@ namespace CONFIG {
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 35_deg;
-    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 95_deg;
+    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 120_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
         return (velocity / 85_in / second).getValue() * 1.03 + (accel / (800_in / second / second)).getValue() * 1.05 +
