@@ -106,9 +106,9 @@ public:
             uLinear.emplace_back(lastULinear);
             uAngular.emplace_back(lastUAngular);
 
-            xLinear.emplace_back((leftChange + rightChange).Convert(metre) / 2.0);
+            xLinear.emplace_back((leftChange + rightChange).Convert(metre) / (2.0 * 0.01));
             xAngular.emplace_back((rightChange - leftChange).Convert(metre) /
-                                  (2.0 * CONFIG::TRACK_WIDTH.Convert(metre)));
+                                  (2.0 * 0.01 * CONFIG::TRACK_WIDTH.Convert(metre)));
         }
     }
 
