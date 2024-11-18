@@ -106,7 +106,7 @@ public:
             uLinear.emplace_back(lastULinear);
             uAngular.emplace_back(lastUAngular);
 
-            xLinear.emplace_back((leftChange + rightChange).Convert(metre) / (2.0 * 0.01));
+            xLinear.emplace_back(((leftChange + rightChange) / (2.0 * 0.01)).getValue());
             xAngular.emplace_back((rightChange - leftChange).Convert(metre) /
                                   (2.0 * 0.01 * CONFIG::TRACK_WIDTH.Convert(metre)));
         }
@@ -165,13 +165,6 @@ public:
 
     auto setPto(const bool newValue) -> void { this->pto.set_value(newValue); }
 
-    void setVelocity(const QVelocity left, const QVelocity right) {
-        this->left11W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 600.0);
-        this->right11W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 600.0);
-        this->left5W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 200.0);
-        this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
-    }
-
     void initNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle, const bool flip) {
         imu.set_rotation(angle.Convert(degree) * (flip ? 1 : -1));
         this->particleFilter.initNormal(mean, covariance, flip);
@@ -211,8 +204,6 @@ public:
 
         auto redWeight = particleFilter.weightParticle(redPosition);
         auto blueWeight = particleFilter.weightParticle(bluePosition);
-
-        std::cout << redWeight << " " << blueWeight << std::endl;
 
         if (redWeight >= blueWeight) {
             ALLIANCE = RED;
@@ -294,10 +285,6 @@ public:
 
     RunCommand *pct(double left, double right) {
         return new RunCommand([this, left, right]() { this->setPct(left, right); }, {this});
-    }
-
-    RunCommand *velocityCommand(const QVelocity left, const QVelocity right) {
-        return new RunCommand([this, left, right]() { this->setVelocity(left, right); }, {this});
     }
 
     ~Drivetrain() override = default;

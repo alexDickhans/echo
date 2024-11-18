@@ -7,7 +7,7 @@
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
-    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="3" type="long" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="4" type="long" />
     <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppCodeGeneration" type="string" />
     <option name="/Default/CodeEditing/CppDocumentationComment/AddBriefTag/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
@@ -33,9 +33,12 @@
   <component name="ChangeListManager">
     <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/commands/intake/trapTopPosition.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/commands/intake/trapTopPosition.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/autonomous/skills.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/autonomous/skills.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/subsystems/drivetrain.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/drivetrain.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/subsystems/goalClamp.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/goalClamp.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/subsystems/subsystems.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/subsystems.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/velocityProfile/trapProfile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/velocityProfile/trapProfile.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_3.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_3.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_4.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_4.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +115,7 @@
     "cf.advertisement.text.overridden": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "top-intake-motion-profiling",
+    "git-widget-placeholder": "#40 on top-intake-motion-profiling",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -184,6 +187,7 @@
       <workItem from="1731781692705" duration="1000" />
       <workItem from="1731789503496" duration="3504000" />
       <workItem from="1731816507949" duration="7359000" />
+      <workItem from="1731949065143" duration="1816000" />
     </task>
     <servers />
   </component>

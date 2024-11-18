@@ -14,6 +14,7 @@
 #include "command/waitUntilCommand.h"
 #include "commands/driveMove.h"
 #include "commands/intake/positionCommand.h"
+#include "commands/intake/trapTopPosition.h"
 #include "commands/ltvUnicycleController.h"
 #include "commands/ramsete.h"
 #include "commands/rotate.h"
@@ -26,7 +27,6 @@
 #include "motionProfiling/pathCommands.h"
 #include "pros/adi.hpp"
 #include "topIntake.h"
-#include "commands/intake/trapTopPosition.h"
 
 #include <queue>
 
@@ -58,11 +58,12 @@ RingColor lastColor;
 inline void subsystemInit() {
     // TELEMETRY.setSerial(new pros::Serial(19, 921600));
 
-    drivetrain = new Drivetrain({-8, -9}, {3, 4}, {10}, {-2}, pros::Imu(14), pros::ADIDigitalOut('a'));
     topIntake = new TopIntake({-12, 13}, pros::Distance(17));
     bottomIntake = new BottomIntake(pros::Motor(-1));
     lift = new LiftSubsystem({-5, 7}, PID(4.5, 0.0, 3.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('b'));
+    drivetrain = new Drivetrain({-8, -9}, {3, 4}, {10}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'), [] () { return goalClamp->getLastValue(); });
+
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, pros::Distance(20)));
@@ -101,8 +102,8 @@ inline void subsystemInit() {
             new ParallelRaceGroup({
                     bottomIntake->movePct(1.0),
                     lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                    new ParallelCommandGroup(
-                            {TrapTopPosition::fromReversePositionCommand(topIntake, -1.1, TrapProfile(TrapProfile::Constraints(1.0, 5.0)))}),
+                    new ParallelCommandGroup({TrapTopPosition::fromReversePositionCommand(
+                            topIntake, -1.1, TrapProfile(TrapProfile::Constraints(1.0, 5.0)))}),
             }),
     });
     intakeOntoGoal = new ParallelCommandGroup({
@@ -138,8 +139,7 @@ inline void subsystemInit() {
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcade(primary));
 
     primary.getTrigger(DIGITAL_L1)
-            ->toggleOnTrue(new Sequence({new InstantCommand([&]() { hasRings = true; }, {}),
-                                         loadTwoRingHigh}));
+            ->toggleOnTrue(new Sequence({new InstantCommand([&]() { hasRings = true; }, {}), loadTwoRingHigh}));
 
     primary.getTrigger(DIGITAL_L2)
             ->toggleOnTrue(new Sequence(
@@ -148,26 +148,27 @@ inline void subsystemInit() {
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
     primary.getTrigger(DIGITAL_R1)
             ->whileTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
-                                   new ParallelRaceGroup({
-                                           bottomIntake->movePct(0.0),
-                                           lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT, 0.3_deg),
-                                           TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.1, 0.0),
-                                   }),
-                                   new ParallelRaceGroup({bottomIntake->movePct(0.0), lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                          topIntake->pctCommand(0.0), new WaitUntilCommand([&]() {
-                                                              return primary.get_digital(DIGITAL_Y);
-                                                          })}),
-                                   new InstantCommand(
-                                           [&]() {
-                                               outtakeWallStake = true;
-                                               hasRings = false;
-                                           },
-                                           {}),
-                                   new ParallelCommandGroup({
-                                           bottomIntake->movePct(0.0),
-                                           lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                           topIntake->pctCommand(-1.0),
-                                   })}));
+                                      new ParallelRaceGroup({
+                                              bottomIntake->movePct(0.0),
+                                              lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT, 0.3_deg),
+                                              TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.1, 0.0),
+                                      }),
+                                      new ParallelRaceGroup({bottomIntake->movePct(0.0),
+                                                             lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
+                                                             topIntake->pctCommand(0.0), new WaitUntilCommand([&]() {
+                                                                 return primary.get_digital(DIGITAL_Y);
+                                                             })}),
+                                      new InstantCommand(
+                                              [&]() {
+                                                  outtakeWallStake = true;
+                                                  hasRings = false;
+                                              },
+                                              {}),
+                                      new ParallelCommandGroup({
+                                              bottomIntake->movePct(0.0),
+                                              lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
+                                              topIntake->pctCommand(-1.0),
+                                      })}));
 
     primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 
