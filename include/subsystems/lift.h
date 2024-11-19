@@ -40,7 +40,8 @@ public:
 	}
 
 	RunCommand* controller(pros::Controller* controller) {
-		return new RunCommand([this, controller]() { this->setTarget(this->getPosition() + controller->get_analog(ANALOG_LEFT_Y) / 127.0 * 1.0_deg); }, {this});
+		Angle targetPosition = 0.0;
+		return new RunCommand([this, controller, targetPosition]() mutable { targetPosition = targetPosition + controller->get_analog(ANALOG_LEFT_Y) / 127.0 * 1.0_deg; this->setTarget(targetPosition); }, {this});
 	}
 
 	~LiftSubsystem() override = default;

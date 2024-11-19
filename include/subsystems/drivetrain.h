@@ -242,6 +242,18 @@ public:
                 {this});
     }
 
+    FunctionalCommand *hang(pros::Controller &controller) {
+        return new FunctionalCommand(
+            [this] () { this->pto.set_value(true); },
+                [this, controller]() mutable {
+                    this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0,
+                                 controller.get_analog(ANALOG_LEFT_Y) / 127.0);
+                },
+            [this] (bool _) { this->pto.set_value(false); },
+            [] () { return false; },
+                {this});
+    }
+
     FunctionalCommand *arcadeRecord(pros::Controller &controller) {
         return new FunctionalCommand(
                 [this]() mutable {
