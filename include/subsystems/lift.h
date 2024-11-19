@@ -35,12 +35,13 @@ public:
 		return new RunCommand([this, angle]() { this->setTarget(angle); }, {this});
 	}
 
-	FunctionalCommand* moveToPosition(Angle angle, Angle threshold) {
+	FunctionalCommand* moveToPosition(Angle angle, Angle threshold = 2_deg) {
 		return new FunctionalCommand([]() {}, [this, angle]() { this->setTarget(angle); }, [](bool _) {}, [this, threshold, angle]() { return Qabs(this->getPosition() - angle) < threshold; }, {this});
 	}
 
 	RunCommand* controller(pros::Controller* controller) {
-		return new RunCommand([this, controller]() { this->setTarget(this->getPosition() + controller->get_analog(ANALOG_LEFT_Y) / 127.0 * 1.0_deg); }, {this});
+		Angle targetPosition = 0.0;
+		return new RunCommand([this, controller, targetPosition]() mutable { targetPosition = targetPosition + controller->get_analog(ANALOG_LEFT_Y) / 127.0 * 1.0_deg; this->setTarget(targetPosition); }, {this});
 	}
 
 	~LiftSubsystem() override = default;

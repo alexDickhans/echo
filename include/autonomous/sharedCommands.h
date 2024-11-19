@@ -15,7 +15,7 @@ public:
     static Command *scoreAlliance() {
         return new Sequence({new ParallelRaceGroup({
                                      bottomIntake->movePct(0.0),
-                                     lift->moveToPosition(8_deg, 0.2_deg),
+                                     lift->moveToPosition(8_deg),
                                      topIntake->pctCommand(0.0),
                              }),
                              new ParallelRaceGroup({
@@ -42,7 +42,7 @@ public:
     static Command *scoreAlliance2() {
         return new Sequence({new ParallelRaceGroup({
                                      bottomIntake->movePct(0.0),
-                                     lift->moveToPosition(7_deg, 0.3_deg),
+                                     lift->moveToPosition(7_deg),
                                      topIntake->pctCommand(0.0),
                              }),
                              new ParallelRaceGroup({

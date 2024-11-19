@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include "Eigen/Eigen"
 #include "command/instantCommand.h"
 #include "config.h"
@@ -12,6 +14,8 @@
 #include "auton.h"
 #include "autonomous/autons.h"
 
+#include "sysid/oneDofVelocitySystem.h"
+
 struct DriveSpeeds {
     QVelocity linearVelocity = 0.0;
     QAngularVelocity angularVelocity = 0.0;
@@ -21,7 +25,7 @@ class Drivetrain : public Subsystem {
 private:
     pros::MotorGroup left11W, right11W, left5W, right5W;
     pros::Imu imu;
-    pros::ADIDigitalOut pto;
+    pros::adi::DigitalOut pto;
 
     QLength leftChange, rightChange;
     QLength lastLeft, lastRight;
@@ -32,15 +36,28 @@ private:
 
     GpsSensor *sensor;
 
+    double lastULinear = 0.0;
+    double lastUAngular = 0.0;
+
+    std::vector<double> uLinear;
+    std::vector<double> xLinear;
+    std::vector<double> uAngular;
+    std::vector<double> xAngular;
+
+    bool recording = false;
+
+    std::function<bool()> hasGoal;
+
 public:
     Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
-               pros::Imu imu, pros::ADIDigitalOut pto) :
-        left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)), pto(pto),
-        particleFilter([this, imu]() {
+               pros::Imu imu, pros::adi::DigitalOut pto, std::function<bool()> hasGoal) :
+        left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)),
+        pto(std::move(pto)), particleFilter([this, imu]() {
             const Angle angle = -imu.get_rotation() * degree;
             return isfinite(angle.getValue()) ? angle : 0.0;
-        }) {
+        }),
+        hasGoal(std::move(hasGoal)) {
         this->leftChange = 0.0;
         this->rightChange = 0.0;
 
@@ -84,6 +101,15 @@ public:
 
             return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
         });
+
+        if (recording) {
+            uLinear.emplace_back(lastULinear);
+            uAngular.emplace_back(lastUAngular);
+
+            xLinear.emplace_back(((leftChange + rightChange) / (2.0 * 0.01)).getValue());
+            xAngular.emplace_back((rightChange - leftChange).Convert(metre) /
+                                  (2.0 * 0.01 * CONFIG::TRACK_WIDTH.Convert(metre)));
+        }
     }
 
     Angle getAngle() const { return -imu.get_rotation() * degree; }
@@ -95,6 +121,9 @@ public:
         this->right11W.move_voltage(right * 12000.0);
         this->left5W.move_voltage(left * 8000.0); // 5.5W have a lower max voltage then the 11W motors
         this->right5W.move_voltage(right * 8000.0);
+
+        lastULinear = (left + right) / 2.0;
+        lastUAngular = (right - left) / 2.0;
     }
 
     void setDriveSpeeds(DriveSpeeds lastSpeeds, DriveSpeeds nextDriveSpeeds = {0.0, 0.0}) {
@@ -102,10 +131,14 @@ public:
                 (nextDriveSpeeds.angularVelocity - lastSpeeds.angularVelocity) / 10_ms;
         QAcceleration linearAcceleration = (nextDriveSpeeds.linearVelocity - lastSpeeds.linearVelocity) / 10_ms;
 
-        double uLinear = CONFIG::DRIVETRAIN_LINEAR_VELOCITY_FF *
-                         Eigen::Vector2d(nextDriveSpeeds.linearVelocity.getValue(), linearAcceleration.getValue());
-        double uAngular = CONFIG::DRIVETRAIN_ANGULAR_VELOCITY_FF *
-                          Eigen::Vector2d(nextDriveSpeeds.angularVelocity.getValue(), angularAcceleration.getValue());
+        bool goal = hasGoal();
+
+        const double uLinear =
+                (goal ? CONFIG::DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL : CONFIG::DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL) *
+                Eigen::Vector2d(nextDriveSpeeds.linearVelocity.getValue(), linearAcceleration.getValue());
+        const double uAngular =
+                (goal ? CONFIG::DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL : CONFIG::DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL) *
+                Eigen::Vector2d(nextDriveSpeeds.angularVelocity.getValue(), angularAcceleration.getValue());
 
         const auto angular_wheel_velocity_commanded = uAngular * CONFIG::TRACK_WIDTH.getValue() / 2.0;
 
@@ -131,13 +164,6 @@ public:
     QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
 
     auto setPto(const bool newValue) -> void { this->pto.set_value(newValue); }
-
-    void setVelocity(const QVelocity left, const QVelocity right) {
-        this->left11W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 600.0);
-        this->right11W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 600.0);
-        this->left5W.move_velocity((left / CONFIG::MAX_SPEED).getValue() * 200.0);
-        this->right5W.move_velocity((right / CONFIG::MAX_SPEED).getValue() * 200.0);
-    }
 
     void initNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle, const bool flip) {
         imu.set_rotation(angle.Convert(degree) * (flip ? 1 : -1));
@@ -179,13 +205,22 @@ public:
         auto redWeight = particleFilter.weightParticle(redPosition);
         auto blueWeight = particleFilter.weightParticle(bluePosition);
 
-        std::cout << redWeight << " " << blueWeight << std::endl;
-
         if (redWeight >= blueWeight) {
             ALLIANCE = RED;
         } else {
             ALLIANCE = BLUE;
         }
+    }
+
+    void printData() {
+        OneDofVelocitySystem linear;
+        OneDofVelocitySystem angular;
+
+        linear.characterize(xLinear, uLinear);
+        angular.characterize(xAngular, uAngular);
+
+        std::cout << "Linear: " << linear.getFF() << std::endl;
+        std::cout << "Angular: " << angular.getFF() << std::endl;
     }
 
     RunCommand *tank(pros::Controller &controller) {
@@ -207,12 +242,61 @@ public:
                 {this});
     }
 
-    RunCommand *pct(double left, double right) {
-        return new RunCommand([this, left, right]() { this->setPct(left, right); }, {this});
+    FunctionalCommand *hang(pros::Controller &controller) {
+        return new FunctionalCommand(
+            [this] () { this->pto.set_value(true); },
+                [this, controller]() mutable {
+                    this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0,
+                                 controller.get_analog(ANALOG_LEFT_Y) / 127.0);
+                },
+            [this] (bool _) { this->pto.set_value(false); },
+            [] () { return false; },
+                {this});
     }
 
-    RunCommand *velocityCommand(const QVelocity left, const QVelocity right) {
-        return new RunCommand([this, left, right]() { this->setVelocity(left, right); }, {this});
+    FunctionalCommand *arcadeRecord(pros::Controller &controller) {
+        return new FunctionalCommand(
+                [this]() mutable {
+                    this->recording = true;
+                    uAngular.clear();
+                    uLinear.clear();
+                    xLinear.clear();
+                    xAngular.clear();
+                },
+                [this, controller]() mutable {
+                    this->setPct((controller.get_analog(ANALOG_LEFT_Y) + controller.get_analog(ANALOG_RIGHT_X)) / 127.0,
+                                 (controller.get_analog(ANALOG_LEFT_Y) - controller.get_analog(ANALOG_RIGHT_X)) /
+                                         127.0);
+                },
+                [this](bool _) mutable {
+                    this->recording = false;
+                    printData();
+                },
+                [this]() mutable { return false; }, {this});
+    }
+
+    FunctionalCommand *tankRecord(pros::Controller &controller) {
+        return new FunctionalCommand(
+                [this]() mutable {
+                    this->recording = true;
+                    uAngular.clear();
+                    uLinear.clear();
+                    xLinear.clear();
+                    xAngular.clear();
+                },
+                [this, controller]() mutable {
+                    this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0,
+                                 controller.get_analog(ANALOG_RIGHT_Y) / 127.0);
+                },
+                [this](bool _) mutable {
+                    this->recording = false;
+                    printData();
+                },
+                [this]() mutable { return false; }, {this});
+    }
+
+    RunCommand *pct(double left, double right) {
+        return new RunCommand([this, left, right]() { this->setPct(left, right); }, {this});
     }
 
     ~Drivetrain() override = default;

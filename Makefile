@@ -41,6 +41,8 @@ TEMPLATE_FILES=$(INCDIR)/$(LIBNAME)/*.h $(INCDIR)/$(LIBNAME)/*.hpp
 
 .DEFAULT_GOAL=quick
 
+MAKEFLAGS += -j12
+
 ################################################################################
 ################################################################################
 ########## Nothing below this line should be edited by typical users ###########

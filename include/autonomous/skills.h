@@ -11,7 +11,6 @@ BEZIER_MP_ASSET(skills_1);
 BEZIER_MP_ASSET(skills_2);
 BEZIER_MP_ASSET(skills_3);
 BEZIER_MP_ASSET(skills_4);
-BEZIER_MP_ASSET(skills_5);
 
 /**
  * Skills autonomous
@@ -28,36 +27,25 @@ public:
                 drivetrain->setNorm(Eigen::Vector2f(0.0, (64_in).getValue()), Eigen::Matrix2f::Identity() * 0.05,
                                     -90_deg, false),
                 new ScheduleCommand(SharedCommands::scoreAlliance()),
-                (new Rotate(drivetrain, -90_deg, false, -0.5, false))->withTimeout(0.5_s),
-                new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, 17_in, false, -90_deg,
-                                        0.0),
-                (new Rotate(drivetrain, 180_deg, false, 0.0))->withTimeout(0.7_s),
-                new ScheduleCommand(goalClamp->levelCommand(false)),
-                new TankMotionProfiling(drivetrain, {25_in / second, 50_in / second / second}, -24_in, false, 180_deg,
-                                        0.0, true, 0.0, 0_in / second),
-                new ScheduleCommand(goalClampTrue),
                 new Ramsete(drivetrain, &skills_1),
                 drivetrain->pct(0.15, 0.15)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(33_deg, 0.3_deg),
+                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }),
                                               new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(33_deg, 1_deg),
+                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }),
                                               (new ParallelCommandGroup({
                                                        bottomIntake->movePct(0.0),
-                                                       lift->positionCommand(33_deg),
+                                                       lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                        topIntake->pctCommand(-1.0),
                                                }))
                                                       ->withTimeout(0.8_s)}))
                                        ->asProxy()),
-                new TankMotionProfiling(drivetrain, {65_in / second, 100_in / second / second}, -18_in, false, 0_deg,
-                                        0.0, true),
-                (new Rotate(drivetrain, -90_deg, false, 0.0))->withTimeout(0.65_s),
                 new Ramsete(drivetrain, &skills_2),
                 new ScheduleCommand(SharedCommands::scoreAlliance2()),
                 (new Rotate(drivetrain, 90_deg, false, -0.5, false))->withTimeout(1.0_s),
@@ -79,22 +67,21 @@ public:
                 drivetrain->pct(0.15, 0.15)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(33_deg, 0.3_deg),
+                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }),
                                               new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(33_deg, 1_deg),
+                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }),
                                               (new ParallelCommandGroup({
                                                        bottomIntake->movePct(0.0),
-                                                       lift->positionCommand(33_deg),
+                                                       lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                        topIntake->pctCommand(-1.0),
                                                }))
                                                       ->withTimeout(0.8_s)}))
                                        ->asProxy()),
-                new Ramsete(drivetrain, &skills_5),
         });
     }
 };

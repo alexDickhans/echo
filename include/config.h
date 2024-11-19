@@ -19,6 +19,8 @@ namespace CONFIG {
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
     constexpr double DRIVETRAIN_TUNING_SCALAR = 1.0;
 
+    constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
+
     constexpr QVelocity MAX_SPEED = 60_in / second;
 
     inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 4.0);
@@ -27,7 +29,7 @@ namespace CONFIG {
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 35_deg;
-    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 95_deg;
+    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 110_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
         return (velocity / 85_in / second).getValue() * 1.03 + (accel / (800_in / second / second)).getValue() * 1.05 +
@@ -35,7 +37,7 @@ namespace CONFIG {
     }
 
     const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-4.2_in).getValue(), (7_in).getValue(), (90_deg).getValue());
-    const Eigen::Vector3f DISTANCE_FRONT_OFFSET((4_in).getValue(), (5_in).getValue(), (180_deg).getValue());
+    const Eigen::Vector3f DISTANCE_FRONT_OFFSET((7_in).getValue(), (-5_in).getValue(), (180_deg).getValue());
     const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-4.2_in).getValue(), (-7_in).getValue(), (-90_deg).getValue());
 
     constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
@@ -48,6 +50,8 @@ namespace CONFIG {
 
     double K_s = 0.025;
 
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF{0.582, 0.117};
-    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF{0.103, 0.0191};
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.37, 0.0092};
+    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.155, 0.0035};
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.34, 0.01};
+    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.150, 0.0025};
 } // namespace CONFIG
