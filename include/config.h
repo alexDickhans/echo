@@ -28,8 +28,8 @@ namespace CONFIG {
     inline PID TURN_PID = PID(0.9, 0.0, 6.0);
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
-    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 35_deg;
-    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 110_deg;
+    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 32_deg;
+    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 120_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
         return (velocity / 85_in / second).getValue() * 1.03 + (accel / (800_in / second / second)).getValue() * 1.05 +
@@ -42,16 +42,16 @@ namespace CONFIG {
 
     constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-    constexpr float RAMSETE_ZETA = 0.7;
-    constexpr float RAMSETE_BETA = 15.0;
+    constexpr float RAMSETE_ZETA = 0.0;
+    constexpr float RAMSETE_BETA = 1.0;
 
     Eigen::Matrix3f DEFAULT_DT_COST_Q = Eigen::Matrix3f({{1.0, 0.0, 0.0}, {0.0, 5.0, 0.0}, {0.0, 0.0, 7.0}});
     Eigen::Matrix2f DEFAULT_DT_COST_R = Eigen::Matrix2f::Identity();
 
-    double K_s = 0.025;
+    double K_s = 0.12;
 
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.37, 0.0092};
-    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.155, 0.0035};
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.34, 0.01};
-    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.150, 0.0025};
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.63, 0.0503};
+    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.135, 0.006};
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL = DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL;
+    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL = DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL;
 } // namespace CONFIG
