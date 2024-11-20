@@ -108,7 +108,7 @@ public:
 
             xLinear.emplace_back(((leftChange + rightChange) / (2.0 * 0.01)).getValue());
             xAngular.emplace_back((rightChange - leftChange).Convert(metre) /
-                                  (2.0 * 0.01 * CONFIG::TRACK_WIDTH.Convert(metre)));
+                                  (0.01 * CONFIG::TRACK_WIDTH.Convert(metre)));
         }
     }
 

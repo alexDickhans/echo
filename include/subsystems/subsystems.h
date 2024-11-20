@@ -54,7 +54,7 @@ std::vector<int> ejectionPoints{};
 RingColor lastColor;
 
 inline void subsystemInit() {
-    TELEMETRY.setSerial(new pros::Serial(17, 921600));
+    TELEMETRY.setSerial(new pros::Serial(16, 921600));
 
     topIntake = new TopIntake({-12, 13}, pros::Distance(20));
     bottomIntake = new BottomIntake(pros::Motor(18));
@@ -62,7 +62,6 @@ inline void subsystemInit() {
     goalClamp = new GoalClamp(pros::adi::DigitalOut('b'));
     drivetrain = new Drivetrain({-8, -9}, {3, 4}, {10}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'),
                                 []() { return goalClamp->getLastValue(); });
-
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, pros::Distance(1)));
@@ -135,7 +134,7 @@ inline void subsystemInit() {
                             ->andThen(topIntake->pctCommand(-1.0)->withTimeout(0.07_s)->andThen(
                                     new ScheduleCommand(intakeOntoGoal))));
 
-    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcade(primary));
+    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcadeRecord(primary));
 
     primary.getTrigger(DIGITAL_L1)
             ->toggleOnTrue(new Sequence({new InstantCommand([&]() { hasRings = true; }, {}), loadOneRingHigh, loadOneRingHigh}));
