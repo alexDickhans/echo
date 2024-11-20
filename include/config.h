@@ -42,7 +42,7 @@ namespace CONFIG {
 
     constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-    constexpr float RAMSETE_ZETA = 0.7;
+    constexpr float RAMSETE_ZETA = 0.3;
     constexpr float RAMSETE_BETA = 15.0;
 
     Eigen::Matrix3f DEFAULT_DT_COST_Q = Eigen::Matrix3f({{1.0, 0.0, 0.0}, {0.0, 5.0, 0.0}, {0.0, 0.0, 7.0}});

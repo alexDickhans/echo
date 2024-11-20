@@ -54,7 +54,7 @@ std::vector<int> ejectionPoints{};
 RingColor lastColor;
 
 inline void subsystemInit() {
-    // TELEMETRY.setSerial(new pros::Serial(19, 921600));
+    TELEMETRY.setSerial(new pros::Serial(17, 921600));
 
     topIntake = new TopIntake({-12, 13}, pros::Distance(20));
     bottomIntake = new BottomIntake(pros::Motor(18));

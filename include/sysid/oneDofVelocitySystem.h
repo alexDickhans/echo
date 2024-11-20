@@ -13,23 +13,23 @@ public:
     OneDofVelocitySystem() = default;
 
     void characterize(const std::vector<double>& x, const std::vector<double>& u) {
-        Eigen::MatrixXd A = Eigen::MatrixXd::Zero(x.size() - 1, 2);
+        Eigen::MatrixXd A = Eigen::MatrixXd::Zero(x.size() - 1, 3);
         Eigen::MatrixXd b = Eigen::VectorXd::Zero(x.size() - 1);
 
         for (int i = 0; i < x.size() - 1; i++) {
             A(i, 0) = x[i];
             A(i, 1) = u[i];
-            // A(i, 2) = -signnum(x[i]);
+            A(i, 2) = -signnum(x[i]);
             b(i) = x[i + 1];
         }
 
         Eigen::VectorXd solution = A.bdcSvd<Eigen::ComputeThinU | Eigen::ComputeThinV>().solve(b);
 
-        // double K_s = -solution(2) / solution(1);
+        double K_s = -solution(2) / solution(1);
         double K_v = (1 - solution(0)) / solution(1);
         double K_a = -K_v * 0.01 / log(solution(0));
 
-        ff = {K_v, K_a, 0.0};
+        ff = {K_v, K_a, K_s};
     }
 
     void characterize(const std::function<double()> &x, const std::function<double()> &u,
