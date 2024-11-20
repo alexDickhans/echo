@@ -73,7 +73,7 @@ inline void subsystemInit() {
     CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
     CommandScheduler::registerSubsystem(
             topIntake, new ConditionalCommand(topIntake->pctCommand(0.0),
-                                              TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 1.0, 0.0),
+                                              TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 0.0, 0.0),
                                               [&]() { return hasRings; }));
     CommandScheduler::registerSubsystem(bottomIntake, bottomIntake->stopIntake());
     CommandScheduler::registerSubsystem(lift, new ConditionalCommand(lift->positionCommand(3.0_deg),

@@ -140,10 +140,8 @@ public:
                 (goal ? CONFIG::DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL : CONFIG::DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL) *
                 Eigen::Vector2d(nextDriveSpeeds.angularVelocity.getValue(), angularAcceleration.getValue());
 
-        const auto angular_wheel_velocity_commanded = uAngular * CONFIG::TRACK_WIDTH.getValue() / 2.0;
-
-        double left = uLinear - angular_wheel_velocity_commanded;
-        double right = uLinear + angular_wheel_velocity_commanded;
+        double left = uLinear - uAngular;
+        double right = uLinear + uAngular;
 
         left += signnum_c(left) * CONFIG::K_s;
         right += signnum_c(right) * CONFIG::K_s;
