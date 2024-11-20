@@ -17,10 +17,10 @@ public:
         Eigen::MatrixXd b = Eigen::VectorXd::Zero(x.size() - 1);
 
         for (int i = 1; i < x.size(); i++) {
-            A(i, 0) = x[i];
-            A(i, 1) = (x[i] - x[i-1]) * 100.0;
-            A(i, 2) = signnum(x[i]);
-            b(i) = u[i - 1];
+            A(i-1, 0) = x[i];
+            A(i-1, 1) = (x[i] - x[i-1]) * 100.0;
+            A(i-1, 2) = signnum(x[i]);
+            b(i-1) = u[i - 1];
         }
 
         Eigen::VectorXd solution = A.bdcSvd<Eigen::ComputeThinU | Eigen::ComputeThinV>().solve(b);

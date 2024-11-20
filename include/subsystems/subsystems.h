@@ -54,13 +54,13 @@ std::vector<int> ejectionPoints{};
 RingColor lastColor;
 
 inline void subsystemInit() {
-    TELEMETRY.setSerial(new pros::Serial(16, 921600));
+    // TELEMETRY.setSerial(new pros::Serial(16, 921600));
 
     topIntake = new TopIntake({-12, 13}, pros::Distance(20));
     bottomIntake = new BottomIntake(pros::Motor(18));
     lift = new LiftSubsystem({-5, 7}, PID(4.5, 0.0, 3.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('b'));
-    drivetrain = new Drivetrain({-8, -9}, {3, 4}, {10}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'),
+    drivetrain = new Drivetrain({-8, -16}, {3, 4}, {21}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'),
                                 []() { return goalClamp->getLastValue(); });
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
@@ -75,7 +75,7 @@ inline void subsystemInit() {
                                               TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 0.0, 0.0),
                                               [&]() { return hasRings; }));
     CommandScheduler::registerSubsystem(bottomIntake, bottomIntake->stopIntake());
-    CommandScheduler::registerSubsystem(lift, new ConditionalCommand(lift->positionCommand(3.0_deg),
+    CommandScheduler::registerSubsystem(lift, new ConditionalCommand(lift->positionCommand(25.0_deg),
                                                                      lift->positionCommand(0.0_deg),
                                                                      [&]() { return hasRings; }));
     CommandScheduler::registerSubsystem(goalClamp, goalClamp->levelCommand(false));
@@ -95,13 +95,12 @@ inline void subsystemInit() {
     });
     loadOneRingHigh = new Sequence({
             new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.43, 0.0),
+                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.2, 0.0),
                                    new WaitUntilCommand([&]() { return topIntake->ringPresent(); })}),
             new ParallelRaceGroup({
                     bottomIntake->movePct(1.0),
                     lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                    new ParallelCommandGroup({TrapTopPosition::fromReversePositionCommand(
-                            topIntake, -1.1, TrapProfile(TrapProfile::Constraints(1.0, 5.0)))}),
+                    new ParallelCommandGroup({TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.2)}),
             }),
     });
     intakeOntoGoal = new ParallelCommandGroup({
@@ -112,17 +111,17 @@ inline void subsystemInit() {
     });
 
     Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
-            .onTrue((new WaitCommand(70_ms))
-                            ->andThen(new InstantCommand([]() { lastColor = topIntake->getRingColor(); }, {})))
-            ->onFalse(new InstantCommand(
+            .onFalse(new InstantCommand(
                     []() mutable {
+                            lastColor = topIntake->getRingColor();
+                            primary.print(0, 0, "%d", lastColor);
                         if (lastColor != ALLIANCE && lastColor != RingColor::None)
-                            ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
+                            ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 2);
                     },
                     {}));
 
     Trigger([]() mutable {
-        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.38 && intakeOntoGoal->scheduled() &&
+        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.3 && intakeOntoGoal->scheduled() &&
                std::find(ejectionPoints.begin(), ejectionPoints.end(),
                          static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
     })
@@ -137,7 +136,8 @@ inline void subsystemInit() {
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrain->arcadeRecord(primary));
 
     primary.getTrigger(DIGITAL_L1)
-            ->toggleOnTrue(new Sequence({new InstantCommand([&]() { hasRings = true; }, {}), loadOneRingHigh, loadOneRingHigh}));
+            ->toggleOnTrue(new Sequence(
+                    {new InstantCommand([&]() { hasRings = true; }, {}), loadOneRingHigh, loadOneRingHigh}));
 
     primary.getTrigger(DIGITAL_L2)
             ->toggleOnTrue(new Sequence(
@@ -170,7 +170,7 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_DOWN)->onTrue(drivetrain->hang(primary)->with(lift->controller(&partner)));
 
-    primary.getTrigger(DIGITAL_DOWN)->onTrue(goalClampTrue);
+    primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 
     partner.getTrigger(DIGITAL_A)->whileTrue(
             new ParallelCommandGroup({new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8),
