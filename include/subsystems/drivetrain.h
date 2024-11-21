@@ -293,7 +293,7 @@ public:
     Sequence *characterizeLinear() {
         return new Sequence({
                 new InstantCommand(
-                        [this] mutable {
+                        [this] () mutable {
                             this->recording = true;
                             uAngular.clear();
                             uLinear.clear();
@@ -318,7 +318,7 @@ public:
     Sequence *characterizeAngular() {
         return new Sequence({
                 new InstantCommand(
-                        [this] mutable {
+                        [this] () mutable {
                             this->recording = true;
                             uAngular.clear();
                             uLinear.clear();
