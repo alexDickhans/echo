@@ -241,15 +241,12 @@ public:
     }
 
     FunctionalCommand *hang(pros::Controller &controller) {
-        return new FunctionalCommand(
-            [this] () { this->pto.set_value(true); },
-                [this, controller]() mutable {
-                    this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0,
-                                 controller.get_analog(ANALOG_LEFT_Y) / 127.0);
-                },
-            [this] (bool _) { this->pto.set_value(false); },
-            [] () { return false; },
-                {this});
+        return new FunctionalCommand([this]() { this->pto.set_value(true); },
+                                     [this, controller]() mutable {
+                                         this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0,
+                                                      controller.get_analog(ANALOG_LEFT_Y) / 127.0);
+                                     },
+                                     [this](bool _) { this->pto.set_value(false); }, []() { return false; }, {this});
     }
 
     FunctionalCommand *arcadeRecord(pros::Controller &controller) {
@@ -291,6 +288,56 @@ public:
                     printData();
                 },
                 [this]() mutable { return false; }, {this});
+    }
+
+    Sequence *characterizeLinear() {
+        return new Sequence({
+                new InstantCommand(
+                        [this] mutable {
+                            this->recording = true;
+                            uAngular.clear();
+                            uLinear.clear();
+                            xLinear.clear();
+                            xAngular.clear();
+                        },
+                        {}),
+                this->pct(0.5, 0.5)->withTimeout(500_ms),
+                this->pct(1.0, 1.0)->withTimeout(200_ms),
+                this->pct(-0.5, -0.5)->withTimeout(800_ms),
+                this->pct(-0.2, -0.2)->withTimeout(300_ms),
+                this->pct(1.0, 1.0)->withTimeout(200_ms),
+                new InstantCommand(
+                        [this]() mutable {
+                            this->recording = false;
+                            printData();
+                        },
+                        {}),
+        });
+    }
+
+    Sequence *characterizeAngular() {
+        return new Sequence({
+                new InstantCommand(
+                        [this] mutable {
+                            this->recording = true;
+                            uAngular.clear();
+                            uLinear.clear();
+                            xLinear.clear();
+                            xAngular.clear();
+                        },
+                        {}),
+                this->pct(0.5, -0.5)->withTimeout(500_ms),
+                this->pct(1.0, -1.0)->withTimeout(200_ms),
+                this->pct(-0.5, 0.5)->withTimeout(800_ms),
+                this->pct(-0.2, 0.2)->withTimeout(300_ms),
+                this->pct(1.0, -1.0)->withTimeout(200_ms),
+                new InstantCommand(
+                        [this]() mutable {
+                            this->recording = false;
+                            printData();
+                        },
+                        {}),
+        });
     }
 
     RunCommand *pct(double left, double right) {
