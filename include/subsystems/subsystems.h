@@ -72,7 +72,7 @@ inline void subsystemInit() {
     CommandScheduler::registerSubsystem(drivetrain, drivetrain->tank(primary));
     CommandScheduler::registerSubsystem(
             topIntake, new ConditionalCommand(topIntake->pctCommand(0.0),
-                                              TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 0.0, 0.0),
+                                              TopIntakePositionCommand::fromReversePositionCommand(topIntake, 0.0, 0.0),
                                               [&]() { return hasRings; }));
     CommandScheduler::registerSubsystem(bottomIntake, bottomIntake->stopIntake());
     CommandScheduler::registerSubsystem(lift, new ConditionalCommand(lift->positionCommand(25.0_deg),
@@ -104,7 +104,7 @@ inline void subsystemInit() {
             }),
     });
     intakeOntoGoal = new ParallelCommandGroup({
-            bottomIntake->movePct(1.0),
+            bottomIntake->speedCommand(150),
             lift->positionCommand(0.0_deg),
             topIntake->pctCommand(1.0),
             new InstantCommand([&]() { hasRings = false; }, {}),
@@ -168,7 +168,7 @@ inline void subsystemInit() {
                                               topIntake->pctCommand(-1.0),
                                       })}));
 
-    primary.getTrigger(DIGITAL_DOWN)->onTrue(drivetrain->hang(primary)->with(lift->controller(&partner)));
+    primary.getTrigger(DIGITAL_DOWN)->onTrue(drivetrain->hang(primary)->with(lift->controller(&primary, ANALOG_RIGHT_Y)));
 
     primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 

@@ -10,15 +10,20 @@ class BottomIntake : public Subsystem {
 public:
     explicit BottomIntake(pros::Motor intake_motor) :
         intakeMotor(std::move(intake_motor)) {
+        intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
     }
 
     void periodic() override {
         // No-op
     }
 
-    void setPct(double pct) const {
+    void setPct(double pct) {
         // std::cout << pct << std::endl;
         this->intakeMotor.move_voltage(pct * 12000.0);
+    }
+
+    void setSpeed(double speed) {
+        this->intakeMotor.move_velocity(speed);
     }
 
     RunCommand *stopIntake() {
@@ -27,6 +32,10 @@ public:
 
     RunCommand *movePct(double pct) {
         return new RunCommand([this, pct]() { this->setPct(pct); }, {this});
+    }
+
+    RunCommand *speedCommand(double speed) {
+        return new RunCommand([this, speed]() { this->setSpeed(speed); }, {this});
     }
 
     ~BottomIntake() override = default;
