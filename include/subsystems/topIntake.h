@@ -4,26 +4,26 @@
 
 #include "command/command.h"
 #include "command/runCommand.h"
-#include "vex/v5_vcs.h"
+#include "pros/aivision.hpp"
 
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
-inline vex::aivision::colordesc RED_COLOR_DESC(1, 243, 104, 122, 17, 0.2);
-inline vex::aivision::colordesc BLUE_COLOR_DESC(2, 92, 229, 247, 20, 0.2);
+inline pros::aivision_color_s RED_COLOR_DESC(1, 243, 104, 122, 17, 0.2);
+inline pros::aivision_color_s BLUE_COLOR_DESC(2, 92, 229, 247, 20, 0.2);
 
 class TopIntake : public Subsystem {
 	pros::MotorGroup intakeMotor;
-	vex::aivision vision;
+	pros::AIVision vision;
 	pros::Distance intakeDistance;
 
 public:
-	explicit TopIntake(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance)
-		: intakeMotor(motors), vision(16, RED_COLOR_DESC, BLUE_COLOR_DESC), intakeDistance(std::move(intakeDistance)) {
+	explicit TopIntake(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance, pros::AIVision vision)
+		: intakeMotor(motors), vision(vision), intakeDistance(std::move(intakeDistance)) {
 		intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 		intakeMotor.set_gearing(pros::MotorGears::green);
-		vision.colorDetection(true, false);
-		vision.startAwb();
+		vision.set_color(RED_COLOR_DESC);
+		vision.set_color(BLUE_COLOR_DESC);
 	}
 
 	void periodic() override {
@@ -51,8 +51,8 @@ public:
 	}
 
 	RingColor getRingColor() {
-		if (vision.takeSnapshot(vex::aivision::ALL_COLORS))
-			return static_cast<RingColor>(vision.largestObject.id);
+		if (vision.get_object_count() > 0)
+			return static_cast<RingColor>(vision.get_object(0).id);
 		return RingColor::None;
 	}
 

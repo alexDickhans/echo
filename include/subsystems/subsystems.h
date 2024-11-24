@@ -59,7 +59,7 @@ RingColor lastColor;
 inline void subsystemInit() {
     // TELEMETRY.setSerial(new pros::Serial(16, 921600));
 
-    topIntake = new TopIntake({-12, 13}, pros::Distance(20));
+    topIntake = new TopIntake({-12, 13}, pros::Distance(20), pros::AIVision(17));
     bottomIntake = new BottomIntake(pros::Motor(18));
     lift = new LiftSubsystem({-5, 7}, PID(4.5, 0.0, 3.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('b'));
