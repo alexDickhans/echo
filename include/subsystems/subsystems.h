@@ -168,7 +168,7 @@ inline void subsystemInit() {
                                               topIntake->pctCommand(-1.0),
                                       })}));
 
-    primary.getTrigger(DIGITAL_DOWN)->onTrue(drivetrain->hang(primary)->with(lift->controller(&partner)));
+    primary.getTrigger(DIGITAL_DOWN)->onTrue(drivetrain->hang(primary)->with(lift->controller(&primary, ANALOG_RIGHT_Y)));
 
     primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 
