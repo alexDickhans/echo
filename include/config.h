@@ -12,7 +12,8 @@ namespace CONFIG {
 
     constexpr QLength DRIVE_RADIUS = 3.25_in / 2.0;
     constexpr float DRIVE_RATIO = 60.0 / 36.0;
-    constexpr double LIFT_RATIO = 5.0;
+    constexpr float STRING_RATIO = 1.0;
+    constexpr double LIFT_RATIO = 6.0;
     constexpr QLength TRACK_WIDTH = 14_in;
     constexpr size_t NUM_PARTICLES = 500;
     constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
@@ -54,4 +55,7 @@ namespace CONFIG {
     Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.135, 0.006};
     Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL = DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL;
     Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL = DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL;
+
+    constexpr QLength START_STRING_LENGTH = 4.5_in;
+    constexpr QLength WINCH_RADIUS = 0.303_in / 2.0;
 } // namespace CONFIG

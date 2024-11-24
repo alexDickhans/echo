@@ -41,6 +41,9 @@ Command *intakeOntoGoal;
 
 Command *goalClampTrue;
 
+Command *hang;
+Command *barToBarHang;
+
 CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
@@ -61,7 +64,7 @@ inline void subsystemInit() {
     lift = new LiftSubsystem({-5, 7}, PID(4.5, 0.0, 3.0));
     goalClamp = new GoalClamp(pros::adi::DigitalOut('b'));
     drivetrain = new Drivetrain({-8, -16}, {3, 4}, {21}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'),
-                                []() { return goalClamp->getLastValue(); });
+                                pros::adi::DigitalOut('c'), []() { return goalClamp->getLastValue(); });
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, pros::Distance(1)));
@@ -104,24 +107,39 @@ inline void subsystemInit() {
             }),
     });
     intakeOntoGoal = new ParallelCommandGroup({
-            bottomIntake->speedCommand(150),
+            bottomIntake->movePct(1.0),
             lift->positionCommand(0.0_deg),
             topIntake->pctCommand(1.0),
             new InstantCommand([&]() { hasRings = false; }, {}),
     });
 
+    barToBarHang =
+            new Sequence({lift->positionCommand(120_deg)->race(drivetrain->hangUp(1.0, 2_in)),
+                          lift->positionCommand(65_deg)->race(drivetrain->hangUp(1.0, 7.7_in)),
+                          lift->positionCommand(120_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.4_s),
+                          lift->positionCommand(120_deg)->race(drivetrain->hangDown(-1.0, 0_in)),
+                          lift->positionCommand(75_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.5_s),
+                          lift->positionCommand(120_deg)->race(drivetrain->hangPctCommand(0.3))->withTimeout(0.5_s)});
+    hang = new Sequence({drivetrain->releaseHang(),
+                         lift->positionCommand(75_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.3_s),
+                         lift->moveToPosition(120_deg)->race(drivetrain->hangPctCommand(0.0)),
+                         lift->positionCommand(120_deg)->race(drivetrain->hangDown(-1.0, 0_in)),
+                         lift->positionCommand(75_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.5_s),
+                         lift->positionCommand(120_deg)->race(drivetrain->hangPctCommand(0.3))->withTimeout(0.5_s),
+                         barToBarHang, barToBarHang});
+
     Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
             .onFalse(new InstantCommand(
                     []() mutable {
-                            lastColor = topIntake->getRingColor();
-                            primary.print(0, 0, "%d", lastColor);
+                        lastColor = topIntake->getRingColor();
+                        primary.print(0, 0, "%d", lastColor);
                         if (lastColor != ALLIANCE && lastColor != RingColor::None)
-                            ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 2);
+                            ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
                     },
                     {}));
 
     Trigger([]() mutable {
-        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.3 && intakeOntoGoal->scheduled() &&
+        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.4 && intakeOntoGoal->scheduled() &&
                std::find(ejectionPoints.begin(), ejectionPoints.end(),
                          static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
     })
@@ -168,9 +186,12 @@ inline void subsystemInit() {
                                               topIntake->pctCommand(-1.0),
                                       })}));
 
-    primary.getTrigger(DIGITAL_DOWN)->onTrue(drivetrain->hang(primary)->with(lift->controller(&primary, ANALOG_RIGHT_Y)));
+    primary.getTrigger(DIGITAL_DOWN)
+            ->onTrue(drivetrain->hangController(primary)->with(lift->controller(&primary, ANALOG_RIGHT_Y)));
 
     primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
+
+    partner.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
 
     partner.getTrigger(DIGITAL_A)->whileTrue(
             new ParallelCommandGroup({new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8),
