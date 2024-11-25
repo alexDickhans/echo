@@ -86,8 +86,6 @@ public:
 
     void periodic() override {
 
-        std::cout << this->stringLength.Convert(inch) << std::endl;
-
         if (ptoActive != true) {
             const QLength leftLength = this->getLeftDistance();
             const QLength rightLength = this->getRightDistance();
