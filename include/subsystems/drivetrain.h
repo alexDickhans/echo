@@ -125,8 +125,7 @@ public:
             uAngular.emplace_back(lastUAngular);
 
             xLinear.emplace_back(((leftChange + rightChange) / (2.0 * 0.01)).getValue());
-            xAngular.emplace_back((rightChange - leftChange).Convert(metre) /
-                                  (0.01 * CONFIG::TRACK_WIDTH.Convert(metre)));
+            xAngular.emplace_back((-imu.get_gyro_rate().z) * (degree / second).getValue());
         }
     }
 
@@ -357,10 +356,17 @@ public:
                         },
                         {}),
                 this->pct(0.5, 0.5)->withTimeout(500_ms),
-                this->pct(1.0, 1.0)->withTimeout(200_ms),
+                this->pct(0.6, 0.6)->withTimeout(300_ms),
                 this->pct(-0.5, -0.5)->withTimeout(800_ms),
-                this->pct(-0.2, -0.2)->withTimeout(300_ms),
-                this->pct(1.0, 1.0)->withTimeout(200_ms),
+            this->pct(-0.2, -0.2)->withTimeout(400_ms),
+            this->pct(0.5, 0.5)->withTimeout(500_ms),
+                this->pct(0.6, 0.6)->withTimeout(300_ms),
+            this->pct(-0.5, -0.5)->withTimeout(800_ms),
+            this->pct(-0.2, -0.2)->withTimeout(400_ms),
+                this->pct(0.5, 0.5)->withTimeout(500_ms),
+                this->pct(0.6, 0.6)->withTimeout(300_ms),
+                this->pct(-0.5, -0.5)->withTimeout(800_ms),
+                this->pct(-0.2, -0.2)->withTimeout(400_ms),
                 new InstantCommand(
                         [this]() mutable {
                             this->recording = false;
@@ -382,10 +388,23 @@ public:
                         },
                         {}),
                 this->pct(0.5, -0.5)->withTimeout(500_ms),
-                this->pct(1.0, -1.0)->withTimeout(200_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
                 this->pct(-0.5, 0.5)->withTimeout(800_ms),
+                this->pct(-0.2, 0.2)->withTimeout(800_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
                 this->pct(-0.2, 0.2)->withTimeout(300_ms),
-                this->pct(1.0, -1.0)->withTimeout(200_ms),
+                this->pct(0.5, -0.5)->withTimeout(500_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
+                this->pct(-0.5, 0.5)->withTimeout(800_ms),
+                this->pct(-0.2, 0.2)->withTimeout(800_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
+                this->pct(-0.2, 0.2)->withTimeout(300_ms),
+                this->pct(0.5, -0.5)->withTimeout(500_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
+                this->pct(-0.5, 0.5)->withTimeout(800_ms),
+                this->pct(-0.2, 0.2)->withTimeout(800_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
+                this->pct(-0.2, 0.2)->withTimeout(300_ms),
                 new InstantCommand(
                         [this]() mutable {
                             this->recording = false;
