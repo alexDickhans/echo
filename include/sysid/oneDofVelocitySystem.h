@@ -22,7 +22,7 @@ public:
         for (int i = 1; i < x.size(); i++) {
             A(i-1, 0) = x[i];
             A(i-1, 1) = (x[i] - x[i-1]) * 100.0;
-            A(i-1, 2) = signnum(x[i]);
+            A(i-1, 2) = 0.0;
             c(i-1) = u[i - 1];
         }
 

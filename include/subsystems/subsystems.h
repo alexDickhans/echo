@@ -164,6 +164,7 @@ inline void subsystemInit() {
                     {new InstantCommand([&]() { hasRings = false; }, {}), loadOneRingLow, loadOneRingLow}));
 
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
+    primary.getTrigger(DIGITAL_B)->whileTrue(drivetrain->characterizeLinear());
     primary.getTrigger(DIGITAL_R1)
             ->whileTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
                                       new ParallelRaceGroup({
