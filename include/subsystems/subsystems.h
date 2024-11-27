@@ -116,7 +116,8 @@ inline void subsystemInit() {
     barToBarHang =
             new Sequence({
                           lift->positionCommand(55_deg)->race(drivetrain->hangUp(1.0, 7.2_in)),
-                          lift->positionCommand(105_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.6_s),
+                          lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.5_s),
+                          lift->positionCommand(90_deg)->race(drivetrain->hangDown(-1.0, 3_in)),
                           lift->positionCommand(115_deg)->race(drivetrain->hangDown(-1.0, -2.2_in)),
                           lift->positionCommand(75_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.2_s),
                           lift->positionCommand(120_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s)});
