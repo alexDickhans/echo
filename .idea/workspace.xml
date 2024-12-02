@@ -7,10 +7,10 @@
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
-    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
     <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="3" type="long" />
     <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppCodeGeneration" type="string" />
     <option name="/Default/CodeEditing/CppDocumentationComment/AddBriefTag/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
   </component>
   <component name="CMakeProjectFlavorService">
     <option name="flavorId" value="CMakePlainProjectFlavor" />
@@ -33,6 +33,7 @@
   <component name="ChangeListManager">
     <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/config.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/subsystems/subsystems.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/subsystems.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -163,12 +164,12 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Native Application.Makefile" />
       <item itemvalue="Native Application.all" />
-      <item itemvalue="Native Application.quick" />
       <item itemvalue="Native Application.bin" />
       <item itemvalue="Native Application.cc-sysroot" />
       <item itemvalue="Native Application.cxx-sysroot" />
-      <item itemvalue="Native Application.Makefile" />
+      <item itemvalue="Native Application.quick" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -193,6 +194,8 @@
       <workItem from="1732351984994" duration="1637000" />
       <workItem from="1732467130808" duration="18290000" />
       <workItem from="1732661681456" duration="4816000" />
+      <workItem from="1732986570144" duration="26000" />
+      <workItem from="1732988678616" duration="6954000" />
     </task>
     <servers />
   </component>
