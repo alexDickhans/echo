@@ -33,8 +33,8 @@ namespace CONFIG {
     constexpr Angle WALL_STAKE_SCORE_HEIGHT = 125_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
-        return (velocity).getValue() * 0.63 + (accel).getValue() * 0.1073 +
-               copysign(0.05, velocity.getValue());
+        return (velocity).getValue() * 0.67 + (accel).getValue() * 0.0400 +
+               copysign(0.02, velocity.getValue());
     }
 
     const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-4.2_in).getValue(), (7_in).getValue(), (90_deg).getValue());
@@ -43,8 +43,8 @@ namespace CONFIG {
 
     constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-    constexpr float RAMSETE_ZETA = 0.0;
-    constexpr float RAMSETE_BETA = 22.0;
+    constexpr float RAMSETE_ZETA = 0.27;
+    constexpr float RAMSETE_BETA = 15.5;
 
     Eigen::Matrix3f DEFAULT_DT_COST_Q = Eigen::Matrix3f({{1.0, 0.0, 0.0}, {0.0, 5.0, 0.0}, {0.0, 0.0, 7.0}});
     Eigen::Matrix2f DEFAULT_DT_COST_R = Eigen::Matrix2f::Identity();
