@@ -26,6 +26,8 @@ private:
     pros::MotorGroup left11W, right11W, left5W, right5W;
     pros::Imu imu;
     pros::adi::DigitalOut pto;
+    pros::adi::DigitalOut stringRelease;
+    bool ptoActive = false;
 
     QLength leftChange, rightChange;
     QLength lastLeft, lastRight;
@@ -48,16 +50,21 @@ private:
 
     std::function<bool()> hasGoal;
 
+    QLength stringLength = CONFIG::START_STRING_LENGTH;
+
+    QLength lastStringLength = 0.0;
+
 public:
     Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
-               pros::Imu imu, pros::adi::DigitalOut pto, std::function<bool()> hasGoal) :
+               pros::Imu imu, pros::adi::DigitalOut pto, pros::adi::DigitalOut stringRelease,
+               std::function<bool()> hasGoal) :
         left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)),
         pto(std::move(pto)), particleFilter([this, imu]() {
             const Angle angle = -imu.get_rotation() * degree;
             return isfinite(angle.getValue()) ? angle : 0.0;
         }),
-        hasGoal(std::move(hasGoal)) {
+        hasGoal(std::move(hasGoal)), stringRelease(stringRelease) {
         this->leftChange = 0.0;
         this->rightChange = 0.0;
 
@@ -78,37 +85,47 @@ public:
     void addLocalizationSensor(Sensor *sensor) { particleFilter.addSensor(sensor); }
 
     void periodic() override {
-        const QLength leftLength = this->getLeftDistance();
-        const QLength rightLength = this->getRightDistance();
 
-        leftChange = leftLength - lastLeft;
-        rightChange = rightLength - lastRight;
+        if (ptoActive != true) {
+            const QLength leftLength = this->getLeftDistance();
+            const QLength rightLength = this->getRightDistance();
 
-        lastLeft = leftLength;
-        lastRight = rightLength;
+            leftChange = leftLength - lastLeft;
+            rightChange = rightLength - lastRight;
 
-        auto avg = (leftChange + rightChange) / 2.0;
+            lastLeft = leftLength;
+            lastRight = rightLength;
 
-        std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
-                                                       avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
-        std::uniform_real_distribution angleDistribution(
-                particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
-                particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
+            auto avg = (leftChange + rightChange) / 2.0;
 
-        particleFilter.update([this, angleDistribution, avgDistribution]() mutable {
-            const auto noisy = avgDistribution(de);
-            const auto angle = angleDistribution(de);
+            std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
+                                                           avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
+            std::uniform_real_distribution angleDistribution(
+                    particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
+                    particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
 
-            return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
-        });
+            particleFilter.update([this, angleDistribution, avgDistribution]() mutable {
+                const auto noisy = avgDistribution(de);
+                const auto angle = angleDistribution(de);
+
+                return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
+            });
+        } else {
+            const QLength currentLength = this->getStringDistance();
+
+            const auto change = currentLength - lastStringLength;
+
+            this->stringLength += change;
+
+            lastStringLength = currentLength;
+        }
 
         if (recording) {
             uLinear.emplace_back(lastULinear);
             uAngular.emplace_back(lastUAngular);
 
             xLinear.emplace_back(((leftChange + rightChange) / (2.0 * 0.01)).getValue());
-            xAngular.emplace_back((rightChange - leftChange).Convert(metre) /
-                                  (0.01 * CONFIG::TRACK_WIDTH.Convert(metre)));
+            xAngular.emplace_back((-imu.get_gyro_rate().z) * (degree / second).getValue());
         }
     }
 
@@ -157,6 +174,12 @@ public:
     QLength getRightDistance() const {
         return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
                M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+    }
+
+    QLength getStringDistance() const {
+        return (this->left11W.get_position(0) + this->left11W.get_position(1) + this->right11W.get_position(0) +
+                this->right11W.get_position(1)) /
+               4.0 / CONFIG::STRING_RATIO * 2.0 * M_PI * CONFIG::WINCH_RADIUS;
     }
 
     QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
@@ -240,13 +263,44 @@ public:
                 {this});
     }
 
-    FunctionalCommand *hang(pros::Controller &controller) {
-        return new FunctionalCommand([this]() { this->pto.set_value(true); },
+    InstantCommand *releaseHang() {
+        return new InstantCommand(
+                [this]() {
+                    this->pto.set_value(true);
+                    ptoActive = true;
+                    this->lastStringLength = this->getStringDistance();
+                    this->stringRelease.set_value(true);
+                },
+                {});
+    }
+
+    FunctionalCommand *hangController(pros::Controller &controller) {
+        return new FunctionalCommand([this]() {},
                                      [this, controller]() mutable {
                                          this->setPct(controller.get_analog(ANALOG_LEFT_Y) / 127.0,
                                                       controller.get_analog(ANALOG_LEFT_Y) / 127.0);
                                      },
-                                     [this](bool _) { this->pto.set_value(false); }, []() { return false; }, {this});
+                                     [this](bool _) {
+                                         this->pto.set_value(false);
+                                         ptoActive = false;
+                                     },
+                                     []() { return false; }, {this});
+    }
+
+    FunctionalCommand *hangUp(double pct, QLength stringLength) {
+        return new FunctionalCommand([this, pct]() mutable { this->setPct(pct, pct); }, [this]() {},
+                                     [this](bool _) { std::cout << "Hang" << std::endl; },
+                                     [this, stringLength]() { return this->stringLength > stringLength; }, {this});
+    }
+
+    FunctionalCommand *hangDown(double pct, QLength stringLength) {
+        return new FunctionalCommand([this, pct]() mutable { this->setPct(pct, pct); }, [this]() {}, [this](bool _) {},
+                                     [this, stringLength]() { return this->stringLength < stringLength; }, {this});
+    }
+
+    FunctionalCommand *hangPctCommand(double pct) {
+        return new FunctionalCommand([this, pct]() { this->setPct(pct, pct); }, [this]() mutable {}, [this](bool _) {},
+                                     []() { return false; }, {this});
     }
 
     FunctionalCommand *arcadeRecord(pros::Controller &controller) {
@@ -293,7 +347,7 @@ public:
     Sequence *characterizeLinear() {
         return new Sequence({
                 new InstantCommand(
-                        [this] () mutable {
+                        [this]() mutable {
                             this->recording = true;
                             uAngular.clear();
                             uLinear.clear();
@@ -302,10 +356,17 @@ public:
                         },
                         {}),
                 this->pct(0.5, 0.5)->withTimeout(500_ms),
-                this->pct(1.0, 1.0)->withTimeout(200_ms),
+                this->pct(0.6, 0.6)->withTimeout(300_ms),
                 this->pct(-0.5, -0.5)->withTimeout(800_ms),
-                this->pct(-0.2, -0.2)->withTimeout(300_ms),
-                this->pct(1.0, 1.0)->withTimeout(200_ms),
+            this->pct(-0.2, -0.2)->withTimeout(400_ms),
+            this->pct(0.5, 0.5)->withTimeout(500_ms),
+                this->pct(0.6, 0.6)->withTimeout(300_ms),
+            this->pct(-0.5, -0.5)->withTimeout(800_ms),
+            this->pct(-0.2, -0.2)->withTimeout(400_ms),
+                this->pct(0.5, 0.5)->withTimeout(500_ms),
+                this->pct(0.6, 0.6)->withTimeout(300_ms),
+                this->pct(-0.5, -0.5)->withTimeout(800_ms),
+                this->pct(-0.2, -0.2)->withTimeout(400_ms),
                 new InstantCommand(
                         [this]() mutable {
                             this->recording = false;
@@ -318,7 +379,7 @@ public:
     Sequence *characterizeAngular() {
         return new Sequence({
                 new InstantCommand(
-                        [this] () mutable {
+                        [this]() mutable {
                             this->recording = true;
                             uAngular.clear();
                             uLinear.clear();
@@ -327,10 +388,23 @@ public:
                         },
                         {}),
                 this->pct(0.5, -0.5)->withTimeout(500_ms),
-                this->pct(1.0, -1.0)->withTimeout(200_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
                 this->pct(-0.5, 0.5)->withTimeout(800_ms),
+                this->pct(-0.2, 0.2)->withTimeout(800_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
                 this->pct(-0.2, 0.2)->withTimeout(300_ms),
-                this->pct(1.0, -1.0)->withTimeout(200_ms),
+                this->pct(0.5, -0.5)->withTimeout(500_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
+                this->pct(-0.5, 0.5)->withTimeout(800_ms),
+                this->pct(-0.2, 0.2)->withTimeout(800_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
+                this->pct(-0.2, 0.2)->withTimeout(300_ms),
+                this->pct(0.5, -0.5)->withTimeout(500_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
+                this->pct(-0.5, 0.5)->withTimeout(800_ms),
+                this->pct(-0.2, 0.2)->withTimeout(800_ms),
+                this->pct(1.0, -1.0)->withTimeout(400_ms),
+                this->pct(-0.2, 0.2)->withTimeout(300_ms),
                 new InstantCommand(
                         [this]() mutable {
                             this->recording = false;

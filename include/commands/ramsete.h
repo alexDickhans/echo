@@ -20,7 +20,7 @@ private:
 
     MotionProfile *motionProfile;
 
-    DriveSpeeds lastSpeeds;
+    QVelocity lastLeft = 0.0, lastRight = 0.0;
 
 public:
     Ramsete(Drivetrain *drivetrain, MotionProfile *motion_profile, const float zeta = CONFIG::RAMSETE_ZETA,
@@ -38,7 +38,7 @@ public:
 
             Eigen::Vector2f error = Eigen::Rotation2Df(-currentPose.z()) * (desiredPose - currentPose).head<2>();
 
-            const Angle errorAngle = angleDifference(desiredPose.z(), currentPose.z()).getValue();
+            Angle errorAngle = angleDifference(desiredPose.z(), currentPose.z()).getValue();
 
             const auto k = 2.0f * this->zeta *
                            sqrt(Qsq(command->desiredAngularVelocity).getValue() +
@@ -47,27 +47,20 @@ public:
             const auto velocity_commanded = cos(errorAngle) * command->desiredVelocity + k * error.x() * metre / second;
             const auto angular_wheel_velocity_commanded =
                     (command->desiredAngularVelocity.getValue() + k * errorAngle.getValue() +
-                     this->beta * command->desiredVelocity.getValue() * sinc(errorAngle) * error.y());
+                     this->beta * command->desiredVelocity.getValue() * sinc(errorAngle) * error.y()) *
+                    CONFIG::TRACK_WIDTH / 2.0 / second;
 
-            drivetrain->setDriveSpeeds(lastSpeeds,
-                                       {velocity_commanded, angular_wheel_velocity_commanded * radian / second});
-            lastSpeeds = {velocity_commanded, angular_wheel_velocity_commanded};
+            QVelocity currentLeft = velocity_commanded - angular_wheel_velocity_commanded;
+            QVelocity currentRight = velocity_commanded + angular_wheel_velocity_commanded;
 
-            TELEMETRY.send("{\"time\": " + std::to_string(pros::millis() / 1000.0) + ", \"data\":[");
-            TELEMETRY.send("[");
-            TELEMETRY.send(std::to_string(currentPose.x()));
-            TELEMETRY.send(",");
-            TELEMETRY.send(std::to_string(currentPose.y()));
-            TELEMETRY.send(",");
-            TELEMETRY.send(std::to_string(currentPose.z()));
-            TELEMETRY.send("],");
-            TELEMETRY.send("[");
-            TELEMETRY.send(std::to_string(desiredPose.x()));
-            TELEMETRY.send(",");
-            TELEMETRY.send(std::to_string(desiredPose.y()));
-            TELEMETRY.send(",");
-            TELEMETRY.send(std::to_string(desiredPose.z()));
-            TELEMETRY.send("]]}\n");
+            QAcceleration accelLeft = (currentLeft - lastLeft) / 10_ms;
+            QAcceleration accelRight = (currentRight - currentRight) / 10_ms;
+
+            lastLeft = currentLeft;
+            lastRight = currentRight;
+
+            drivetrain->setPct(CONFIG::DRIVETRAIN_FEEDFORWARD(currentLeft, accelLeft),
+                               CONFIG::DRIVETRAIN_FEEDFORWARD(currentRight, accelRight));
         }
     }
 

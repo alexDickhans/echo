@@ -12,7 +12,8 @@ namespace CONFIG {
 
     constexpr QLength DRIVE_RADIUS = 3.25_in / 2.0;
     constexpr float DRIVE_RATIO = 60.0 / 36.0;
-    constexpr double LIFT_RATIO = 5.0;
+    constexpr float STRING_RATIO = 1.0;
+    constexpr double LIFT_RATIO = 6.0;
     constexpr QLength TRACK_WIDTH = 14_in;
     constexpr size_t NUM_PARTICLES = 500;
     constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
@@ -28,12 +29,12 @@ namespace CONFIG {
     inline PID TURN_PID = PID(0.9, 0.0, 6.0);
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
-    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 32_deg;
+    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 37_deg;
     constexpr Angle WALL_STAKE_SCORE_HEIGHT = 125_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
-        return (velocity / 85_in / second).getValue() * 1.03 + (accel / (800_in / second / second)).getValue() * 1.05 +
-               copysign(0.05, velocity.getValue()) * 1.03;
+        return (velocity).getValue() * 0.67 + (accel).getValue() * 0.037 +
+               copysign(0.02, velocity.getValue());
     }
 
     const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-4.2_in).getValue(), (7_in).getValue(), (90_deg).getValue());
@@ -42,16 +43,19 @@ namespace CONFIG {
 
     constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-    constexpr float RAMSETE_ZETA = 0.0;
-    constexpr float RAMSETE_BETA = 1.0;
+    constexpr float RAMSETE_ZETA = 0.32;
+    constexpr float RAMSETE_BETA = 12.5;
 
     Eigen::Matrix3f DEFAULT_DT_COST_Q = Eigen::Matrix3f({{1.0, 0.0, 0.0}, {0.0, 5.0, 0.0}, {0.0, 0.0, 7.0}});
     Eigen::Matrix2f DEFAULT_DT_COST_R = Eigen::Matrix2f::Identity();
 
     double K_s = 0.12;
 
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.63, 0.0503};
-    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.135, 0.006};
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL = DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL;
-    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL = DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL;
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.63, 0.1073};
+    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.1377, 0.0134};
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.66, 0.1003};
+    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.1302, 0.0115};
+
+    constexpr QLength START_STRING_LENGTH = 4.5_in;
+    constexpr QLength WINCH_RADIUS = 0.303_in / 2.0;
 } // namespace CONFIG

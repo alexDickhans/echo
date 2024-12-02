@@ -47,7 +47,7 @@ public:
 	}
 
 	bool ringPresent() {
-		return intakeDistance.get() < 40;
+		return intakeDistance.get() < 60;
 	}
 
 	RingColor getRingColor() {

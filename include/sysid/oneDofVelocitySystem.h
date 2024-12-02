@@ -16,21 +16,21 @@ public:
 
         // Allocate large enough matrices for linear regression
         Eigen::MatrixXd A = Eigen::MatrixXd::Zero(x.size() - 1, 3);
-        Eigen::MatrixXd c = Eigen::VectorXd::Zero(x.size() - 1);
+        Eigen::VectorXd c = Eigen::VectorXd::Zero(x.size() - 1);
 
         // Fill the matrix with recorded inputs and states
         for (int i = 1; i < x.size(); i++) {
             A(i-1, 0) = x[i];
             A(i-1, 1) = (x[i] - x[i-1]) * 100.0;
-            A(i-1, 2) = signnum(x[i]);
+            A(i-1, 2) = 0.0;
             c(i-1) = u[i - 1];
         }
 
         // Compute the least-squares solution with SVD, which provides the most stability and accuracy of the solutions
-        Eigen::VectorXd b = A.bdcSvd<Eigen::ComputeThinU | Eigen::ComputeThinV>().solve(b);
+        Eigen::VectorXd b = A.bdcSvd<Eigen::ComputeThinU | Eigen::ComputeThinV>().solve(c);
 
         // Set the feedforward to the linear system solution
-        ff = b;
+        ff = b.transpose();
     }
 
     void characterize(const std::function<double()> &x, const std::function<double()> &u,
