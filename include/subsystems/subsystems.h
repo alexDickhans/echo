@@ -98,12 +98,15 @@ inline void subsystemInit() {
     });
     loadOneRingHigh = new Sequence({
             new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.2, 0.0),
+                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.45, 0.0),
                                    new WaitUntilCommand([&]() { return topIntake->ringPresent(); })}),
+            (new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
+                                    TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.45, 0.0)}))
+                    ->withTimeout(0.3_s),
             new ParallelRaceGroup({
                     bottomIntake->movePct(1.0),
                     lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                    new ParallelCommandGroup({TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.2)}),
+                    new ParallelCommandGroup({TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.45)}),
             }),
     });
     intakeOntoGoal = new ParallelCommandGroup({
@@ -114,8 +117,7 @@ inline void subsystemInit() {
     });
 
     barToBarHang =
-            new Sequence({
-                          lift->positionCommand(55_deg)->race(drivetrain->hangUp(1.0, 7.5_in)),
+            new Sequence({lift->positionCommand(55_deg)->race(drivetrain->hangUp(1.0, 7.5_in)),
                           lift->positionCommand(95_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.5_s),
                           lift->positionCommand(95_deg)->race(drivetrain->hangDown(-1.0, 2_in)),
                           lift->positionCommand(115_deg)->race(drivetrain->hangDown(-1.0, -2.20_in)),
@@ -163,33 +165,37 @@ inline void subsystemInit() {
                     {new InstantCommand([&]() { hasRings = false; }, {}), loadOneRingLow, loadOneRingLow}));
 
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
-    primary.getTrigger(DIGITAL_B)->whileTrue(drivetrain->characterizeAngular());
     primary.getTrigger(DIGITAL_R1)
-            ->whileTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
-                                      new ParallelRaceGroup({
-                                              bottomIntake->movePct(0.0),
-                                              lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                              TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.1, 0.0),
-                                      }),
-                                      new ParallelRaceGroup({bottomIntake->movePct(0.0),
-                                                             lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                             topIntake->pctCommand(0.0), new WaitUntilCommand([&]() {
-                                                                 return primary.get_digital(DIGITAL_Y);
-                                                             })}),
-                                      new InstantCommand(
-                                              [&]() {
-                                                  outtakeWallStake = true;
-                                                  hasRings = false;
-                                              },
-                                              {}),
-                                      new ParallelCommandGroup({
-                                              bottomIntake->movePct(0.0),
-                                              lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                              topIntake->pctCommand(-1.0),
-                                      })}));
+            ->onTrue(new Sequence({new InstantCommand([&]() { outtakeWallStake = false; }, {}),
+                                   new ParallelRaceGroup({
+                                           bottomIntake->movePct(0.0),
+                                           lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
+                                           TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.3, 0.0),
+                                   }),
+                                   new ParallelRaceGroup({bottomIntake->movePct(0.0),
+                                                          lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
+                                                          topIntake->pctCommand(0.0), new WaitUntilCommand([&]() {
+                                                              return primary.get_digital(DIGITAL_Y);
+                                                          })}),
+                                   new InstantCommand(
+                                           [&]() {
+                                               outtakeWallStake = true;
+                                               hasRings = false;
+                                           },
+                                           {}),
+                                   new ParallelCommandGroup({
+                                           bottomIntake->movePct(0.0),
+                                           lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
+                                           topIntake->pctCommand(-1.0),
+                                   })}))
+            ->onFalse(new ParallelRaceGroup({
+                    bottomIntake->movePct(0.0),
+                    lift->moveToPosition(CONFIG::WALL_STAKE_LOAD_HEIGHT, 10_deg),
+                    new ConditionalCommand(topIntake->pctCommand(1.0), topIntake->pctCommand(0.0),
+                                           [&]() { return outtakeWallStake; }),
+            }));
 
-    primary.getTrigger(DIGITAL_DOWN)
-            ->whileTrue(hang);
+    primary.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
 
     primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 
