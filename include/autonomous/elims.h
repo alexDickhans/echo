@@ -56,7 +56,7 @@ public:
                 new ScheduleCommand(loadOneRingLow->andThen(loadOneRingLow)
                                             ->andThen(bottomIntake->movePct(0.0)->with(topIntake->pctCommand(0.0)))),
                 new Ramsete(drivetrain, flip ? &negative_1_blue : &negative_1_red),
-                new TankMotionProfiling(drivetrain, {20_in / second, 80_in / second / second}, -7_in, flip, -90_deg,
+                new TankMotionProfiling(drivetrain, {10_in / second, 70_in / second / second}, -7_in, flip, -90_deg,
                                         0.0, false),
                 new TankMotionProfiling(drivetrain, {35_in / second, 100_in / second / second}, 8_in, flip, -90_deg,
                                         0.0, false),
