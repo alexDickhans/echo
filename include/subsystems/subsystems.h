@@ -203,7 +203,7 @@ inline void subsystemInit() {
 
     partner.getTrigger(DIGITAL_A)->whileTrue(
             new ParallelCommandGroup({new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8),
-                                      lift->positionCommand(8.0_deg), topIntake->pctCommand(-1.0)}));
+                                      lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT), topIntake->pctCommand(-1.0)}));
 
     partner.getTrigger(DIGITAL_RIGHT)->onTrue(new InstantCommand([]() { ALLIANCE = RED; }, {}));
     partner.getTrigger(DIGITAL_LEFT)->onTrue(new InstantCommand([]() { ALLIANCE = BLUE; }, {}));
@@ -265,6 +265,13 @@ inline void subsystemInit() {
             }));
 
     PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
+    PathCommands::registerCommand(
+            "intakeNeutralStakesElim",
+            loadOneRingHigh->andThen(bottomIntake->movePct(1.0)->with(
+                    topIntake->pctCommand(0.0)->with(lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)))));
+
+
+    PathCommands::registerCommand("bottomOuttake", bottomIntake->movePct(-1.0)->with(lift->positionCommand(0.0))->withTimeout(0.5_s));
     PathCommands::registerCommand("liftArm",
                                   new ParallelRaceGroup({
                                           bottomIntake->movePct(0.0),
@@ -306,6 +313,7 @@ inline void subsystemInit() {
                                       bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
+    PathCommands::registerCommand("declampElim", goalClamp->levelCommand(false));
     PathCommands::registerCommand(
             "indexTwo", new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 1.7),
                                                   bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
@@ -316,4 +324,5 @@ inline void subsystemInit() {
                                   new ParallelCommandGroup({bottomIntake->movePct(-1.0), lift->positionCommand(7.0_deg),
                                                             topIntake->pctCommand(0.0)}));
     PathCommands::registerCommand("awpLiftUp", lift->positionCommand(30_deg)->with(topIntake->pctCommand(-0.3)));
+    PathCommands::registerCommand("intake2andIndex", loadOneRingLow->andThen(loadOneRingLow));
 }

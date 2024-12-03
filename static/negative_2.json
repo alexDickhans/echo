@@ -41,28 +41,50 @@
           "y": 1.316
         },
         {
-          "x": 0.185,
-          "y": 1.22
+          "x": 0.965,
+          "y": 1.406
         },
         {
-          "x": -0.354,
-          "y": 1.232
+          "x": 0.43,
+          "y": 1.421
         }
       ],
       "constraints": {
-        "velocity": 0.75,
-        "accel": 3.048
+        "velocity": 0.925,
+        "accel": 3.132
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.43,
+          "y": 1.421
+        },
+        {
+          "x": 0.292,
+          "y": 1.424
+        },
+        {
+          "x": 0.162,
+          "y": 1.505
+        },
+        {
+          "x": 0.157,
+          "y": 1.662
+        }
+      ],
+      "constraints": {
+        "velocity": 0.45,
+        "accel": 1.313
       }
     }
   ],
   "commands": [
     {
-      "t": 2.955,
-      "name": "clamp"
-    },
-    {
-      "t": 3.355,
-      "name": "intakeGoal"
+      "t": 1.551,
+      "name": "intakeNeutralStakesElim"
     }
   ]
 }
