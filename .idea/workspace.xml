@@ -31,13 +31,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/autonomous/elims.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/autonomous/elims.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/config.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/negative_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/negative_1.json" afterDir="false" />
-    </list>
+    <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -119,7 +113,7 @@
     "cf.advertisement.text.overridden": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "revert-ramsete",
+    "git-widget-placeholder": "leauge-auto",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -197,7 +191,8 @@
       <workItem from="1732467130808" duration="18290000" />
       <workItem from="1732661681456" duration="4816000" />
       <workItem from="1732986570144" duration="26000" />
-      <workItem from="1732988678616" duration="24707000" />
+      <workItem from="1732988678616" duration="25957000" />
+      <workItem from="1733243280133" duration="15285000" />
     </task>
     <servers />
   </component>

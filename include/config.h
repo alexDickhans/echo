@@ -31,10 +31,10 @@ namespace CONFIG {
 
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 37_deg;
     constexpr Angle WALL_STAKE_SCORE_HEIGHT = 125_deg;
+    constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 121_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
-        return (velocity).getValue() * 0.67 + (accel).getValue() * 0.037 +
-               copysign(0.02, velocity.getValue());
+        return (velocity).getValue() * 0.67 + (accel).getValue() * 0.037 + copysign(0.02, velocity.getValue());
     }
 
     const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-4.2_in).getValue(), (7_in).getValue(), (90_deg).getValue());

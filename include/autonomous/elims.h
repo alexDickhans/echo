@@ -4,6 +4,7 @@
 BEZIER_MIRRORED_MP_ASSET(positive_1);
 BEZIER_MIRRORED_MP_ASSET(negative_1);
 BEZIER_MIRRORED_MP_ASSET(negative_2);
+BEZIER_MIRRORED_MP_ASSET(negative_3);
 
 /**
  * Define elim autons
@@ -55,15 +56,21 @@ public:
                 new ScheduleCommand(loadOneRingLow->andThen(loadOneRingLow)
                                             ->andThen(bottomIntake->movePct(0.0)->with(topIntake->pctCommand(0.0)))),
                 new Ramsete(drivetrain, flip ? &negative_1_blue : &negative_1_red),
-                new TankMotionProfiling(drivetrain, {35_in / second, 80_in / second / second}, -7_in, flip, -90_deg,
+                new TankMotionProfiling(drivetrain, {10_in / second, 70_in / second / second}, -7_in, flip, -90_deg,
                                         0.0, false),
                 new TankMotionProfiling(drivetrain, {35_in / second, 100_in / second / second}, 8_in, flip, -90_deg,
                                         0.0, false),
                 new TankMotionProfiling(drivetrain, {35_in / second, 80_in / second / second}, -7_in, flip, -90_deg,
                                         0.0, false),
-                new TankMotionProfiling(drivetrain, {35_in / second, 100_in / second / second}, 8_in, flip, -90_deg,
+                new TankMotionProfiling(drivetrain, {35_in / second, 70_in / second / second}, 8_in, flip, -90_deg,
                                         0.0, false),
                 new Ramsete(drivetrain, flip ? &negative_2_blue : &negative_2_red),
+                (new ParallelCommandGroup({
+                         bottomIntake->movePct(0.0),
+                         lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
+                         topIntake->pctCommand(-1.0),
+                 }))->asProxy()->with(drivetrain->pct(0.3, 0.3))->withTimeout(0.7_s),
+                new Ramsete(drivetrain, flip ? &negative_3_blue : &negative_3_red),
         });
     }
 };
