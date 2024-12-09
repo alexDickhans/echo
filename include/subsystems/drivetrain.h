@@ -233,7 +233,7 @@ public:
         }
     }
 
-    void printData() {
+    void analyzeSysIdData() const {
         OneDofVelocitySystem linear;
         OneDofVelocitySystem angular;
 
@@ -263,13 +263,28 @@ public:
                 {this});
     }
 
-    InstantCommand *releaseHang() {
+    InstantCommand *releaseString() {
+        return new InstantCommand(
+                [this]() {
+                    this->stringRelease.set_value(true);
+                },
+                {});
+    }
+
+    InstantCommand *retractAlignMech() {
+        return new InstantCommand(
+                [this]() {
+                    this->stringRelease.set_value(false);
+                },
+                {});
+    }
+
+    InstantCommand *activatePto() {
         return new InstantCommand(
                 [this]() {
                     this->pto.set_value(true);
                     ptoActive = true;
                     this->lastStringLength = this->getStringDistance();
-                    this->stringRelease.set_value(true);
                 },
                 {});
     }
@@ -319,7 +334,7 @@ public:
                 },
                 [this](bool _) mutable {
                     this->recording = false;
-                    printData();
+                    analyzeSysIdData();
                 },
                 [this]() mutable { return false; }, {this});
     }
@@ -339,7 +354,7 @@ public:
                 },
                 [this](bool _) mutable {
                     this->recording = false;
-                    printData();
+                    analyzeSysIdData();
                 },
                 [this]() mutable { return false; }, {this});
     }
@@ -370,7 +385,7 @@ public:
                 new InstantCommand(
                         [this]() mutable {
                             this->recording = false;
-                            printData();
+                            analyzeSysIdData();
                         },
                         {}),
         });
@@ -408,7 +423,7 @@ public:
                 new InstantCommand(
                         [this]() mutable {
                             this->recording = false;
-                            printData();
+                            analyzeSysIdData();
                         },
                         {}),
         });

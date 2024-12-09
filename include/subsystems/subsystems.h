@@ -117,18 +117,20 @@ inline void subsystemInit() {
     });
 
     barToBarHang =
-            new Sequence({lift->positionCommand(55_deg)->race(drivetrain->hangUp(1.0, 7.5_in)),
-                          lift->positionCommand(95_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.5_s),
-                          lift->positionCommand(95_deg)->race(drivetrain->hangDown(-1.0, 2_in)),
-                          lift->positionCommand(115_deg)->race(drivetrain->hangDown(-1.0, -2.20_in)),
-                          lift->positionCommand(75_deg)->race(drivetrain->hangPctCommand(-0.18))->withTimeout(0.2_s),
-                          lift->positionCommand(120_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s)});
-    hang = new Sequence({drivetrain->releaseHang(),
-                         lift->positionCommand(75_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.2_s),
-                         lift->moveToPosition(125_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.4_s),
-                         lift->positionCommand(125_deg)->race(drivetrain->hangDown(-1.0, -2.20_in)),
-                         lift->positionCommand(75_deg)->race(drivetrain->hangPctCommand(-0.18))->withTimeout(0.2_s),
-                         lift->positionCommand(110_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s),
+            new Sequence({lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 7.2_in)),
+                          lift->positionCommand(72_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.25_s),
+                          lift->positionCommand(72_deg)->race(drivetrain->hangDown(-1.0, 2_in)),
+                          lift->positionCommand(117_deg)->race(drivetrain->hangDown(-1.0, -1.4_in)),
+                          lift->positionCommand(30_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
+                          lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.7))->withTimeout(0.3_s),
+                          lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s)});
+    hang = new Sequence({drivetrain->activatePto(), drivetrain->retractAlignMech(),
+                         lift->positionCommand(55_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.2_s),
+                         lift->moveToPosition(110_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.4_s),
+                         lift->positionCommand(110_deg)->race(drivetrain->hangDown(-1.0, -1.4_in)),
+                         lift->positionCommand(30_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
+                         lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.6))->withTimeout(0.3_s),
+                         lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s),
                          barToBarHang, barToBarHang});
 
     Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
@@ -197,9 +199,7 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 
-    primary.getTrigger(DIGITAL_DOWN)
-            ->onTrue(drivetrain->releaseHang()->andThen(
-                    drivetrain->hangController(primary)->with(lift->controller(primary, ANALOG_RIGHT_Y))));
+    primary.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
 
     partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup(
             {new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8),
@@ -224,6 +224,8 @@ inline void subsystemInit() {
                                topIntake->pctCommand(1.0),
                        }))
                               ->withTimeout(500_ms));
+
+    primary.getTrigger(DIGITAL_A)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(50_deg)));
 
     partner.getTrigger(DIGITAL_L1)
             ->toggleOnTrue(new Sequence({new InstantCommand([&]() { hasRings = true; }, {}),
