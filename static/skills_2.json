@@ -24,7 +24,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.225,
+        "velocity": 0.675,
         "accel": 2.54
       }
     },
@@ -42,15 +42,15 @@
         },
         {
           "x": 1.349,
-          "y": -1.048
+          "y": -1.036
         },
         {
           "x": 1.229,
-          "y": -1.163
+          "y": -1.151
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 0.675,
         "accel": 3.048
       }
     },
@@ -60,23 +60,23 @@
       "path": [
         {
           "x": 1.229,
-          "y": -1.163
+          "y": -1.151
         },
         {
           "x": 1.109,
-          "y": -1.278
+          "y": -1.266
         },
         {
-          "x": 1.0,
-          "y": -1.284
+          "x": 1.002,
+          "y": -1.191
         },
         {
-          "x": 0.844,
-          "y": -1.27
+          "x": 0.846,
+          "y": -1.177
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 0.675,
         "accel": 3.048
       }
     },
@@ -85,38 +85,38 @@
       "stop_end": false,
       "path": [
         {
-          "x": 0.844,
-          "y": -1.27
+          "x": 0.846,
+          "y": -1.177
         },
         {
-          "x": 0.673,
-          "y": -1.255
+          "x": 0.675,
+          "y": -1.162
         },
         {
-          "x": 0.362,
-          "y": -1.213
+          "x": 0.473,
+          "y": -1.15
         },
         {
-          "x": 0.279,
-          "y": -1.126
+          "x": 0.433,
+          "y": -1.253
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 0.675,
         "accel": 3.048
       }
     },
     {
-      "inverted": true,
+      "inverted": false,
       "stop_end": false,
       "path": [
         {
-          "x": 0.279,
-          "y": -1.126
+          "x": 0.433,
+          "y": -1.253
         },
         {
-          "x": 0.459,
-          "y": -1.315
+          "x": 0.392,
+          "y": -1.354
         },
         {
           "x": 0.571,
@@ -128,12 +128,12 @@
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 0.675,
         "accel": 3.048
       }
     },
     {
-      "inverted": true,
+      "inverted": false,
       "stop_end": false,
       "path": [
         {
@@ -154,12 +154,12 @@
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 0.675,
         "accel": 3.048
       }
     },
     {
-      "inverted": false,
+      "inverted": true,
       "stop_end": false,
       "path": [
         {
@@ -180,12 +180,12 @@
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 0.675,
         "accel": 3.048
       }
     },
     {
-      "inverted": false,
+      "inverted": true,
       "stop_end": false,
       "path": [
         {
@@ -211,7 +211,7 @@
       }
     },
     {
-      "inverted": true,
+      "inverted": false,
       "stop_end": false,
       "path": [
         {
@@ -232,15 +232,19 @@
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 0.675,
         "accel": 3.048
       }
     }
   ],
   "commands": [
     {
-      "t": 0.0,
-      "name": "intakeAllianceStakes"
+      "t": 1.601,
+      "name": "intakeNeutralStakesElim"
+    },
+    {
+      "t": 7.83,
+      "name": "clamp"
     }
   ]
 }

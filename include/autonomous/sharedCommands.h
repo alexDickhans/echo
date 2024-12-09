@@ -13,23 +13,12 @@ public:
      * @return Command that scores on alliance
      */
     static Command *scoreAlliance() {
-        return new Sequence({new ParallelRaceGroup({
-                                     bottomIntake->movePct(0.0),
-                                     lift->moveToPosition(8_deg),
-                                     topIntake->pctCommand(0.0),
-                             }),
-                             new ParallelRaceGroup({
-                                     bottomIntake->movePct(0.0),
-                                     lift->positionCommand(8_deg),
-                                     topIntake->pctCommand(1.0),
-                                     new WaitCommand(30_ms),
-                             }),
-                             (new ParallelCommandGroup({
-                                      bottomIntake->movePct(0.0),
-                                      lift->positionCommand(0_deg),
-                                      topIntake->pctCommand(1.0),
-                              }))
-                                     ->withTimeout(500_ms)});
+        return (new ParallelCommandGroup({
+                        bottomIntake->movePct(0.0),
+                        lift->positionCommand(0_deg),
+                        topIntake->pctCommand(1.0),
+                }))
+                ->withTimeout(300_ms);
     }
 
 
