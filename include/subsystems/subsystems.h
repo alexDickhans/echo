@@ -272,6 +272,7 @@ inline void subsystemInit() {
             "intakeNeutralStakesElim",
             loadOneRingHigh->andThen(bottomIntake->movePct(1.0)->with(
                     topIntake->pctCommand(0.0)->with(lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)))));
+    PathCommands::registerCommand("intakeOneNeutralStakes", loadOneRingHigh);
 
     PathCommands::registerCommand("bottomIntakeOffTopOn", bottomIntake->movePct(0.0)->with(topIntake->pctCommand(1.0)));
 
@@ -281,7 +282,7 @@ inline void subsystemInit() {
                                   new ParallelRaceGroup({
                                           bottomIntake->movePct(0.0),
                                           lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                          TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.1, 0.0),
+                                          TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.3, 0.0),
                                   }));
     PathCommands::registerCommand("liftArm2", new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
@@ -295,22 +296,6 @@ inline void subsystemInit() {
                      new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 1.2),
                                                new WaitCommand(0.5_s), bottomIntake->movePct(0.0)}),
                      new ParallelCommandGroup({topIntake->pctCommand(0.0), bottomIntake->movePct(-0.2)})}));
-    PathCommands::registerCommand("scoreNeutral",
-                                  new Sequence({new ParallelRaceGroup({
-                                                        bottomIntake->movePct(0.0),
-                                                        lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                        topIntake->pctCommand(0.0),
-                                                }),
-                                                new ParallelRaceGroup({
-                                                        bottomIntake->movePct(0.0),
-                                                        lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                        topIntake->pctCommand(0.0),
-                                                }),
-                                                new ParallelCommandGroup({
-                                                        bottomIntake->movePct(0.0),
-                                                        lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                        topIntake->pctCommand(-1.0),
-                                                })}));
     PathCommands::registerCommand("intakeGoal", intakeOntoGoal);
     PathCommands::registerCommand(
             "stopIntake",
