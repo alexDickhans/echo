@@ -25,15 +25,10 @@ public:
         return new Sequence({
                 drivetrain->setNorm(Eigen::Vector2f(0.0, (64_in).getValue()), Eigen::Matrix2f::Identity() * 0.05,
                                     -90_deg, false),
-                new ScheduleCommand(SharedCommands::scoreAlliance()),
+                SharedCommands::scoreAlliance()->asProxy(),
                 new Ramsete(drivetrain, &skills_1),
                 drivetrain->pct(0.15, 0.15)
                         ->race((new Sequence({new ParallelRaceGroup({
-                                                      bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                      topIntake->pctCommand(0.0),
-                                              }),
-                                              new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
                                                       lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
@@ -43,7 +38,7 @@ public:
                                                        lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                        topIntake->pctCommand(-1.0),
                                                }))
-                                                      ->withTimeout(0.8_s)}))
+                                                      ->withTimeout(0.6_s)}))
                                        ->asProxy()),
                 new Ramsete(drivetrain, &skills_2),
                 new ScheduleCommand(SharedCommands::scoreAlliance2()),

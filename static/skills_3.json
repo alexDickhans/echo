@@ -265,28 +265,8 @@
   ],
   "commands": [
     {
-      "t": 0.4,
-      "name": "intakeGoal"
-    },
-    {
-      "t": 0.848,
-      "name": "stopIntake"
-    },
-    {
-      "t": 0.988,
-      "name": "indexTwo"
-    },
-    {
-      "t": 1.312,
-      "name": "intakeGoal"
-    },
-    {
-      "t": 3.348,
-      "name": "declamp"
-    },
-    {
-      "t": 3.528,
-      "name": "dejam"
+      "t": 2.02,
+      "name": "clamp"
     }
   ]
 }

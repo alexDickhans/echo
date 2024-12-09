@@ -201,6 +201,9 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
 
+    primary.getTrigger(DIGITAL_B)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(50_deg)));
+
+
     partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup(
             {new InstantCommand([&]() { hasRings = false; }, {}), bottomIntake->movePct(0.8),
              lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT), topIntake->pctCommand(-1.0)}));
@@ -224,8 +227,6 @@ inline void subsystemInit() {
                                topIntake->pctCommand(1.0),
                        }))
                               ->withTimeout(500_ms));
-
-    primary.getTrigger(DIGITAL_A)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(50_deg)));
 
     partner.getTrigger(DIGITAL_L1)
             ->toggleOnTrue(new Sequence({new InstantCommand([&]() { hasRings = true; }, {}),
@@ -278,7 +279,7 @@ inline void subsystemInit() {
     PathCommands::registerCommand("liftArm",
                                   new ParallelRaceGroup({
                                           bottomIntake->movePct(0.0),
-                                          lift->positionCommand(33_deg),
+                                          lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                           TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.1, 0.0),
                                   }));
     PathCommands::registerCommand("liftArm2", new ParallelRaceGroup({
