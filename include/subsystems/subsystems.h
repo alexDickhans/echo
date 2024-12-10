@@ -98,15 +98,15 @@ inline void subsystemInit() {
     });
     loadOneRingHigh = new Sequence({
             new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.45, 0.0),
+                                   TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.50, 0.0),
                                    new WaitUntilCommand([&]() { return topIntake->ringPresent(); })}),
-            (new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                                    TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.45, 0.0)}))
-                    ->withTimeout(0.3_s),
+            // (new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
+            //                         TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.45, 0.0)}))
+            //         ->withTimeout(0.3_s),
             new ParallelRaceGroup({
                     bottomIntake->movePct(1.0),
                     lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-                    new ParallelCommandGroup({TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.45)}),
+                    new ParallelCommandGroup({TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.50)}),
             }),
     });
     intakeOntoGoal = new ParallelCommandGroup({
@@ -172,7 +172,7 @@ inline void subsystemInit() {
                                    new ParallelRaceGroup({
                                            bottomIntake->movePct(0.0),
                                            lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                           TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.3, 0.0),
+                                           TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.3, 0.0),
                                    }),
                                    new ParallelRaceGroup({bottomIntake->movePct(0.0),
                                                           lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
