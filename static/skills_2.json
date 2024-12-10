@@ -24,7 +24,7 @@
         }
       ],
       "constraints": {
-        "velocity": 1.225,
+        "velocity": 1.124,
         "accel": 2.54
       }
     },
@@ -41,16 +41,16 @@
           "y": -0.14
         },
         {
-          "x": 1.69,
-          "y": -0.972
+          "x": 1.349,
+          "y": -1.012
         },
         {
-          "x": 1.57,
-          "y": -1.087
+          "x": 1.229,
+          "y": -1.128
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 1.124,
         "accel": 3.048
       }
     },
@@ -59,24 +59,24 @@
       "stop_end": false,
       "path": [
         {
-          "x": 1.57,
-          "y": -1.087
+          "x": 1.229,
+          "y": -1.128
         },
         {
-          "x": 1.45,
-          "y": -1.202
+          "x": 1.109,
+          "y": -1.243
         },
         {
-          "x": 1.292,
-          "y": -1.209
+          "x": 1.002,
+          "y": -1.169
         },
         {
-          "x": 1.163,
-          "y": -1.119
+          "x": 0.846,
+          "y": -1.155
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 1.124,
         "accel": 3.048
       }
     },
@@ -85,38 +85,38 @@
       "stop_end": false,
       "path": [
         {
-          "x": 1.163,
-          "y": -1.119
+          "x": 0.846,
+          "y": -1.155
         },
         {
-          "x": 0.845,
-          "y": -0.895
+          "x": 0.675,
+          "y": -1.14
         },
         {
-          "x": 0.426,
-          "y": -1.358
+          "x": 0.473,
+          "y": -1.15
         },
         {
-          "x": 0.327,
-          "y": -1.29
+          "x": 0.433,
+          "y": -1.253
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 1.124,
         "accel": 3.048
       }
     },
     {
-      "inverted": true,
+      "inverted": false,
       "stop_end": false,
       "path": [
         {
-          "x": 0.327,
-          "y": -1.29
+          "x": 0.433,
+          "y": -1.253
         },
         {
-          "x": 0.524,
-          "y": -1.427
+          "x": 0.392,
+          "y": -1.354
         },
         {
           "x": 0.571,
@@ -128,12 +128,12 @@
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 1.124,
         "accel": 3.048
       }
     },
     {
-      "inverted": true,
+      "inverted": false,
       "stop_end": false,
       "path": [
         {
@@ -154,12 +154,12 @@
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 1.124,
         "accel": 3.048
       }
     },
     {
-      "inverted": false,
+      "inverted": true,
       "stop_end": false,
       "path": [
         {
@@ -180,12 +180,12 @@
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 1.124,
         "accel": 3.048
       }
     },
     {
-      "inverted": false,
+      "inverted": true,
       "stop_end": false,
       "path": [
         {
@@ -197,50 +197,58 @@
           "y": -1.353
         },
         {
-          "x": 0.021,
-          "y": -1.235
+          "x": -0.014,
+          "y": -1.231
         },
         {
-          "x": -0.084,
-          "y": -1.16
+          "x": -0.119,
+          "y": -1.156
         }
       ],
       "constraints": {
-        "velocity": 0.675,
+        "velocity": 0.825,
         "accel": 3.048
       }
     },
     {
-      "inverted": true,
+      "inverted": false,
       "stop_end": false,
       "path": [
         {
-          "x": -0.084,
-          "y": -1.16
+          "x": -0.119,
+          "y": -1.156
         },
         {
-          "x": 0.021,
-          "y": -1.235
+          "x": -0.014,
+          "y": -1.231
         },
         {
-          "x": -0.0,
-          "y": -1.404
+          "x": -0.03,
+          "y": -1.401
         },
         {
-          "x": -0.001,
-          "y": -1.537
+          "x": -0.031,
+          "y": -1.534
         }
       ],
       "constraints": {
-        "velocity": 1.274,
+        "velocity": 1.124,
         "accel": 3.048
       }
     }
   ],
   "commands": [
     {
-      "t": 0.0,
-      "name": "intakeAllianceStakes"
+      "t": 1.601,
+      "name": "intakeOneNeutralStakes"
+    },
+    {
+      "t": 6.948,
+      "name": "liftArm"
+    },
+    {
+      "t": 7.83,
+      "name": "clamp"
     }
   ]
 }
