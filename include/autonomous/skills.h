@@ -64,6 +64,7 @@ public:
                                                       ->withTimeout(0.8_s)}))
                                        ->asProxy()),
                 new Ramsete(drivetrain, &skills_4),
+                new ScheduleCommand(hang),
         });
     }
 };
