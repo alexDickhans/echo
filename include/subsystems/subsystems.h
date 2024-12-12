@@ -133,6 +133,8 @@ inline void subsystemInit() {
                          lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s),
                          barToBarHang, barToBarHang});
 
+        Trigger([]() { return pros::competition::is_disabled(); }).onTrue(drivetrain->retractPto());
+
     Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
             .onFalse(new InstantCommand(
                     []() mutable {
