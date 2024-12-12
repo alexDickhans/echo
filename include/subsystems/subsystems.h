@@ -286,9 +286,9 @@ inline void subsystemInit() {
                                           lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                           TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.3, 0.0),
                                   }));
-    PathCommands::registerCommand("liftArm2", new ParallelRaceGroup({
+    PathCommands::registerCommand("liftArm2", new ParallelCommandGroup({
                                                       bottomIntake->movePct(0.0),
-                                                      lift->positionCommand(33_deg),
+                                                      lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }));
     PathCommands::registerCommand(
@@ -314,7 +314,11 @@ inline void subsystemInit() {
     PathCommands::registerCommand(
             "stopIntake",
             new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 0.9, 0.0),
-                                      bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
+                    bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
+        PathCommands::registerCommand(
+                "stopIntake3",
+                new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 3.9, 0.0),
+                                          bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
     PathCommands::registerCommand("declampElim", goalClamp->levelCommand(false));
