@@ -326,6 +326,6 @@ inline void subsystemInit() {
                                                             topIntake->pctCommand(0.0)}));
     PathCommands::registerCommand("awpLiftUp", lift->positionCommand(30_deg)->with(topIntake->pctCommand(-0.3)));
     PathCommands::registerCommand("intake2andIndex", loadOneRingLow->andThen(loadOneRingLow));
-    PathCommands::registerCommand("outtakeBottom", bottomIntake->movePct(-0.7));
+    PathCommands::registerCommand("outtakeBottom", bottomIntake->movePct(-0.7)->with(lift->positionCommand(35_deg)));
     PathCommands::registerCommand("hangRelease", drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
 }

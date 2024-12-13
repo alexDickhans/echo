@@ -27,6 +27,7 @@ public:
                                     -90_deg, false),
                 SharedCommands::scoreAlliance()->asProxy(),
                 new Ramsete(drivetrain, &skills_1),
+                drivetrain->pct(0, 0)->withTimeout(1.0_s),
                 drivetrain->pct(0.15, 0.15)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
@@ -48,7 +49,7 @@ public:
                 new Ramsete(drivetrain, &skills_2),
                 (new ParallelCommandGroup({
                          bottomIntake->movePct(0.0),
-                         lift->positionCommand(110_deg),
+                         lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                          topIntake->pctCommand(-1.0),
                  }))
                         ->asProxy()
