@@ -48,7 +48,7 @@ public:
                 new Ramsete(drivetrain, &skills_2),
                 (new ParallelCommandGroup({
                          bottomIntake->movePct(0.0),
-                         lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
+                         lift->positionCommand(110_deg),
                          topIntake->pctCommand(-1.0),
                  }))
                         ->asProxy()
