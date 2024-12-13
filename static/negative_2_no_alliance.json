@@ -1,0 +1,90 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 1.6,
+          "y": 1.6
+        },
+        {
+          "x": 1.533,
+          "y": 1.519
+        },
+        {
+          "x": 1.399,
+          "y": 1.132
+        },
+        {
+          "x": 1.511,
+          "y": 0.856
+        }
+      ],
+      "constraints": {
+        "velocity": 0.925,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 1.511,
+          "y": 0.856
+        },
+        {
+          "x": 1.399,
+          "y": 1.132
+        },
+        {
+          "x": 0.933,
+          "y": 1.18
+        },
+        {
+          "x": 0.449,
+          "y": 0.93
+        }
+      ],
+      "constraints": {
+        "velocity": 0.925,
+        "accel": 3.132
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.449,
+          "y": 0.93
+        },
+        {
+          "x": 0.335,
+          "y": 0.871
+        },
+        {
+          "x": 0.251,
+          "y": 0.814
+        },
+        {
+          "x": 0.155,
+          "y": 0.725
+        }
+      ],
+      "constraints": {
+        "velocity": 0.45,
+        "accel": 1.313
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 1.551,
+      "name": "intakeNeutralStakesElim"
+    }
+  ]
+}

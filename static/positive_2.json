@@ -1,0 +1,72 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.501,
+          "y": 1.539
+        },
+        {
+          "x": -1.371,
+          "y": 1.373
+        },
+        {
+          "x": -1.162,
+          "y": 1.403
+        },
+        {
+          "x": -1.055,
+          "y": 1.505
+        }
+      ],
+      "constraints": {
+        "velocity": 1.05,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.055,
+          "y": 1.505
+        },
+        {
+          "x": -1.162,
+          "y": 1.403
+        },
+        {
+          "x": -0.491,
+          "y": 0.599
+        },
+        {
+          "x": -0.214,
+          "y": 0.609
+        }
+      ],
+      "constraints": {
+        "velocity": 1.05,
+        "accel": 3.048
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 1.994,
+      "name": "clamp"
+    },
+    {
+      "t": 2.477,
+      "name": "intakeGoal"
+    },
+    {
+      "t": 6.104,
+      "name": "awpLiftUp"
+    }
+  ]
+}

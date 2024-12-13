@@ -4,10 +4,10 @@
  * Elim to define different auton routines
  */
 enum Auton_ {
-  AWP,
   AWP_PUSH,
   POS_ELIM,
   NEG_ELIM,
+  NEG_ELIM_NO_ALLIANCE,
   SKILLS,
   NONE
 } typedef Auton;

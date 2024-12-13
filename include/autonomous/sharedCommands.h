@@ -54,6 +54,13 @@ public:
      * @return Command that removes rings from the corner
      */
     static Command *descoreCorner() {
-        // TODO
+        return new Sequence({new TankMotionProfiling(drivetrain, {10_in / second, 70_in / second / second}, -7_in,
+                                                     false, -90_deg, 0.0, false),
+                             new TankMotionProfiling(drivetrain, {35_in / second, 100_in / second / second}, 8_in,
+                                                     false, -90_deg, 0.0, false),
+                             new TankMotionProfiling(drivetrain, {35_in / second, 80_in / second / second}, -7_in,
+                                                     false, -90_deg, 0.0, false),
+                             new TankMotionProfiling(drivetrain, {35_in / second, 70_in / second / second}, 8_in, false,
+                                                     -90_deg, 0.0, false)});
     }
 };
