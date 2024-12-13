@@ -261,16 +261,16 @@ inline void subsystemInit() {
                                            [&]() { return outtakeWallStake; }),
             }));
 
-    PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->andThen(loadOneRingHigh));
+    PathCommands::registerCommand("intakeNeutralStakes", loadOneRingHigh->repeatedly());
     PathCommands::registerCommand(
             "intakeNeutralStakesElim",
             loadOneRingHigh->andThen(bottomIntake->movePct(1.0)->with(
                     topIntake->pctCommand(0.0)->with(lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)))));
     PathCommands::registerCommand("intakeOneNeutralStakes",
-                                  loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(
+                                  loadOneRingHigh->andThen(lift->moveToPosition(30_deg)->with(
                                           bottomIntake->movePct(0.0)->with(topIntake->pctCommand(0.0)))));
 
-    PathCommands::registerCommand("bottomIntakeOffTopOn", bottomIntake->movePct(0.0)->with(topIntake->pctCommand(1.0)));
+    PathCommands::registerCommand("bottomIntakeOffTopOn", bottomIntake->movePct(-0.07)->with(topIntake->pctCommand(1.0)));
 
     PathCommands::registerCommand("bottomOuttake",
                                   bottomIntake->movePct(-1.0)->with(lift->positionCommand(0.0))->withTimeout(0.5_s));
@@ -278,7 +278,7 @@ inline void subsystemInit() {
                                   new ParallelRaceGroup({
                                           bottomIntake->movePct(0.0),
                                           lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                          TopIntakePositionCommand::fromClosePositionCommand(topIntake, -0.3, 0.0),
+                                          topIntake->pctCommand(0.0),
                                   }));
     PathCommands::registerCommand("liftArm2", new ParallelCommandGroup({
                                                       bottomIntake->movePct(0.0),
