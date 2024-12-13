@@ -37,9 +37,9 @@ namespace CONFIG {
         return (velocity).getValue() * 0.67 + (accel).getValue() * 0.037 + copysign(0.02, velocity.getValue());
     }
 
-    const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-4.2_in).getValue(), (7_in).getValue(), (90_deg).getValue());
-    const Eigen::Vector3f DISTANCE_FRONT_OFFSET((7_in).getValue(), (-5_in).getValue(), (180_deg).getValue());
-    const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-4.2_in).getValue(), (-7_in).getValue(), (-90_deg).getValue());
+    const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-2.9_in).getValue(), (7_in).getValue(), (90_deg).getValue());
+    const Eigen::Vector3f DISTANCE_FRONT_OFFSET((7.8_in).getValue(), (-5.4_in).getValue(), (180_deg).getValue());
+    const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-2.9_in).getValue(), (-7_in).getValue(), (-90_deg).getValue());
 
     constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
