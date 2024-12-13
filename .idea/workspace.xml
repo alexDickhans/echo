@@ -31,7 +31,13 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="" />
+    <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/auton.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/auton.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/autonomous/awp.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/autonomous/awp.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/negative_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/negative_1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/safe_awp_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/safe_awp_2.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -58,9 +64,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Users/alex/Documents/VEX/echo-rs/include/config.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/alex/Documents/VEX/echo-rs/include/subsystems/drivetrain.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/alex/Documents/VEX/echo-rs/include/subsystems/subsystems.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/echo-logo.h" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MakefileLocalSettings">
     <option name="availableProjects">
@@ -114,6 +118,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "skills-12-13-carls-path",
+    "last_opened_file_path": "/Users/alex/Documents/VEX/echo-rs/src",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -124,6 +129,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
