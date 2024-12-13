@@ -27,7 +27,7 @@ public:
                                     -90_deg, false),
                 SharedCommands::scoreAlliance()->asProxy(),
                 new Ramsete(drivetrain, &skills_1),
-                drivetrain->pct(0, 0)->withTimeout(1.0_s),
+                drivetrain->pct(0, 0)->withTimeout(0.6_s),
                 drivetrain->pct(0.15, 0.15)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
