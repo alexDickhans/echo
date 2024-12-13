@@ -69,6 +69,7 @@ inline void subsystemInit() {
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, pros::Distance(1)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(9)));
 
     drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
@@ -265,7 +266,9 @@ inline void subsystemInit() {
             "intakeNeutralStakesElim",
             loadOneRingHigh->andThen(bottomIntake->movePct(1.0)->with(
                     topIntake->pctCommand(0.0)->with(lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)))));
-    PathCommands::registerCommand("intakeOneNeutralStakes", loadOneRingHigh);
+    PathCommands::registerCommand("intakeOneNeutralStakes",
+                                  loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(
+                                          bottomIntake->movePct(0.0)->with(topIntake->pctCommand(0.0)))));
 
     PathCommands::registerCommand("bottomIntakeOffTopOn", bottomIntake->movePct(0.0)->with(topIntake->pctCommand(1.0)));
 
@@ -308,7 +311,7 @@ inline void subsystemInit() {
                                       bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand(
             "stopIntake3",
-            new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 3.9, 0.0),
+            new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 3.8, 0.0),
                                       bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));

@@ -25,7 +25,7 @@ private:
 	QLength distanceSinceUpdate = 0.0;
 	QTime lastUpdateTime = 0.0;
 
-	QLength maxDistanceSinceUpdate = 0.5_in;
+	QLength maxDistanceSinceUpdate = 1.0_in;
 	QTime maxUpdateInterval = 2_s;
 
 	std::function<Angle()> angleFunction;

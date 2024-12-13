@@ -79,6 +79,9 @@ public:
         left5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         right5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
+        lastLeft = this->getLeftDistance();
+        lastRight = this->getRightDistance();
+
         imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled() || AUTON == SKILLS);
     }
 
