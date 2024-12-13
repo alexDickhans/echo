@@ -25,7 +25,7 @@ private:
 	QLength distanceSinceUpdate = 0.0;
 	QTime lastUpdateTime = 0.0;
 
-	QLength maxDistanceSinceUpdate = 1_in;
+	QLength maxDistanceSinceUpdate = 0.5_in;
 	QTime maxUpdateInterval = 2_s;
 
 	std::function<Angle()> angleFunction;
@@ -107,6 +107,15 @@ public:
 		distanceSinceUpdate += predictionFunction().norm();
 
 		if (distanceSinceUpdate < maxDistanceSinceUpdate && maxUpdateInterval > pros::millis() * millisecond) {
+			float xSum = 0.0, ySum = 0.0;
+
+			for (size_t i = 0; i < L; i++) {
+				xSum += particles[i][0];
+				ySum += particles[i][1];
+			}
+
+			prediction = Eigen::Vector3f(xSum / static_cast<float>(L), ySum / static_cast<float>(L), angle.getValue());
+
 			return;
 		}
 

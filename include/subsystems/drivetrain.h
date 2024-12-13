@@ -264,19 +264,11 @@ public:
     }
 
     InstantCommand *releaseString() {
-        return new InstantCommand(
-                [this]() {
-                    this->stringRelease.set_value(true);
-                },
-                {});
+        return new InstantCommand([this]() { this->stringRelease.set_value(true); }, {});
     }
 
     InstantCommand *retractAlignMech() {
-        return new InstantCommand(
-                [this]() {
-                    this->stringRelease.set_value(false);
-                },
-                {});
+        return new InstantCommand([this]() { this->stringRelease.set_value(false); }, {});
     }
 
     InstantCommand *activatePto() {
@@ -285,6 +277,14 @@ public:
                     this->pto.set_value(true);
                     ptoActive = true;
                     this->lastStringLength = this->getStringDistance();
+                },
+                {});
+    }
+    InstantCommand *retractPto() {
+        return new InstantCommand(
+                [this]() {
+                    this->pto.set_value(false);
+                    ptoActive = false;
                 },
                 {});
     }
@@ -373,11 +373,11 @@ public:
                 this->pct(0.5, 0.5)->withTimeout(500_ms),
                 this->pct(0.6, 0.6)->withTimeout(300_ms),
                 this->pct(-0.5, -0.5)->withTimeout(800_ms),
-            this->pct(-0.2, -0.2)->withTimeout(400_ms),
-            this->pct(0.5, 0.5)->withTimeout(500_ms),
+                this->pct(-0.2, -0.2)->withTimeout(400_ms),
+                this->pct(0.5, 0.5)->withTimeout(500_ms),
                 this->pct(0.6, 0.6)->withTimeout(300_ms),
-            this->pct(-0.5, -0.5)->withTimeout(800_ms),
-            this->pct(-0.2, -0.2)->withTimeout(400_ms),
+                this->pct(-0.5, -0.5)->withTimeout(800_ms),
+                this->pct(-0.2, -0.2)->withTimeout(400_ms),
                 this->pct(0.5, 0.5)->withTimeout(500_ms),
                 this->pct(0.6, 0.6)->withTimeout(300_ms),
                 this->pct(-0.5, -0.5)->withTimeout(800_ms),

@@ -28,18 +28,12 @@ public:
                 SharedCommands::scoreAlliance()->asProxy(),
                 new Ramsete(drivetrain, &skills_1),
                 drivetrain->pct(0.15, 0.15)
-                        ->race((new Sequence({new ParallelRaceGroup({
-                                                      bottomIntake->movePct(0.0),
-                                                      lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                      TopIntakePositionCommand::fromClosePositionCommand(topIntake,
-                                                                                                         -0.3, 0.0),
-                                              }),
-                                              (new ParallelCommandGroup({
-                                                       bottomIntake->movePct(0.0),
-                                                       lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                       topIntake->pctCommand(-1.0),
-                                               }))
-                                                      ->withTimeout(0.6_s)}))
+                        ->race(((new ParallelCommandGroup({
+                                         bottomIntake->movePct(0.0),
+                                         lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
+                                         topIntake->pctCommand(-1.0),
+                                 }))
+                                        ->withTimeout(0.6_s))
                                        ->asProxy()),
                 new Ramsete(drivetrain, &skills_2),
                 (new ParallelCommandGroup({
@@ -70,6 +64,7 @@ public:
                                                       ->withTimeout(0.8_s)}))
                                        ->asProxy()),
                 new Ramsete(drivetrain, &skills_4),
+                new ScheduleCommand(hang),
         });
     }
 };
