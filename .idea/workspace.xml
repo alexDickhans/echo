@@ -7,7 +7,7 @@
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
-    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="3" type="long" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="4" type="long" />
     <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppCodeGeneration" type="string" />
     <option name="/Default/CodeEditing/CppDocumentationComment/AddBriefTag/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
@@ -33,9 +33,7 @@
   <component name="ChangeListManager">
     <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_3.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_4.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_4.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_1.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,9 +61,7 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Users/alex/Documents/VEX/echo-rs/include/config.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/alex/Documents/VEX/echo-rs/include/subsystems/drivetrain.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/alex/Documents/VEX/echo-rs/include/subsystems/subsystems.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/echo-logo.h" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MakefileLocalSettings">
     <option name="availableProjects">
@@ -118,7 +114,8 @@
     "cf.advertisement.text.overridden": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "skills-12-12",
+    "git-widget-placeholder": "skills-12-13-carls-path",
+    "last_opened_file_path": "/Users/alex/Documents/VEX/echo-rs/src",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -129,6 +126,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>

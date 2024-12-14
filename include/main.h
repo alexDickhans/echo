@@ -42,7 +42,6 @@
 #include "motionProfiling/combinedMotionProfile.h"
 #include "motionProfiling/bezierMotionProfiling.h"
 #include "autonomous/autonCommands.h"
-#include "echo-logo.h"
 /**
  * You should add more #includes here
  */
