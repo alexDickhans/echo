@@ -200,11 +200,7 @@ inline void subsystemInit() {
                                            [&]() { return outtakeWallStake; }),
             }));
 
-    primary.getTrigger(DIGITAL_RIGHT)
-            ->onTrue(new ConditionalCommand(
-                    goalClampTrue,
-                    goalClamp->levelCommand(false)->race(lift->positionCommand(30_deg)->withTimeout(0.7_s)),
-                    []() { return !CommandScheduler::scheduled(goalClampTrue); }));
+    primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 
     primary.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
 
