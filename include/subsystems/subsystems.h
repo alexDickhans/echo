@@ -206,7 +206,6 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_B)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
 
-
     partner.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
     partner.getTrigger(DIGITAL_Y)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
 
@@ -270,16 +269,16 @@ inline void subsystemInit() {
                                   loadOneRingHigh->andThen(lift->moveToPosition(30_deg)->with(
                                           bottomIntake->movePct(0.0)->with(topIntake->pctCommand(0.0)))));
 
-    PathCommands::registerCommand("bottomIntakeOffTopOn", bottomIntake->movePct(-0.07)->with(topIntake->pctCommand(1.0)));
+    PathCommands::registerCommand("bottomIntakeOffTopOn",
+                                  bottomIntake->movePct(-0.07)->with(topIntake->pctCommand(1.0)));
 
     PathCommands::registerCommand("bottomOuttake",
                                   bottomIntake->movePct(-1.0)->with(lift->positionCommand(0.0))->withTimeout(0.5_s));
-    PathCommands::registerCommand("liftArm",
-                                  new ParallelRaceGroup({
-                                          bottomIntake->movePct(0.0),
-                                          lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                          topIntake->pctCommand(0.0),
-                                  }));
+    PathCommands::registerCommand("liftArm", new ParallelRaceGroup({
+                                                     bottomIntake->movePct(0.0),
+                                                     lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
+                                                     topIntake->pctCommand(0.0),
+                                             }));
     PathCommands::registerCommand("liftArm2", new ParallelCommandGroup({
                                                       bottomIntake->movePct(0.0),
                                                       lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),

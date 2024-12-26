@@ -8,7 +8,6 @@ BEZIER_MIRRORED_MP_ASSET(safe_awp_2);
  */
 class AWP {
 public:
-
     /**
      * Adds a push to the same AWP
      * @return Command for auton
@@ -34,7 +33,7 @@ public:
                                         0.0),
                 (new Rotate(drivetrain, 0_deg, flip, 0.0))->withTimeout(0.8_s),
                 new Ramsete(drivetrain, flip ? &safe_awp_2_blue : &safe_awp_2_red),
-                drivetrain->pct(0.15, 0.15)->withTimeout(3.0_s),
+                SharedCommands::descoreCorner(),
         });
     }
 };
