@@ -24,6 +24,7 @@ public:
 		intakeMotor.set_gearing(pros::MotorGears::green);
 		vision.colorDetection(true, false);
 		vision.startAwb();
+		intakeMotor.tare_position_all();
 	}
 
 	void periodic() override {

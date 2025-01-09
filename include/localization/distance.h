@@ -22,20 +22,22 @@ private:
 	QLength measured = 0.0;
 	bool exit = false;
 	QLength std = 0.0;
+
+	double tuningConstant;
 public:
-	Distance(Eigen::Vector3f sensor_offset, pros::Distance distance)
-		: sensorOffset(std::move(sensor_offset)),
+	Distance(Eigen::Vector3f sensor_offset, const double tuningConstant, pros::Distance distance)
+		: sensorOffset(std::move(sensor_offset)), tuningConstant(tuningConstant),
 		  distance(std::move(distance)) {
 	}
 
 	void update() override {
 		const auto measuredMM = distance.get();
 
-		exit = measuredMM == 9999 || distance.get_object_size() < 70;
+		exit = measuredMM == 9999 || distance.get_object_size() < 55;
 
-		measured = measuredMM * millimetre;
+		measured = tuningConstant * measuredMM * millimetre;
 
-		std = 0.20 * measured / (distance.get_confidence() / 64.0);
+		std = 0.35 * measured / (distance.get_confidence() / 64.0);
 	}
 
 	[[nodiscard]] std::optional<double> p(const Eigen::Vector3f& X) override {
