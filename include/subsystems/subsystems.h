@@ -265,7 +265,7 @@ inline void subsystemInit() {
             loadOneRingHigh->andThen(bottomIntake->movePct(1.0)->with(
                     topIntake->pctCommand(0.0)->with(lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)))));
     PathCommands::registerCommand("intakeOneNeutralStakes",
-                                  loadOneRingHigh->andThen(lift->moveToPosition(30_deg)->with(
+                                  loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(
                                           bottomIntake->movePct(0.0)->with(topIntake->pctCommand(0.0)))));
 
     PathCommands::registerCommand("bottomIntakeOffTopOn", bottomIntake->movePct(-0.07)->with(topIntake->pctCommand(1.0)));
