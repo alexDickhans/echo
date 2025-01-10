@@ -27,8 +27,8 @@ public:
                                     -90_deg, false),
                 SharedCommands::scoreAlliance()->asProxy(),
                 new Ramsete(drivetrain, &skills_1),
-                drivetrain->pct(0, 0)->withTimeout(0.3_s),
-                drivetrain->pct(0.15, 0.15)
+                drivetrain->pct(0.10, 0.10)->withTimeout(0.3_s),
+                drivetrain->pct(0.10, 0.10)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
                                                       lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
@@ -53,7 +53,7 @@ public:
                          topIntake->pctCommand(-1.0),
                  }))
                         ->asProxy()
-                        ->with(drivetrain->pct(0.3, 0.3))
+                        ->with(drivetrain->pct(0.25, 0.25))
                         ->withTimeout(0.5_s),
                 new Ramsete(drivetrain, &skills_3),
                 drivetrain->pct(0.15, 0.15)

@@ -16,6 +16,7 @@ private:
 public:
 	explicit LiftSubsystem(const std::initializer_list<int8_t> &motors, const PID& pid) : motor(motors), pid(pid) {
 		motor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
+		motor.tare_position_all();
 	}
 
 	void periodic() override {
