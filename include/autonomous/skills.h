@@ -25,10 +25,11 @@ public:
         return new Sequence({
                 drivetrain->setNorm(Eigen::Vector2f(0.0, (60_in).getValue()), Eigen::Matrix2f::Identity() * 0.04,
                                     -90_deg, false),
-                SharedCommands::scoreAlliance()->asProxy(),
+                new ScheduleCommand(SharedCommands::scoreAlliance()),
+                new WaitCommand(300_ms),
                 new Ramsete(drivetrain, &skills_1),
-                drivetrain->pct(0.10, 0.10)->withTimeout(0.3_s),
-                drivetrain->pct(0.10, 0.10)
+                drivetrain->pct(0.08, 0.08)->withTimeout(0.3_s),
+                drivetrain->pct(0.02, 0.02)
                         ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
                                                       lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
@@ -47,18 +48,19 @@ public:
                                                       ->withTimeout(0.8_s)}))
                                        ->asProxy()),
                 new Ramsete(drivetrain, &skills_2),
+                drivetrain->pct(0.08, 0.08)->withTimeout(0.1_s),
                 (new ParallelCommandGroup({
                          bottomIntake->movePct(0.0),
                          lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                          topIntake->pctCommand(-1.0),
                  }))
                         ->asProxy()
-                        ->with(drivetrain->pct(0.25, 0.25))
+                        ->with(drivetrain->pct(0.03, 0.03))
                         ->withTimeout(0.5_s),
                 new Ramsete(drivetrain, &skills_3),
-                drivetrain->pct(0.15, 0.15)
-                        ->race((new Sequence({
-                                              new ParallelRaceGroup({
+                drivetrain->pct(0.08, 0.08)->withTimeout(0.3_s),
+                drivetrain->pct(0.0, 0.0)
+                        ->race((new Sequence({new ParallelRaceGroup({
                                                       bottomIntake->movePct(0.0),
                                                       lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),

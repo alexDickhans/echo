@@ -18,7 +18,13 @@ public:
                         lift->positionCommand(0_deg),
                         topIntake->pctCommand(1.0),
                 }))
-                ->withTimeout(300_ms);
+                ->withTimeout(300_ms)
+                ->andThen((new ParallelCommandGroup({
+                                   bottomIntake->movePct(0.0),
+                                   lift->positionCommand(0_deg),
+                                   topIntake->pctCommand(-0.3),
+                           }))
+                                  ->withTimeout(500_ms));
     }
 
 
