@@ -143,6 +143,6 @@ void autonomous() {
  */
 void opcontrol() {
     if (AUTON == Auton::SKILLS) {
-        CommandScheduler::schedule(autonCommand->until([&]() {return primary.get_digital(DIGITAL_A);}));
+        CommandScheduler::schedule(autonCommand->until([&]() {return partner.get_digital(DIGITAL_RIGHT);}));
     }
 }
