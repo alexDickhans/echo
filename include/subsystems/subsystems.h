@@ -47,8 +47,6 @@ Command *barToBarHang;
 CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
-pros::Distance goalClampDistanceSensor(20);
-
 GpsSensor *gpsSensor;
 
 bool outtakeWallStake = false;
@@ -66,10 +64,10 @@ inline void subsystemInit() {
     drivetrain = new Drivetrain({-8, -16}, {3, 4}, {21}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'),
                                 pros::adi::DigitalOut('c'), []() { return goalClamp->getLastValue(); });
 
-    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, pros::Distance(15)));
-    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, pros::Distance(1)));
-    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, pros::Distance(11)));
-    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, pros::Distance(9)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2438.0/2485.0, pros::Distance(15)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2438.0/2480.0, pros::Distance(1)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2438.0/2505.0, pros::Distance(11)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2438.0/2483.0, pros::Distance(9)));
 
     drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 

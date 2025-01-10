@@ -37,10 +37,10 @@ namespace CONFIG {
         return (velocity).getValue() * 0.67 + (accel).getValue() * 0.037 + copysign(0.02, velocity.getValue());
     }
 
-    const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-2.9_in).getValue(), (7_in).getValue(), (90_deg).getValue());
-    const Eigen::Vector3f DISTANCE_FRONT_OFFSET((7.8_in).getValue(), (-5.4_in).getValue(), (0_deg).getValue());
-    const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-2.9_in).getValue(), (-7_in).getValue(), (-90_deg).getValue());
-    const Eigen::Vector3f DISTANCE_BACK_OFFSET((-2.15_in).getValue(), (-6.5_in).getValue(), (180_deg).getValue());
+    const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-2.9_in).getValue(), (6.75_in).getValue(), (90_deg).getValue());
+    const Eigen::Vector3f DISTANCE_FRONT_OFFSET((7.5_in).getValue(), (-5.25_in).getValue(), (0_deg).getValue());
+    const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-2.9_in).getValue(), (-5.8_in).getValue(), (-90_deg).getValue());
+    const Eigen::Vector3f DISTANCE_BACK_OFFSET((-3.1_in).getValue(), (6.5_in).getValue(), (180_deg).getValue());
 
     constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
@@ -52,9 +52,9 @@ namespace CONFIG {
 
     double K_s = 0.12;
 
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.64, 0.042};
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.54, 0.042};
     Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.1377, 0.0184};
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.61, 0.037};
+    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.51, 0.037};
     Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.1302, 0.0155};
 
     constexpr QLength START_STRING_LENGTH = 4.5_in;
