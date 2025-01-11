@@ -28,7 +28,7 @@ public:
                 new ScheduleCommand(SharedCommands::scoreAlliance()),
                 new WaitCommand(300_ms),
                 new Ramsete(drivetrain, &skills_1),
-                drivetrain->pct(0.08, 0.08)->withTimeout(0.2_s),
+                drivetrain->pct(0.3, 0.3)->withTimeout(0.2_s),
                 drivetrain->pct(0.0, 0.0)->withTimeout(0.1_s),
                 drivetrain->pct(0.0, 0.0)
                         ->race((new Sequence({new ParallelRaceGroup({
@@ -53,11 +53,11 @@ public:
                 (new ParallelCommandGroup({
                          bottomIntake->movePct(0.0),
                          lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
-                         topIntake->pctCommand(-0.33),
+                         topIntake->pctCommand(-0.4),
                  }))
                         ->asProxy()
-                        ->with(drivetrain->pct(0.0, 0.0))
-                        ->withTimeout(0.7_s),
+                        ->with(drivetrain->pct(0.1, 0.1))
+                        ->withTimeout(1.0_s),
                 new Ramsete(drivetrain, &skills_3),
                 drivetrain->pct(0.2, 0.2)->withTimeout(0.2_s),
                 drivetrain->pct(0.0, 0.0)->withTimeout(0.2_s),
