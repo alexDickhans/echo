@@ -31,7 +31,7 @@ namespace CONFIG {
 
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 30_deg;
     constexpr Angle WALL_STAKE_SCORE_HEIGHT = 125_deg;
-    constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 45_deg;
+    constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 60_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
         return (velocity).getValue() * 0.67 + (accel).getValue() * 0.037 + copysign(0.02, velocity.getValue());

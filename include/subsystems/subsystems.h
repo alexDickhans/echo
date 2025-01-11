@@ -215,10 +215,21 @@ inline void subsystemInit() {
             ->onFalse((new ParallelCommandGroup({
                                bottomIntake->movePct(0.0),
                                lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
-                               topIntake->pctCommand(-0.33),
+                               topIntake->pctCommand(-0.44),
                        }))
-                              ->asProxy()
-                              ->withTimeout(1.4_s));
+                              ->withTimeout(0.28_s)
+                              ->andThen((new ParallelCommandGroup({
+                                                 bottomIntake->movePct(0.0),
+                                                 lift->positionCommand(0),
+                                                 topIntake->pctCommand(-1.0),
+                                         }))
+                                                ->withTimeout(0.1_s))
+                              ->andThen((new ParallelCommandGroup({
+                                                 bottomIntake->movePct(0.0),
+                                                 lift->positionCommand(0),
+                                                 topIntake->pctCommand(1.0),
+                                         }))
+                                                ->withTimeout(0.3_s)));
 
     partner.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
     partner.getTrigger(DIGITAL_Y)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
