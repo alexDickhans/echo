@@ -204,6 +204,22 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_B)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
 
+    primary.getTrigger(DIGITAL_A)
+            ->onTrue(new Sequence({
+                    new ParallelCommandGroup({
+                            bottomIntake->movePct(0.0),
+                            lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
+                            topIntake->pctCommand(0.0),
+                    }),
+            }))
+            ->onFalse((new ParallelCommandGroup({
+                               bottomIntake->movePct(0.0),
+                               lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
+                               topIntake->pctCommand(-0.33),
+                       }))
+                              ->asProxy()
+                              ->withTimeout(1.4_s));
+
     partner.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
     partner.getTrigger(DIGITAL_Y)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
 
@@ -263,9 +279,10 @@ inline void subsystemInit() {
             "intakeNeutralStakesElim",
             loadOneRingHigh->andThen(bottomIntake->movePct(1.0)->with(
                     topIntake->pctCommand(0.0)->with(lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)))));
-    PathCommands::registerCommand("intakeOneNeutralStakes",
-                                  loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(
-                                          bottomIntake->movePct(0.0)->with(topIntake->pctCommand(0.0)))));
+    PathCommands::registerCommand(
+            "intakeOneNeutralStakes",
+            loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(bottomIntake->movePct(0.0)->with(
+                    TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.4, 0.0)))));
 
     PathCommands::registerCommand("bottomIntakeOffTopOn",
                                   bottomIntake->movePct(-0.07)->with(topIntake->pctCommand(1.0)));

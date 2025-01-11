@@ -49,14 +49,15 @@ public:
                                                       ->withTimeout(0.8_s)}))
                                        ->asProxy()),
                 new Ramsete(drivetrain, &skills_2),
+                drivetrain->pct(0.3, 0.3)->withTimeout(0.1_s),
                 (new ParallelCommandGroup({
                          bottomIntake->movePct(0.0),
                          lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
-                         topIntake->pctCommand(-0.6),
+                         topIntake->pctCommand(-0.33),
                  }))
                         ->asProxy()
-                        ->with(drivetrain->pct(0.50, 0.50))
-                        ->withTimeout(0.5_s),
+                        ->with(drivetrain->pct(0.0, 0.0))
+                        ->withTimeout(0.7_s),
                 new Ramsete(drivetrain, &skills_3),
                 drivetrain->pct(0.2, 0.2)->withTimeout(0.2_s),
                 drivetrain->pct(0.0, 0.0)->withTimeout(0.2_s),
