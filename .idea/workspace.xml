@@ -32,7 +32,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/subsystems/subsystems.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/subsystems.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_3.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_3.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_4.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_4.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +112,7 @@
     &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;localization-testing&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;skills-01-10&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/alex/Documents/VEX/echo-rs/src&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -232,6 +236,7 @@
       <workItem from="1736391787937" duration="1813000" />
       <workItem from="1736439888964" duration="19824000" />
       <workItem from="1736518083542" duration="565000" />
+      <workItem from="1736646559983" duration="3645000" />
     </task>
     <servers />
   </component>

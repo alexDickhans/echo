@@ -64,10 +64,10 @@ inline void subsystemInit() {
     drivetrain = new Drivetrain({-8, -16}, {3, 4}, {21}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'),
                                 pros::adi::DigitalOut('c'), []() { return goalClamp->getLastValue(); });
 
-    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2438.0/2485.0, pros::Distance(15)));
-    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2438.0/2480.0, pros::Distance(1)));
-    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2438.0/2505.0, pros::Distance(11)));
-    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2438.0/2483.0, pros::Distance(9)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2438.0 / 2485.0, pros::Distance(15)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2438.0 / 2480.0, pros::Distance(1)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2438.0 / 2505.0, pros::Distance(11)));
+    drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2438.0 / 2483.0, pros::Distance(9)));
 
     drivetrain->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
@@ -204,7 +204,37 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_B)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
 
-    partner.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
+    primary.getTrigger(DIGITAL_A)
+            ->onTrue(new Sequence({
+                    new ParallelCommandGroup({
+                            bottomIntake->movePct(0.0),
+                            lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
+                            topIntake->pctCommand(0.0),
+                    }),
+            }))
+            ->onFalse((new ParallelCommandGroup({
+                               bottomIntake->movePct(0.0),
+                               lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
+                               topIntake->pctCommand(-0.44),
+                       }))
+                              ->withTimeout(0.28_s)
+                              ->andThen((new ParallelCommandGroup({
+                                                 bottomIntake->movePct(0.0),
+                                                 lift->positionCommand(0),
+                                                 topIntake->pctCommand(-1.0),
+                                         }))
+                                                ->withTimeout(0.1_s))
+                              ->andThen((new ParallelCommandGroup({
+                                                 bottomIntake->movePct(0.0),
+                                                 lift->positionCommand(0),
+                                                 topIntake->pctCommand(1.0),
+                                         }))
+                                                ->withTimeout(0.3_s)));
+
+    partner.getTrigger(DIGITAL_DOWN)
+            ->whileTrue(new ConditionalCommand(hang,
+                                               drivetrain->retractAlignMech()->with(lift->moveToPosition(110_deg)),
+                                               pros::competition::is_competition_switch));
     partner.getTrigger(DIGITAL_Y)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
 
     partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup(
@@ -263,9 +293,10 @@ inline void subsystemInit() {
             "intakeNeutralStakesElim",
             loadOneRingHigh->andThen(bottomIntake->movePct(1.0)->with(
                     topIntake->pctCommand(0.0)->with(lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)))));
-    PathCommands::registerCommand("intakeOneNeutralStakes",
-                                  loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(
-                                          bottomIntake->movePct(0.0)->with(topIntake->pctCommand(0.0)))));
+    PathCommands::registerCommand(
+            "intakeOneNeutralStakes",
+            loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(bottomIntake->movePct(0.0)->with(
+                    TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.4, 0.0)))));
 
     PathCommands::registerCommand("bottomIntakeOffTopOn",
                                   bottomIntake->movePct(-0.07)->with(topIntake->pctCommand(1.0)));
@@ -282,6 +313,11 @@ inline void subsystemInit() {
                                                       lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                       topIntake->pctCommand(0.0),
                                               }));
+    PathCommands::registerCommand("liftArmAlliance", new ParallelCommandGroup({
+                                                             bottomIntake->movePct(0.0),
+                                                             lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
+                                                             topIntake->pctCommand(0.0),
+                                                     }));
     PathCommands::registerCommand(
             "intakeAllianceStakes",
             new Sequence(
