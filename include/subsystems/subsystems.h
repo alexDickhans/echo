@@ -231,7 +231,10 @@ inline void subsystemInit() {
                                          }))
                                                 ->withTimeout(0.3_s)));
 
-    partner.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
+    partner.getTrigger(DIGITAL_DOWN)
+            ->whileTrue(new ConditionalCommand(hang,
+                                               drivetrain->retractAlignMech()->with(lift->moveToPosition(110_deg)),
+                                               pros::competition::is_competition_switch));
     partner.getTrigger(DIGITAL_Y)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
 
     partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup(
