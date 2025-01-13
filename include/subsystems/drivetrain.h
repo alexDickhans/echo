@@ -54,6 +54,8 @@ private:
 
     QLength lastStringLength = 0.0;
 
+    Eigen::Vector3d exponentialPose;
+
 public:
     Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,

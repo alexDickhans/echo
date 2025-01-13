@@ -230,7 +230,7 @@ inline void subsystemInit() {
                                                  topIntake->pctCommand(1.0),
                                          }))
                                                 ->withTimeout(0.3_s)));
-
+    partner.getTrigger(DIGITAL_UP)->onTrue(TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.4));
     partner.getTrigger(DIGITAL_DOWN)
             ->whileTrue(new ConditionalCommand(hang,
                                                drivetrain->retractAlignMech()->with(lift->moveToPosition(110_deg)),
