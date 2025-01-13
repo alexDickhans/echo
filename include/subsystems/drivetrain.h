@@ -123,7 +123,7 @@ public:
                 const auto noisy = avgDistribution(de);
                 const auto angle = angleDistribution(de);
 
-                return Eigen::Rotation2Df(angle) * displacementMatrix * Eigen::Vector2f({noisy, 0.0});
+                return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
             });
 
             const Eigen::Vector2f localDisplacement = displacementMatrix * localMeasurement;
