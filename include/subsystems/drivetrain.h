@@ -54,7 +54,9 @@ private:
 
     QLength lastStringLength = 0.0;
 
-    Eigen::Vector3d exponentialPose;
+    Eigen::Vector3f exponentialPose = Eigen::Vector3f::Zero();
+
+    Angle lastTheta = 0.0;
 
 public:
     Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
@@ -109,12 +111,28 @@ public:
                     particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
                     particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
 
-            particleFilter.update([this, angleDistribution, avgDistribution]() mutable {
+            // Exponential Pose Tracking
+            const Angle dTheta = particleFilter.getAngle() - lastTheta;
+
+            const auto localMeasurement = Eigen::Vector2f({avg.getValue(), 0});
+            const auto displacementMatrix =
+                    Eigen::Matrix2f({{1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
+                                     {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}});
+
+            particleFilter.update([this, angleDistribution, avgDistribution, displacementMatrix]() mutable {
                 const auto noisy = avgDistribution(de);
                 const auto angle = angleDistribution(de);
 
-                return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
+                return Eigen::Rotation2Df(angle) * displacementMatrix * Eigen::Vector2f({noisy, 0.0});
             });
+
+            const Eigen::Vector2f localDisplacement = displacementMatrix * localMeasurement;
+            const Eigen::Vector2f globalDisplacement =
+                    Eigen::Rotation2Df(particleFilter.getAngle().Convert(radian)) * localDisplacement;
+
+            exponentialPose += Eigen::Vector3f(globalDisplacement.x(), globalDisplacement.y(), dTheta.Convert(radian));
+
+            lastTheta = particleFilter.getAngle();
         } else {
             const QLength currentLength = this->getStringDistance();
 
@@ -211,6 +229,7 @@ public:
 
     InstantCommand *setNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle,
                             const bool flip) {
+        exponentialPose = Eigen::Vector3f(mean.x(), mean.y(), angle.Convert(radian));
         return new InstantCommand(
                 [this, mean, covariance, flip, angle]() { this->initNorm(mean, covariance, angle, flip); }, {this});
     }
