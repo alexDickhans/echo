@@ -5,6 +5,7 @@
 #include "command/includes.h"
 #include "skills.h"
 #include "awp.h"
+#include "sawp.h"
 #include "elims.h"
 
 /**
@@ -18,12 +19,14 @@ public:
                 return Skills::skills();
             case AWP_PUSH:
                 return AWP::push_awp();
+            case SAWP:
+                return AWP::sawp();
             case POS_ELIM:
                 return Elims::pos_elim();
             case NEG_ELIM:
                 return Elims::neg_elim();
-            case NEG_ELIM_TOUCH:
-                return Elims::neg_elim();
+            case NEG_ELIM_NO_ALLIANCE:
+                return Elims::neg_elim_no_alliance();
             default:
                 return new InstantCommand([]() { std::cout << "No auton" << std::endl; }, {});
         }

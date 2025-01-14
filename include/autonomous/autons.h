@@ -8,7 +8,7 @@ enum Auton_ {
   SAWP,
   POS_ELIM,
   NEG_ELIM,
-  NEG_ELIM_TOUCH,
+  NEG_ELIM_NO_ALLIANCE,
   SKILLS,
   NONE
 } typedef Auton;

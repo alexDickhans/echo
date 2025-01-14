@@ -340,7 +340,7 @@ inline void subsystemInit() {
                                                     }));
     PathCommands::registerCommand(
             "stopIntake",
-            new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 1.1, 0.0),
+            new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 0.9, 0.0),
                                       bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand(
             "stopIntake3",
