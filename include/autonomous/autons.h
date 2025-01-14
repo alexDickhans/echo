@@ -5,6 +5,7 @@
  */
 enum Auton_ {
   AWP_PUSH,
+  SAWP,
   POS_ELIM,
   NEG_ELIM,
   NEG_ELIM_NO_ALLIANCE,
