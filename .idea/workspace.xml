@@ -7,7 +7,6 @@
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
-    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
     <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="3" type="long" />
     <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppCodeGeneration" type="string" />
     <option name="/Default/CodeEditing/CppDocumentationComment/AddBriefTag/@EntryValue" value="true" type="bool" />
@@ -33,14 +32,8 @@
   <component name="ChangeListManager">
     <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/autonomous/skills.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/autonomous/skills.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/subsystems/drivetrain.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/drivetrain.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/subsystems/subsystems.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/subsystems.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/subsystems/topIntake.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/topIntake.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_1.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/skills_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_3.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/skills_4.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/skills_4.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +61,21 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/include/echo-logo.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/auton.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/autonCommands.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/autons.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/awp.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/elims.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/sharedCommands.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/skills.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/command/scheduleCommand.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/command/waitCommand.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/config.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/localization/config.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/subsystems/bottomIntake.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/subsystems/drivetrain.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/subsystems/subsystems.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/subsystems/topIntake.h" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MakefileLocalSettings">
     <option name="availableProjects">
@@ -116,7 +123,7 @@
     "cf.advertisement.text.overridden": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "exponential-pose-tracking",
+    "git-widget-placeholder": "#56 on exponential-pose-tracking",
     "last_opened_file_path": "/Users/alex/Documents/VEX/echo-rs/src",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -241,6 +248,7 @@
       <workItem from="1736439888964" duration="19824000" />
       <workItem from="1736518083542" duration="565000" />
       <workItem from="1736646559983" duration="3645000" />
+      <workItem from="1736872989844" duration="1417000" />
     </task>
     <servers />
   </component>

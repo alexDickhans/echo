@@ -17,3 +17,5 @@ temp.errors
 .d/
 
 .DS_Store
+
+.idea/
