@@ -22,7 +22,7 @@ public:
                 return Elims::pos_elim();
             case NEG_ELIM:
                 return Elims::neg_elim();
-            case NEG_ELIM_NO_ALLIANCE:
+            case NEG_ELIM_TOUCH:
                 return Elims::neg_elim();
             default:
                 return new InstantCommand([]() { std::cout << "No auton" << std::endl; }, {});
