@@ -13,18 +13,25 @@ public:
      * @return Command that scores on alliance
      */
     static Command *scoreAlliance() {
-        return (new ParallelCommandGroup({
-                        bottomIntake->movePct(0.0),
-                        lift->positionCommand(0_deg),
-                        topIntake->pctCommand(1.0),
-                }))
-                ->withTimeout(300_ms)
-                ->andThen((new ParallelCommandGroup({
-                                   bottomIntake->movePct(0.0),
-                                   lift->positionCommand(0_deg),
-                                   topIntake->pctCommand(-0.3),
-                           }))
-                                  ->withTimeout(500_ms));
+      return (new ParallelCommandGroup({
+                       bottomIntake->movePct(0.0),
+                       lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
+                       topIntake->pctCommand(-0.47),
+               }))
+                      ->withTimeout(0.28_s)
+                      ->andThen((new ParallelCommandGroup({
+                                         bottomIntake->movePct(0.0),
+                                         lift->positionCommand(0),
+                                         topIntake->pctCommand(-1.0),
+                                 }))
+                                        ->withTimeout(0.1_s))
+                      ->andThen((new ParallelCommandGroup({
+                                         bottomIntake->movePct(0.0),
+                                         lift->positionCommand(0),
+                                         topIntake->pctCommand(1.0),
+                                 }))
+                                        ->withTimeout(0.6_s))
+                      ->asProxy();
     }
 
 

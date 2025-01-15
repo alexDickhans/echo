@@ -5,7 +5,6 @@
 #include "command/includes.h"
 #include "skills.h"
 #include "awp.h"
-#include "sawp.h"
 #include "elims.h"
 
 /**
