@@ -5,6 +5,7 @@
 #include "command.h"
 #include "subsystem.h"
 #include "eventLoop.h"
+#include "pros/misc.hpp"
 
 // Like WPILib's CommandScheduler class
 class CommandScheduler {

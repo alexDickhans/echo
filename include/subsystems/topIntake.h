@@ -6,6 +6,9 @@
 #include "command/runCommand.h"
 #include "pros/ai_vision.hpp"
 
+#include "pros/distance.hpp"
+#include "pros/motor_group.hpp"
+
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
@@ -68,8 +71,11 @@ public:
     }
 
     RunCommand *controllerCommand(pros::Controller *controller) {
-        return new RunCommand([this, controller]() { this->setPct(controller->get_analog(ANALOG_RIGHT_Y) / 127.0); },
-                              {this});
+        return new RunCommand(
+                [this, controller]() {
+                    this->setPct(controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0);
+                },
+                {this});
     }
 
     ~TopIntake() override = default;

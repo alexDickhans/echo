@@ -4,6 +4,8 @@
 #include "command/command.h"
 #include "command/runCommand.h"
 
+#include "pros/motors.hpp"
+
 class BottomIntake : public Subsystem {
     pros::Motor intakeMotor;
 
@@ -17,7 +19,7 @@ public:
         // No-op
     }
 
-    void setPct(double pct) {
+    void setPct(const double pct) {
         // std::cout << pct << std::endl;
         this->intakeMotor.move_voltage(pct * 12000.0);
     }

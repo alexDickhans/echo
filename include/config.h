@@ -47,15 +47,15 @@ namespace CONFIG {
     constexpr float RAMSETE_ZETA = 0.6;
     constexpr float RAMSETE_BETA = 40.0;
 
-    Eigen::Matrix3f DEFAULT_DT_COST_Q = Eigen::Matrix3f({{1.0, 0.0, 0.0}, {0.0, 5.0, 0.0}, {0.0, 0.0, 7.0}});
-    Eigen::Matrix2f DEFAULT_DT_COST_R = Eigen::Matrix2f::Identity();
+    inline Eigen::Matrix3f DEFAULT_DT_COST_Q = Eigen::Matrix3f({{1.0, 0.0, 0.0}, {0.0, 5.0, 0.0}, {0.0, 0.0, 7.0}});
+    inline Eigen::Matrix2f DEFAULT_DT_COST_R = Eigen::Matrix2f::Identity();
 
-    double K_s = 0.12;
+    inline double K_s = 0.12;
 
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.52, 0.042};
-    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.1377, 0.0184};
-    Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.50, 0.037};
-    Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.1302, 0.0155};
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.52, 0.042};
+    inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.1377, 0.0184};
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.50, 0.037};
+    inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.1302, 0.0155};
 
     constexpr QLength START_STRING_LENGTH = 4.5_in;
     constexpr QLength WINCH_RADIUS = 0.303_in / 2.0;
