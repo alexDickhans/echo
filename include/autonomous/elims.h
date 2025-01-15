@@ -51,7 +51,7 @@ public:
      * @return Command for auton
      */
     static Command *neg_elim() {
-        Eigen::Vector3f startPose{(36_in).getValue(), (40_in).getValue(), (-90_deg).getValue()};
+        Eigen::Vector3f startPose{(36_in).getValue(), (53.5_in).getValue(), (-90_deg).getValue()};
 
         drivetrain->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
@@ -59,19 +59,33 @@ public:
         return new Sequence({
                 drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
                 new ScheduleCommand(loadOneRingLow->andThen(loadOneRingLow)
-                                            ->andThen(bottomIntake->movePct(0.0)->with(topIntake->pctCommand(0.0)))),
+                                            ->andThen(bottomIntake->movePct(1.0)->with(topIntake->pctCommand(0.0)))),
                 new Ramsete(drivetrain, flip ? &negative_1_blue : &negative_1_red),
                 SharedCommands::descoreCorner(),
                 new Ramsete(drivetrain, flip ? &negative_2_blue : &negative_2_red),
                 (new ParallelCommandGroup({
                          bottomIntake->movePct(0.0),
-                         lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                         topIntake->pctCommand(-1.0),
+                         lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
+                         topIntake->pctCommand(-0.47),
                  }))
+                        ->withTimeout(0.28_s)
+                        ->andThen((new ParallelCommandGroup({
+                                           bottomIntake->movePct(0.0),
+                                           lift->positionCommand(0),
+                                           topIntake->pctCommand(-1.0),
+                                   }))
+                                          ->withTimeout(0.1_s))
+                        ->andThen((new ParallelCommandGroup({
+                                           bottomIntake->movePct(0.0),
+                                           lift->positionCommand(0),
+                                           topIntake->pctCommand(1.0),
+                                   }))
+                                          ->withTimeout(0.3_s))
                         ->asProxy()
-                        ->with(drivetrain->pct(0.3, 0.3))
-                        ->withTimeout(0.7_s),
+                        ->race(drivetrain->pct(0.15, 0.15)),
                 new Ramsete(drivetrain, flip ? &negative_3_blue : &negative_3_red),
+                drivetrain->pct(0.30, 0.30)->withTimeout(4.0_s),
+
         });
     }
 
