@@ -135,7 +135,7 @@ inline void subsystemInit() {
                     []() mutable {
                         lastColor = topIntake->getRingColor();
                         primary.print(0, 0, "%d", lastColor);
-                        if (lastColor != ALLIANCE && lastColor != RingColor::None)
+                        if (static_cast<Alliance>(lastColor) != ALLIANCE && lastColor != RingColor::None)
                             ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
                     },
                     {}));

@@ -4,11 +4,11 @@
 TrapezoidalVelocityProfile::TrapezoidalVelocityProfile(QLength distance, ProfileConstraints profileConstraints, QVelocity initialSpeed, QVelocity endSpeed) : distance(distance), profileConstraints(profileConstraints), initialSpeed(initialSpeed), endSpeed(endSpeed) {
 }
 
-QTime TrapezoidalVelocityProfile::getDuration() {
+QTime TrapezoidalVelocityProfile::getDuration() const {
 	return td;
 }
 
-QLength TrapezoidalVelocityProfile::getDistanceByTime(QTime time) {
+QLength TrapezoidalVelocityProfile::getDistanceByTime(const QTime time) {
 	if (time <= ta) {
 		return 0.5 * Qsq(time) * aa + this->getInitialSpeed() * time;
 	} else if (time <= ts) {

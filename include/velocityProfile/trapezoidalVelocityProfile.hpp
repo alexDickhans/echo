@@ -21,7 +21,7 @@ class TrapezoidalVelocityProfile {
 public:
 	TrapezoidalVelocityProfile(QLength distance, ProfileConstraints profileConstraints, QVelocity initialSpeed = 0.0, QVelocity endSpeed = 0.0);
 
-	QTime getDuration();
+	QTime getDuration() const;
 	QLength getDistanceByTime(QTime time);
 	QVelocity getVelocityByTime(QTime time);
 	QAcceleration getAccelerationByTime(QTime time);
