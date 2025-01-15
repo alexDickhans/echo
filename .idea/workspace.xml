@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BackendCodeEditorMiscSettings">
+    <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
+    <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="3" type="long" />
+    <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppCodeGeneration" type="string" />
+    <option name="/Default/CodeEditing/CppDocumentationComment/AddBriefTag/@EntryValue" value="true" type="bool" />
+  </component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="echo-rs" targetName="all" />
+      <config projectName="echo-rs" targetName="cc-sysroot" />
+      <config projectName="echo-rs" targetName="bin" />
+      <config projectName="echo-rs" targetName="Makefile" />
+      <config projectName="echo-rs" targetName="quick" />
+      <config projectName="echo-rs" targetName="cxx-sysroot" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/kernel@4.1.2-dirty.20.44469d2.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Eigen@3.4.90.zip" beforeDir="false" afterPath="$PROJECT_DIR$/Eigen@3.4.90.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common.mk" beforeDir="false" afterPath="$PROJECT_DIR$/common.mk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/Eigen.a" beforeDir="false" afterPath="$PROJECT_DIR$/firmware/Eigen.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/libc.a" beforeDir="false" afterPath="$PROJECT_DIR$/firmware/libc.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/libcommand.a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/libloco.a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/liblvgl.a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/libm.a" beforeDir="false" afterPath="$PROJECT_DIR$/firmware/libm.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/libpros.a" beforeDir="false" afterPath="$PROJECT_DIR$/firmware/libpros.a" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/libsysid.a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/libunit.a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/libv5rt.a" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/v5-common.ld" beforeDir="false" afterPath="$PROJECT_DIR$/firmware/v5-common.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/v5-hot.ld" beforeDir="false" afterPath="$PROJECT_DIR$/firmware/v5-hot.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/firmware/v5.ld" beforeDir="false" afterPath="$PROJECT_DIR$/firmware/v5.ld" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/api.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/api.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_disp.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_event.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_group.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_indev.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_indev_scroll.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_obj.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_obj_class.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_obj_draw.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_obj_pos.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_obj_scroll.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_obj_style.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_obj_style_gen.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_obj_tree.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_refr.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/core/lv_theme.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/arm2d/lv_gpu_arm2d.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw_arc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw_img.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw_label.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw_layer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw_line.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw_mask.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw_rect.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw_transform.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_draw_triangle.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_img_buf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_img_cache.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/lv_img_decoder.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/nxp/lv_gpu_nxp.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/nxp/pxp/lv_draw_pxp_blend.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/nxp/pxp/lv_gpu_nxp_pxp.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/nxp/pxp/lv_gpu_nxp_pxp_osa.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/nxp/vglite/lv_draw_vglite_arc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/nxp/vglite/lv_draw_vglite_blend.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/nxp/vglite/lv_draw_vglite_rect.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/nxp/vglite/lv_gpu_nxp_vglite.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl_composite.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl_img.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl_layer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl_mask.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl_priv.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl_rect.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl_stack_blur.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl_texture_cache.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sdl/lv_draw_sdl_utils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/stm32_dma2d/lv_gpu_stm32_dma2d.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sw/lv_draw_sw.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sw/lv_draw_sw_blend.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sw/lv_draw_sw_dither.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/sw/lv_draw_sw_gradient.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/draw/swm341_dma2d/lv_gpu_swm341_dma2d.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/layouts/flex/lv_flex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/layouts/grid/lv_grid.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/layouts/lv_layouts.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/bmp/lv_bmp.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/ffmpeg/lv_ffmpeg.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/freetype/lv_freetype.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/fsdrv/lv_fsdrv.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/gif/gifdec.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/gif/lv_gif.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/lv_libs.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/png/lodepng.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/png/lv_png.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/qrcode/lv_qrcode.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/qrcode/qrcodegen.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/rlottie/lv_rlottie.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/sjpg/lv_sjpg.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/sjpg/tjpgd.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/libs/sjpg/tjpgdcnf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/lv_extra.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/others/fragment/lv_fragment.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/others/gridnav/lv_gridnav.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/others/ime/lv_ime_pinyin.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/others/imgfont/lv_imgfont.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/others/lv_others.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/others/monkey/lv_monkey.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/others/msg/lv_msg.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/others/snapshot/lv_snapshot.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/themes/basic/lv_theme_basic.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/themes/default/lv_theme_default.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/themes/lv_themes.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/themes/mono/lv_theme_mono.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/animimg/lv_animimg.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/calendar/lv_calendar.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/calendar/lv_calendar_header_arrow.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/calendar/lv_calendar_header_dropdown.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/chart/lv_chart.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/colorwheel/lv_colorwheel.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/imgbtn/lv_imgbtn.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/keyboard/lv_keyboard.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/led/lv_led.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/list/lv_list.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/lv_widgets.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/menu/lv_menu.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/meter/lv_meter.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/msgbox/lv_msgbox.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/span/lv_span.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/spinbox/lv_spinbox.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/spinner/lv_spinner.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/tabview/lv_tabview.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/tileview/lv_tileview.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/extra/widgets/win/lv_win.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/font/lv_font.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/font/lv_font_fmt_txt.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/font/lv_font_loader.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/font/lv_symbol_def.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/hal/lv_hal.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/hal/lv_hal_disp.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/hal/lv_hal_indev.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/hal/lv_hal_tick.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/llemu.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/llemu.hpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/lv_api_map.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/lv_conf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/lv_conf.old.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/lv_conf_checker.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/lv_conf_internal.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/lv_conf_kconfig.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/lvgl.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_anim.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_anim_timeline.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_area.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_assert.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_async.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_bidi.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_color.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_fs.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_gc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_ll.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_log.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_lru.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_math.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_mem.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_printf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_style.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_style_gen.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_templ.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_timer.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_tlsf.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_txt.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_txt_ap.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_types.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/misc/lv_utils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_arc.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_bar.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_btn.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_btnmatrix.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_canvas.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_checkbox.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_dropdown.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_img.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_label.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_line.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_objx_templ.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_roller.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_slider.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_switch.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_table.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/liblvgl/widgets/lv_textarea.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/abstract_motor.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/abstract_motor.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/adi.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/adi.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/adi.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/adi.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/apix.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/apix.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/colors.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/colors.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/colors.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/colors.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/device.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/device.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/device.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/device.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/distance.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/distance.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/distance.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/distance.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/error.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/error.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/ext_adi.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/ext_adi.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/gps.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/gps.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/gps.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/gps.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/imu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/imu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/imu.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/imu.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/link.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/link.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/link.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/link.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/llemu.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/llemu.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/misc.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/misc.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/misc.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/misc.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/motor_group.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/motor_group.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/motors.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/motors.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/motors.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/motors.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/optical.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/optical.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/optical.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/optical.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/rotation.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/rotation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/rotation.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/rotation.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/rtos.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/rtos.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/rtos.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/rtos.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/screen.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/screen.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/screen.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/screen.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/serial.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/serial.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/serial.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/serial.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/vision.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/vision.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/pros/vision.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/pros/vision.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project.pros" beforeDir="false" afterPath="$PROJECT_DIR$/project.pros" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/negative_1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/negative_2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/negative_2_no_alliance.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/negative_3.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/positive_1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/positive_2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/safe_awp.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/sawp_1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_1.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_3.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/skills_4.json" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;alexDickhans&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/alexDickhans/echo.git&quot;,
+    &quot;accountId&quot;: &quot;0c6e689b-c6d5-42ef-bd9c-6795747056bc&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/include/auton.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/autonCommands.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/autons.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/awp.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/elims.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/sharedCommands.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/autonomous/skills.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/command/scheduleCommand.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/command/waitCommand.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/config.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/localization/config.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/subsystems/bottomIntake.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/subsystems/drivetrain.h" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/subsystems/subsystems.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/include/subsystems/topIntake.h" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="MakefileLocalSettings">
+    <option name="availableProjects">
+      <map>
+        <entry>
+          <key>
+            <ExternalProjectPojo>
+              <option name="name" value="echo-rs" />
+              <option name="path" value="$PROJECT_DIR$" />
+            </ExternalProjectPojo>
+          </key>
+          <value>
+            <list>
+              <ExternalProjectPojo>
+                <option name="name" value="echo-rs" />
+                <option name="path" value="$PROJECT_DIR$" />
+              </ExternalProjectPojo>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2024" />
+    <option name="minorVersion" value="2.3" />
+    <option name="productBranch" value="Classic" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2ooz4RSYVQZiy0bEXnYPl4YLx2o" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Native Application.all.executor": "Debug",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.advertisement.text.overridden": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "aivision-kernel",
+    "last_opened_file_path": "/Users/alex/Documents/VEX/echo-rs",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Native Application.all">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="all" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="all" CONFIG_NAME="all" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="all" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="all" CONFIG_NAME="all" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="all" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="all" CONFIG_NAME="all" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="bin" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="bin" CONFIG_NAME="bin" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="bin" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="bin" CONFIG_NAME="bin" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="bin" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="bin" CONFIG_NAME="bin" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cc-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="cc-sysroot" CONFIG_NAME="cc-sysroot" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cc-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="cc-sysroot" CONFIG_NAME="cc-sysroot" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cc-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="cc-sysroot" CONFIG_NAME="cc-sysroot" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cxx-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="cxx-sysroot" CONFIG_NAME="cxx-sysroot" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cxx-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="cxx-sysroot" CONFIG_NAME="cxx-sysroot" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="cxx-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="cxx-sysroot" CONFIG_NAME="cxx-sysroot" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="quick" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="quick" CONFIG_NAME="quick" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="quick" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="quick" CONFIG_NAME="quick" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="quick" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="quick" CONFIG_NAME="quick" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Native Application.Makefile" />
+      <item itemvalue="Native Application.all" />
+      <item itemvalue="Native Application.bin" />
+      <item itemvalue="Native Application.cc-sysroot" />
+      <item itemvalue="Native Application.cxx-sysroot" />
+      <item itemvalue="Native Application.quick" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="" />
+      <created>1731550524302</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731550524302</updated>
+      <workItem from="1731550525382" duration="20553000" />
+      <workItem from="1731624261434" duration="1033000" />
+      <workItem from="1731626132604" duration="2235000" />
+      <workItem from="1731638282571" duration="3380000" />
+      <workItem from="1731642326418" duration="1201000" />
+      <workItem from="1731679516597" duration="547000" />
+      <workItem from="1731781692705" duration="1000" />
+      <workItem from="1731789503496" duration="3504000" />
+      <workItem from="1731816507949" duration="7359000" />
+      <workItem from="1731949065143" duration="12681000" />
+      <workItem from="1732164362838" duration="6014000" />
+      <workItem from="1732351984994" duration="1637000" />
+      <workItem from="1732467130808" duration="18290000" />
+      <workItem from="1732661681456" duration="4816000" />
+      <workItem from="1732986570144" duration="26000" />
+      <workItem from="1732988678616" duration="25957000" />
+      <workItem from="1733243280133" duration="15877000" />
+      <workItem from="1733419524763" duration="2033000" />
+      <workItem from="1733629702814" duration="605000" />
+      <workItem from="1733680602663" duration="14720000" />
+      <workItem from="1733770617665" duration="18764000" />
+      <workItem from="1733801606642" duration="28717000" />
+      <workItem from="1736297044788" duration="9882000" />
+      <workItem from="1736373015726" duration="1195000" />
+      <workItem from="1736391787937" duration="1813000" />
+      <workItem from="1736439888964" duration="19824000" />
+      <workItem from="1736518083542" duration="565000" />
+      <workItem from="1736646559983" duration="3645000" />
+      <workItem from="1736872989844" duration="30812000" />
+      <workItem from="1736955909283" duration="1000000" />
+      <workItem from="1736956977034" duration="1163000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

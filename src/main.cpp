@@ -15,20 +15,20 @@ Command* autonCommand;
 
 [[noreturn]] void screen_update_loop() {
 
-    lv_theme_t *th = lv_theme_default_init(lv_disp_get_default(),  /*Use the DPI, size, etc from this display*/
-                                           lv_color_hex(0xff7d26),
-                                           lv_color_hex(0x303236),   /*Primary and secondary palette*/
-                                           false,    /*Light or dark mode*/
-                                           &lv_font_montserrat_14); /*Small, normal, large fonts*/
-
-    lv_disp_set_theme(lv_disp_get_default(), th); /*Assign the theme to the display*/
-    lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0xffffff), LV_PART_ANY | LV_STATE_ANY);
-
-    LV_IMG_DECLARE(echo_logo);
-
-    lv_obj_t * logo = lv_img_create(lv_scr_act());
-    lv_img_set_src(logo, &echo_logo);
-    lv_obj_align(logo, LV_ALIGN_CENTER, 0, 0);
+    // lv_theme_t *th = lv_theme_default_init(lv_disp_get_default(),  /*Use the DPI, size, etc from this display*/
+    //                                        lv_color_hex(0xff7d26),
+    //                                        lv_color_hex(0x303236),   /*Primary and secondary palette*/
+    //                                        false,    /*Light or dark mode*/
+    //                                        &lv_font_montserrat_14); /*Small, normal, large fonts*/
+    //
+    // lv_disp_set_theme(lv_disp_get_default(), th); /*Assign the theme to the display*/
+    // lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0xffffff), LV_PART_ANY | LV_STATE_ANY);
+    //
+    // LV_IMG_DECLARE(echo_logo);
+    //
+    // lv_obj_t * logo = lv_img_create(lv_scr_act());
+    // lv_img_set_src(logo, &echo_logo);
+    // lv_obj_align(logo, LV_ALIGN_CENTER, 0, 0);
 
     std::default_random_engine de;
 
