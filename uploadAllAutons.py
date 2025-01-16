@@ -10,7 +10,7 @@ AUTONS = [
     "SAWP",
     "POS_ELIM",
     "NEG_ELIM",
-    "NEG_ELIM_NO_ALLIANCE",
+    "NEG_ELIM_POLE_TOUCH",
     "SKILLS",
     "NONE"
 ]
