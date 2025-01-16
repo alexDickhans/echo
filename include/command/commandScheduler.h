@@ -5,6 +5,7 @@
 #include "command.h"
 #include "subsystem.h"
 #include "eventLoop.h"
+#include "pros/misc.hpp"
 
 // Like WPILib's CommandScheduler class
 class CommandScheduler {
@@ -101,8 +102,8 @@ public:
 		CommandScheduler& instance = getInstance();
 
 		// Run the periodic for all registered subsystems
-		for (const auto subsystem: instance.subsystems | std::views::keys) {
-			subsystem->periodic();
+		for (const auto& pair : instance.subsystems) {
+			pair.first->periodic();
 		}
 
 		// Poll user set event loops

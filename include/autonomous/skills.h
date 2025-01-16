@@ -53,7 +53,7 @@ public:
                 (new ParallelCommandGroup({
                          bottomIntake->movePct(0.0),
                          lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
-                         topIntake->pctCommand(-0.44),
+                         topIntake->pctCommand(-0.47),
                  }))
                         ->withTimeout(0.28_s)
                         ->andThen((new ParallelCommandGroup({

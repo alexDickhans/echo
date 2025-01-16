@@ -99,10 +99,6 @@ inline void subsystemInit() {
             new ParallelRaceGroup({bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
                                    TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.50, 0.0),
                                    new WaitUntilCommand([&]() { return topIntake->ringPresent(); })}),
-            // (new ParallelRaceGroup({bottomIntake->movePct(1.0),
-            // lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-            //                         TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.45, 0.0)}))
-            //         ->withTimeout(0.3_s),
             new ParallelRaceGroup({
                     bottomIntake->movePct(1.0),
                     lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
@@ -139,13 +135,13 @@ inline void subsystemInit() {
                     []() mutable {
                         lastColor = topIntake->getRingColor();
                         primary.print(0, 0, "%d", lastColor);
-                        if (lastColor != ALLIANCE && lastColor != RingColor::None)
+                        if (static_cast<Alliance>(lastColor) != ALLIANCE && lastColor != RingColor::None)
                             ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
                     },
                     {}));
 
     Trigger([]() mutable {
-        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.4 && intakeOntoGoal->scheduled() &&
+        return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.38 && intakeOntoGoal->scheduled() &&
                std::find(ejectionPoints.begin(), ejectionPoints.end(),
                          static_cast<int>(std::floor(topIntake->getPosition()))) != ejectionPoints.end();
     })
@@ -344,7 +340,7 @@ inline void subsystemInit() {
                                       bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand(
             "stopIntake3",
-            new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 3.8, 0.0),
+            new ParallelCommandGroup({TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 2.8, 0.0),
                                       bottomIntake->movePct(1.0), lift->positionCommand(0.0)}));
     PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));

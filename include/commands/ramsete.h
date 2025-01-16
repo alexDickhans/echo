@@ -5,6 +5,7 @@
 #include "subsystems/drivetrain.h"
 #include "units/units.hpp"
 #include "utils/utils.h"
+#include "telemetry/telemetry.h"
 
 /**
  * Class to follow motion profiled paths

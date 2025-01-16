@@ -8,7 +8,7 @@
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexRemoved" />
-    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="3" type="long" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="4" type="long" />
     <option name="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue" value="CppCodeGeneration" type="string" />
     <option name="/Default/CodeEditing/CppDocumentationComment/AddBriefTag/@EntryValue" value="true" type="bool" />
   </component>
@@ -17,12 +17,12 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
-      <config projectName="echo" targetName="all" />
-      <config projectName="echo" targetName="quick" />
-      <config projectName="echo" targetName="cxx-sysroot" />
-      <config projectName="echo" targetName="cc-sysroot" />
-      <config projectName="echo" targetName="bin" />
-      <config projectName="echo" targetName="Makefile" />
+      <config projectName="echo-rs" targetName="all" />
+      <config projectName="echo-rs" targetName="cc-sysroot" />
+      <config projectName="echo-rs" targetName="bin" />
+      <config projectName="echo-rs" targetName="Makefile" />
+      <config projectName="echo-rs" targetName="quick" />
+      <config projectName="echo-rs" targetName="cxx-sysroot" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -31,9 +31,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="">
+    <list default="true" id="625c7ea8-a69d-492d-8b89-ac89e7a0afde" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/subsystems/drivetrain.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/subsystems/drivetrain.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/autonomous/elims.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/autonomous/elims.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/negative_1.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/negative_1.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/negative_2.json" beforeDir="false" afterPath="$PROJECT_DIR$/static/negative_2.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,35 +50,32 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;alexDickhans&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "alexDickhans"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/alexDickhans/echo.git&quot;,
-    &quot;accountId&quot;: &quot;0c6e689b-c6d5-42ef-bd9c-6795747056bc&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/alexDickhans/echo.git",
+    "accountId": "0c6e689b-c6d5-42ef-bd9c-6795747056bc"
   }
-}</component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/include/echo-logo.h" root0="SKIP_HIGHLIGHTING" />
-  </component>
+}]]></component>
   <component name="MakefileLocalSettings">
     <option name="availableProjects">
       <map>
         <entry>
           <key>
             <ExternalProjectPojo>
-              <option name="name" value="echo" />
+              <option name="name" value="echo-rs" />
               <option name="path" value="$PROJECT_DIR$" />
             </ExternalProjectPojo>
           </key>
           <value>
             <list>
               <ExternalProjectPojo>
-                <option name="name" value="echo-pros" />
+                <option name="name" value="echo-rs" />
                 <option name="path" value="$PROJECT_DIR$" />
               </ExternalProjectPojo>
             </list>
@@ -84,17 +83,22 @@
         </entry>
       </map>
     </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
   </component>
   <component name="ProjectApplicationVersion">
     <option name="ide" value="CLion" />
     <option name="majorVersion" value="2024" />
-    <option name="minorVersion" value="2.3" />
+    <option name="minorVersion" value="3.1.1" />
     <option name="productBranch" value="Classic" />
   </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 5
-}</component>
-  <component name="ProjectId" id="2ooz4RSYVQZiy0bEXnYPl4YLx2o" />
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="2rft1w84BaABW0q1Sx7B6aKmeIY" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -109,37 +113,22 @@
     "cf.advertisement.text.overridden": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "exponential-pose-tracking",
-    "last_opened_file_path": "/Users/alex/Documents/VEX/echo-rs/src",
+    "git-widget-placeholder": "#58 on aivision-kernel",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-    </key>
-  </component>
-  <component name="RunManager" selected="Native Application.all">
-    <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
+  <component name="RunManager" selected="Native Application.quick">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
     <configuration name="Makefile" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="Makefile" CONFIG_NAME="Makefile" version="1">
-      <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="all" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="all" CONFIG_NAME="all" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -149,17 +138,7 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="bin" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="bin" CONFIG_NAME="bin" version="1">
-      <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="bin" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="bin" CONFIG_NAME="bin" version="1">
-      <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="cc-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="cc-sysroot" CONFIG_NAME="cc-sysroot" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -169,17 +148,7 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="cxx-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="cxx-sysroot" CONFIG_NAME="cxx-sysroot" version="1">
-      <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="cxx-sysroot" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo-rs" TARGET_NAME="cxx-sysroot" CONFIG_NAME="cxx-sysroot" version="1">
-      <method v="2">
-        <option name="CLION.COMPOUND.BUILD" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="quick" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="echo" TARGET_NAME="quick" CONFIG_NAME="quick" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -190,58 +159,27 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Native Application.Makefile" />
       <item itemvalue="Native Application.all" />
+      <item itemvalue="Native Application.quick" />
       <item itemvalue="Native Application.bin" />
       <item itemvalue="Native Application.cc-sysroot" />
       <item itemvalue="Native Application.cxx-sysroot" />
-      <item itemvalue="Native Application.quick" />
+      <item itemvalue="Native Application.Makefile" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="aa1dcb19-da1f-40e8-a1a7-dc38d1efae29" name="Changes" comment="" />
-      <created>1731550524302</created>
+      <changelist id="625c7ea8-a69d-492d-8b89-ac89e7a0afde" name="Changes" comment="" />
+      <created>1736961745867</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1731550524302</updated>
-      <workItem from="1731550525382" duration="20553000" />
-      <workItem from="1731624261434" duration="1033000" />
-      <workItem from="1731626132604" duration="2235000" />
-      <workItem from="1731638282571" duration="3380000" />
-      <workItem from="1731642326418" duration="1201000" />
-      <workItem from="1731679516597" duration="547000" />
-      <workItem from="1731781692705" duration="1000" />
-      <workItem from="1731789503496" duration="3504000" />
-      <workItem from="1731816507949" duration="7359000" />
-      <workItem from="1731949065143" duration="12681000" />
-      <workItem from="1732164362838" duration="6014000" />
-      <workItem from="1732351984994" duration="1637000" />
-      <workItem from="1732467130808" duration="18290000" />
-      <workItem from="1732661681456" duration="4816000" />
-      <workItem from="1732986570144" duration="26000" />
-      <workItem from="1732988678616" duration="25957000" />
-      <workItem from="1733243280133" duration="15877000" />
-      <workItem from="1733419524763" duration="2033000" />
-      <workItem from="1733629702814" duration="605000" />
-      <workItem from="1733680602663" duration="14720000" />
-      <workItem from="1733770617665" duration="18764000" />
-      <workItem from="1733801606642" duration="28717000" />
-      <workItem from="1736297044788" duration="9882000" />
-      <workItem from="1736373015726" duration="1195000" />
-      <workItem from="1736391787937" duration="1813000" />
-      <workItem from="1736439888964" duration="19824000" />
-      <workItem from="1736518083542" duration="565000" />
-      <workItem from="1736646559983" duration="3645000" />
+      <updated>1736961745867</updated>
+      <workItem from="1736961746900" duration="18439000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
   </component>
 </project>

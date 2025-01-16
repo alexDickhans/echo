@@ -1,0 +1,266 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.014,
+          "y": 1.466
+        },
+        {
+          "x": 0.011,
+          "y": 1.314
+        },
+        {
+          "x": -0.214,
+          "y": 1.079
+        },
+        {
+          "x": -0.353,
+          "y": 0.884
+        }
+      ],
+      "constraints": {
+        "velocity": 0.75,
+        "accel": 3.056
+      }
+    },
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.353,
+          "y": 0.884
+        },
+        {
+          "x": -0.484,
+          "y": 0.698
+        },
+        {
+          "x": -0.648,
+          "y": 0.503
+        },
+        {
+          "x": -0.703,
+          "y": 0.292
+        }
+      ],
+      "constraints": {
+        "velocity": 0.9,
+        "accel": 1.768
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.703,
+          "y": 0.292
+        },
+        {
+          "x": -0.648,
+          "y": 0.503
+        },
+        {
+          "x": -0.975,
+          "y": 0.494
+        },
+        {
+          "x": -1.054,
+          "y": 0.539
+        }
+      ],
+      "constraints": {
+        "velocity": 0.575,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.054,
+          "y": 0.539
+        },
+        {
+          "x": -1.209,
+          "y": 0.627
+        },
+        {
+          "x": -1.264,
+          "y": 0.873
+        },
+        {
+          "x": -0.976,
+          "y": 0.901
+        }
+      ],
+      "constraints": {
+        "velocity": 0.675,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.976,
+          "y": 0.901
+        },
+        {
+          "x": -0.425,
+          "y": 0.953
+        },
+        {
+          "x": 0.709,
+          "y": 0.782
+        },
+        {
+          "x": 0.866,
+          "y": 1.064
+        }
+      ],
+      "constraints": {
+        "velocity": 1.299,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.866,
+          "y": 1.064
+        },
+        {
+          "x": 0.794,
+          "y": 0.934
+        },
+        {
+          "x": 0.672,
+          "y": 0.755
+        },
+        {
+          "x": 0.612,
+          "y": 0.63
+        }
+      ],
+      "constraints": {
+        "velocity": 0.725,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.612,
+          "y": 0.63
+        },
+        {
+          "x": 0.672,
+          "y": 0.755
+        },
+        {
+          "x": 1.06,
+          "y": 0.693
+        },
+        {
+          "x": 1.264,
+          "y": 0.613
+        }
+      ],
+      "constraints": {
+        "velocity": 0.625,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 1.264,
+          "y": 0.613
+        },
+        {
+          "x": 1.589,
+          "y": 0.484
+        },
+        {
+          "x": 1.589,
+          "y": 0.212
+        },
+        {
+          "x": 1.4,
+          "y": 0.179
+        }
+      ],
+      "constraints": {
+        "velocity": 0.849,
+        "accel": 1.591
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 1.4,
+          "y": 0.179
+        },
+        {
+          "x": 0.771,
+          "y": 0.067
+        },
+        {
+          "x": 0.847,
+          "y": 0.547
+        },
+        {
+          "x": 0.186,
+          "y": 0.559
+        }
+      ],
+      "constraints": {
+        "velocity": 0.875,
+        "accel": 3.048
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 1.601,
+      "name": "clamp"
+    },
+    {
+      "t": 2.439,
+      "name": "intakeGoal"
+    },
+    {
+      "t": 4.113,
+      "name": "declamp"
+    },
+    {
+      "t": 4.304,
+      "name": "stopIntake"
+    },
+    {
+      "t": 5.92,
+      "name": "clamp"
+    },
+    {
+      "t": 6.496,
+      "name": "intakeGoal"
+    }
+  ]
+}

@@ -14,7 +14,7 @@
 #include "auton.h"
 #include "autonomous/autons.h"
 
-#include "sysid/oneDofVelocitySystem.h"
+// #include "sysid/oneDofVelocitySystem.h"
 
 struct DriveSpeeds {
     QVelocity linearVelocity = 0.0;
@@ -116,14 +116,15 @@ public:
 
             const auto localMeasurement = Eigen::Vector2f({avg.getValue(), 0});
             const auto displacementMatrix =
-                    Eigen::Matrix2f({{1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
-                                     {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}});
+                    Eigen::Matrix2d({{1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
+                                     {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}}).cast<float>();
+
 
             particleFilter.update([this, angleDistribution, avgDistribution, displacementMatrix]() mutable {
                 const auto noisy = avgDistribution(de);
                 const auto angle = angleDistribution(de);
 
-                return Eigen::Rotation2Df(angle) * displacementMatrix * Eigen::Vector2f({noisy, 0.0});
+                return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
             });
 
             const Eigen::Vector2f localDisplacement = displacementMatrix * localMeasurement;
@@ -258,14 +259,14 @@ public:
     }
 
     void analyzeSysIdData() const {
-        OneDofVelocitySystem linear;
-        OneDofVelocitySystem angular;
-
-        linear.characterize(xLinear, uLinear);
-        angular.characterize(xAngular, uAngular);
-
-        std::cout << "Linear: " << linear.getFF() << std::endl;
-        std::cout << "Angular: " << angular.getFF() << std::endl;
+        // OneDofVelocitySystem linear;
+        // OneDofVelocitySystem angular;
+        //
+        // linear.characterize(xLinear, uLinear);
+        // angular.characterize(xAngular, uAngular);
+        //
+        // std::cout << "Linear: " << linear.getFF() << std::endl;
+        // std::cout << "Angular: " << angular.getFF() << std::endl;
     }
 
     RunCommand *tank(pros::Controller &controller) {

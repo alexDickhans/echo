@@ -2,6 +2,7 @@
 
 #include <string>
 #include "command/command.h"
+#include "command/commandScheduler.h"
 
 class PathCommands {
 private:
