@@ -58,7 +58,8 @@ public:
 
         return new Sequence({
                 drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
-                new ScheduleCommand(lift->positionCommand(77_deg)->withTimeout(330_ms)),
+                lift->positionCommand(55_deg)->withTimeout(50_ms)->asProxy(),
+                new ScheduleCommand(lift->positionCommand(55_deg)->withTimeout(330_ms)),
                 new Ramsete(drivetrain, flip ? &negative_1_blue : &negative_1_red), SharedCommands::descoreCorner(),
                 new Ramsete(drivetrain, flip ? &negative_2_blue : &negative_2_red),
                 // new Ramsete(drivetrain, flip ? &negative_3_blue : &negative_3_red),
