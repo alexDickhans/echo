@@ -22,7 +22,7 @@ class TopIntake : public Subsystem {
 
 public:
     explicit TopIntake(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance) :
-        intakeMotor(motors), vision(16), intakeDistance(std::move(intakeDistance)) {
+        intakeMotor(motors), vision(17), intakeDistance(std::move(intakeDistance)) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         intakeMotor.set_gearing(pros::MotorGears::green);
         vision.set_color(RED_COLOR_DESC);
