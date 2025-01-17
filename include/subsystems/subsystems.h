@@ -130,15 +130,15 @@ inline void subsystemInit() {
 
     Trigger([]() { return pros::competition::is_disabled(); }).onTrue(drivetrain->retractPto());
 
-    Trigger([]() { return topIntake->ringPresent() && intakeOntoGoal->scheduled(); })
-            .onFalse(new InstantCommand(
+    Trigger([]() { return topIntake->ringPresentEject() && intakeOntoGoal->scheduled(); })
+            .onFalse((new WaitCommand(30_ms))->andThen(new InstantCommand(
                     []() mutable {
                         lastColor = topIntake->getRingColor();
                         primary.print(0, 0, "%d", lastColor);
                         if (static_cast<Alliance>(lastColor) != ALLIANCE && lastColor != RingColor::None)
                             ejectionPoints.emplace_back(static_cast<int>(std::floor(topIntake->getPosition())) + 1);
                     },
-                    {}));
+                    {})));
 
     Trigger([]() mutable {
         return std::fmod(std::fmod(topIntake->getPosition(), 1.0) + 10.0, 1.0) > 0.38 && intakeOntoGoal->scheduled() &&
