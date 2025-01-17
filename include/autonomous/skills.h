@@ -25,7 +25,7 @@ public:
         return new Sequence({
                 drivetrain->setNorm(Eigen::Vector2f(0.0, (60_in).getValue()), Eigen::Matrix2f::Identity() * 0.04,
                                     -90_deg, false),
-                new ScheduleCommand(SharedCommands::scoreAlliance()),
+                new ScheduleCommand(intakeOntoGoal->withTimeout(300_ms)),
                 new WaitCommand(300_ms),
                 new Ramsete(drivetrain, &skills_1),
                 drivetrain->pct(0.3, 0.3)->withTimeout(0.2_s),

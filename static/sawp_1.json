@@ -233,7 +233,7 @@
       ],
       "constraints": {
         "velocity": 0.875,
-        "accel": 3.048
+        "accel": 0.959
       }
     }
   ],
