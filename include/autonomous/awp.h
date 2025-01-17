@@ -42,40 +42,16 @@ public:
      * @return Command for auton
      */
     static Command *sawp() {
-        Eigen::Vector3f startPose{(-10_in).getValue(), (58_in).getValue(), (-13_deg).getValue()};
+        Eigen::Vector3f startPose{(-12_in).getValue(), (60_in).getValue(), (0_deg).getValue()};
 
         drivetrain->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
 
         return new Sequence({
-                drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.02, startPose.z(), flip),
-                new ScheduleCommand(
-                        loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(bottomIntake->movePct(0.0)->with(
-                                TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.4, 0.0))))),
-                new TankMotionProfiling(drivetrain, {60_in / second, 250_in / second / second}, 9.5_in, flip, -13_deg,
-                                        0.0),
-                (new Rotate(drivetrain, 90_deg, flip, 0.0))->withTimeout(2.0_s),
-                new TankMotionProfiling(drivetrain, {60_in / second, 100_in / second / second}, 5_in, flip, 90_deg,
-                                        0.0),
-                (new ParallelCommandGroup({
-                         bottomIntake->movePct(0.0),
-                         lift->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
-                         topIntake->pctCommand(-0.47),
-                 }))
-                        ->withTimeout(0.28_s)
-                        ->andThen((new ParallelCommandGroup({
-                                           bottomIntake->movePct(0.0),
-                                           lift->positionCommand(0),
-                                           topIntake->pctCommand(-1.0),
-                                   }))
-                                          ->withTimeout(0.1_s))
-                        ->andThen((new ParallelCommandGroup({
-                                           bottomIntake->movePct(0.0),
-                                           lift->positionCommand(0),
-                                           topIntake->pctCommand(1.0),
-                                   }))
-                                          ->withTimeout(0.6_s))
-                        ->asProxy(),
+                drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
+                lift->positionCommand(50_deg)->withTimeout(50_ms)->asProxy(),
+                new ScheduleCommand(lift->positionCommand(50_deg)->withTimeout(530_ms)),
+                new TankMotionProfiling(drivetrain, {60_in / second, 100_in / second / second}, 10_in, flip, 0_deg),
                 new Ramsete(drivetrain, flip ? &sawp_1_blue : &sawp_1_red),
                 drivetrain->pct(0.15, 0.15)->withTimeout(4.0_s),
         });
