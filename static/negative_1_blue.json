@@ -1,0 +1,154 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 10.333333333333343,
+  "segments": [
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.233,
+          "y": -1.532
+        },
+        {
+          "x": 0.598,
+          "y": -1.557
+        },
+        {
+          "x": 0.915,
+          "y": -0.808
+        },
+        {
+          "x": 1.091,
+          "y": -0.777
+        }
+      ],
+      "constraints": {
+        "velocity": 1.224,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 1.091,
+          "y": -0.777
+        },
+        {
+          "x": 0.904,
+          "y": -0.81
+        },
+        {
+          "x": 0.715,
+          "y": -0.702
+        },
+        {
+          "x": 0.554,
+          "y": -0.73
+        }
+      ],
+      "constraints": {
+        "velocity": 0.9,
+        "accel": 1.389
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.554,
+          "y": -0.73
+        },
+        {
+          "x": 0.718,
+          "y": -0.701
+        },
+        {
+          "x": 0.578,
+          "y": -0.28
+        },
+        {
+          "x": 1.246,
+          "y": -0.268
+        }
+      ],
+      "constraints": {
+        "velocity": 0.675,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 1.246,
+          "y": -0.268
+        },
+        {
+          "x": 1.452,
+          "y": -0.264
+        },
+        {
+          "x": 1.564,
+          "y": -0.557
+        },
+        {
+          "x": 1.399,
+          "y": -0.742
+        }
+      ],
+      "constraints": {
+        "velocity": 0.7,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 1.399,
+          "y": -0.742
+        },
+        {
+          "x": 1.116,
+          "y": -1.056
+        },
+        {
+          "x": 1.297,
+          "y": -1.274
+        },
+        {
+          "x": 1.607,
+          "y": -1.587
+        }
+      ],
+      "constraints": {
+        "velocity": 0.475,
+        "accel": 1.943
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.185,
+      "name": "intakeGoal"
+    },
+    {
+      "t": 0.935,
+      "name": "intakeAllianceStakes"
+    },
+    {
+      "t": 1.77,
+      "name": "clamp"
+    },
+    {
+      "t": 2.445,
+      "name": "intakeGoal"
+    }
+  ]
+}

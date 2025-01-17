@@ -3,7 +3,8 @@
 
 BEZIER_MIRRORED_MP_ASSET(positive_1);
 BEZIER_MIRRORED_MP_ASSET(positive_2);
-BEZIER_MIRRORED_MP_ASSET(negative_1);
+BEZIER_MP_ASSET(negative_1_red);
+BEZIER_MP_ASSET(negative_1_blue);
 BEZIER_MIRRORED_MP_ASSET(negative_2);
 BEZIER_MIRRORED_MP_ASSET(negative_2_pole_touch);
 
@@ -25,8 +26,8 @@ public:
 
         return new Sequence({
                 drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
-                lift->positionCommand(55_deg)->withTimeout(50_ms)->asProxy(),
-                new ScheduleCommand(lift->positionCommand(55_deg)->withTimeout(330_ms)),
+                lift->positionCommand(50_deg)->withTimeout(50_ms)->asProxy(),
+                new ScheduleCommand(lift->positionCommand(50_deg)->withTimeout(330_ms)),
                 new TankMotionProfiling(drivetrain, {60_in / second, 100_in / second / second}, 10_in, flip, 0_deg),
                 new Ramsete(drivetrain, flip ? &positive_1_blue : &positive_1_red),
                 SharedCommands::descoreCorner(),

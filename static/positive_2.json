@@ -55,18 +55,5 @@
       }
     }
   ],
-  "commands": [
-    {
-      "t": 1.994,
-      "name": "clamp"
-    },
-    {
-      "t": 2.477,
-      "name": "intakeGoal"
-    },
-    {
-      "t": 6.104,
-      "name": "awpLiftUp"
-    }
-  ]
+  "commands": []
 }

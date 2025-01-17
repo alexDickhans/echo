@@ -33,7 +33,9 @@ public:
 	void update() override {
 		const auto measuredMM = distance.get();
 
-		exit = measuredMM == 9999 || distance.get_object_size() < 70;
+		exit = measuredMM >= 9999;// || (distance.get_object_size() < 0);// || !distance.is_installed();
+
+		std::cout << "Distance: " << measuredMM << " " << distance.get_object_size() << " " << exit << std::endl;
 
 		measured = tuningConstant * measuredMM * millimetre;
 

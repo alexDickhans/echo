@@ -117,7 +117,8 @@ public:
             const auto localMeasurement = Eigen::Vector2f({avg.getValue(), 0});
             const auto displacementMatrix =
                     Eigen::Matrix2d({{1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
-                                     {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}}).cast<float>();
+                                     {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}})
+                            .cast<float>();
 
 
             particleFilter.update([this, angleDistribution, avgDistribution, displacementMatrix]() mutable {
@@ -246,16 +247,31 @@ public:
     void updateAllianceColor(Eigen::Vector3f redPosition) {
         auto bluePosition = Eigen::Vector3f(redPosition.x(), -redPosition.y(), -redPosition.z());
 
-        particleFilter.updateSensors();
+        pros::delay(100);
 
-        auto redWeight = particleFilter.weightParticle(redPosition);
-        auto blueWeight = particleFilter.weightParticle(bluePosition);
+        auto redWeight = 0.0;
+        auto blueWeight = 0.0;
+
+        for (int i = 0; i < 5; ++i) {
+            particleFilter.updateSensors();
+
+            redWeight += particleFilter.weightParticle(redPosition);
+            blueWeight += particleFilter.weightParticle(bluePosition);
+
+            pros::delay(20);
+        }
 
         if (redWeight >= blueWeight) {
             ALLIANCE = RED;
         } else {
             ALLIANCE = BLUE;
         }
+
+        // pros::lcd::set_text(0, (ALLIANCE == RED ? "RED" : "BLUE") + std::to_string(redWeight) + ", " +
+        //                                std::to_string(blueWeight));
+        std::cout << (ALLIANCE == RED ? "RED " : "BLUE ") + std::to_string(redWeight) + ", " +
+                                       std::to_string(blueWeight) << std::endl;
+
     }
 
     void analyzeSysIdData() const {
