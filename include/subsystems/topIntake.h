@@ -12,8 +12,8 @@
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
-inline pros::aivision_color_s_t RED_COLOR_DESC(1, 243, 104, 122, 17, 0.2);
-inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 92, 229, 247, 20, 0.2);
+inline pros::aivision_color_s_t RED_COLOR_DESC(1, 196, 80, 127, 40, 0.25);
+inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 40, 0.25);
 
 class TopIntake : public Subsystem {
     pros::MotorGroup intakeMotor;
@@ -48,6 +48,8 @@ public:
     }
 
     bool ringPresent() { return intakeDistance.get() < 90; }
+
+    bool ringPresentEject() { return intakeDistance.get() < 40; }
 
     RingColor getRingColor() {
         if (vision.get_object_count() != 0) {
