@@ -51,10 +51,10 @@ Command* autonCommand;
                 partner.set_text(1, 1, "BLUE");
                 break;
         }
+        pros::c::task_delay_until(&start_time, 20);
 
         // TELEMETRY.send("[[" + std::to_string(pose.x()) + "," + std::to_string(pose.y()) + "," +
         //                std::to_string(pose.z()) + "]]\n");
-        pros::c::task_delay_until(&start_time, 20);
         // TELEMETRY.send("{\"time\": " + std::to_string(pros::millis()/1000.0) + ", \"data\":[");
         // TELEMETRY.send("[");
         // TELEMETRY.send(std::to_string(pose.x()));
