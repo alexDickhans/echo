@@ -120,7 +120,7 @@ inline void subsystemInit() {
 
     barToBarHang =
             new Sequence({
-                lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 7.2_in)),
+                lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 7.5_in)),
                 lift->positionCommand(72_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.25_s),
                 lift->positionCommand(72_deg)->race(drivetrain->hangDown(-1.0, 4_in)),
                 lift->positionCommand(117_deg)->race(drivetrain->hangDown(-1.0, -1.7_in)),
@@ -246,7 +246,7 @@ inline void subsystemInit() {
             ->whileTrue(
                 drivetrain->retractAlignMech()->with(lift->moveToPosition(110_deg)->with(drivetrain->retractPto())));
     partner.getTrigger(DIGITAL_Y)->whileTrue(
-        (new WaitCommand(300_ms))->andThen(
+        (new WaitCommand(150_ms))->andThen(
             new ScheduleCommand(drivetrain->releaseString()->with(lift->positionCommand(65_deg)))));
 
     partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup(
