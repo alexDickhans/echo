@@ -7,8 +7,8 @@
 
 namespace CONFIG {
     constexpr double INTAKE_RATIO = 74.0 / 96.0; // 66 chain links
-    constexpr float DRIVE_NOISE = 0.35;
-    constexpr Angle ANGLE_NOISE = 8_deg;
+    constexpr float DRIVE_NOISE = 0.45;
+    constexpr Angle ANGLE_NOISE = 12_deg;
 
     constexpr QLength DRIVE_RADIUS = 3.25_in / 2.0;
     constexpr float DRIVE_RATIO = 60.0 / 36.0;

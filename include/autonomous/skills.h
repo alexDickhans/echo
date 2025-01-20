@@ -26,7 +26,7 @@ public:
                 drivetrain->setNorm(Eigen::Vector2f(0.0, (60_in).getValue()), Eigen::Matrix2f::Identity() * 0.04,
                                     -90_deg, false),
                 new ScheduleCommand(intakeOntoGoal->withTimeout(300_ms)),
-                new WaitCommand(300_ms),
+                new WaitCommand(200_ms),
                 new Ramsete(drivetrain, &skills_1),
                 drivetrain->pct(0.3, 0.3)->withTimeout(0.2_s),
                 drivetrain->pct(0.0, 0.0)->withTimeout(0.1_s),

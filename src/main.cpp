@@ -145,6 +145,7 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+    autonCommand->cancel();
     if (AUTON == Auton::SKILLS) {
         CommandScheduler::schedule(autonCommand->until([&]() {return partner.get_digital(DIGITAL_RIGHT);}));
     }
