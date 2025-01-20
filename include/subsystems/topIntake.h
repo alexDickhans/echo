@@ -27,7 +27,11 @@ public:
         intakeMotor.set_gearing(pros::MotorGears::green);
         vision.set_color(RED_COLOR_DESC);
         vision.set_color(BLUE_COLOR_DESC);
-        intakeMotor.tare_position_all();
+        pros::delay(10);
+        // if (intakeMotor.tare_position_all() == 1) {
+        //     std::cout << errno << std::endl;
+        //     pros::delay(10);
+        // }
     }
 
     void periodic() override {
