@@ -7,8 +7,8 @@
 
 namespace CONFIG {
     constexpr double INTAKE_RATIO = 74.0 / 96.0; // 66 chain links
-    constexpr float DRIVE_NOISE = 0.45;
-    constexpr Angle ANGLE_NOISE = 12_deg;
+    constexpr float DRIVE_NOISE = 0.05;
+    constexpr Angle ANGLE_NOISE = 3_deg;
 
     constexpr QLength DRIVE_RADIUS = 3.25_in / 2.0;
     constexpr float DRIVE_RATIO = 60.0 / 36.0;
@@ -18,7 +18,7 @@ namespace CONFIG {
     constexpr size_t NUM_PARTICLES = 250;
     constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
-    constexpr double DRIVETRAIN_TUNING_SCALAR = 1.0;
+    constexpr double DRIVETRAIN_TUNING_SCALAR = 0.97;
 
     constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
 

@@ -25,7 +25,7 @@ private:
 	QLength distanceSinceUpdate = 0.0;
 	QTime lastUpdateTime = 0.0;
 
-	QLength maxDistanceSinceUpdate = 0.2_in;
+	QLength maxDistanceSinceUpdate = 2_in;
 	QTime maxUpdateInterval = 2.0_s;
 
 	std::function<Angle()> angleFunction;
@@ -106,7 +106,7 @@ public:
 
 		distanceSinceUpdate += predictionFunction().norm();
 
-		if (distanceSinceUpdate < maxDistanceSinceUpdate && maxUpdateInterval > pros::millis() * millisecond) {
+		if (distanceSinceUpdate < maxDistanceSinceUpdate && maxUpdateInterval > pros::millis() * millisecond - lastUpdateTime) {
 			float xSum = 0.0, ySum = 0.0;
 
 			for (size_t i = 0; i < L; i++) {

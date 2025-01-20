@@ -33,11 +33,11 @@ public:
 	void update() override {
 		const auto measuredMM = distance.get();
 
-		exit = measuredMM >= 9999 || (distance.get_object_size() < 30);// || !distance.is_installed();
+		exit = measuredMM >= 9999; // || (distance.get_object_size() < 30);// || !distance.is_installed();
 
 		measured = tuningConstant * measuredMM * millimetre;
 
-		std = 0.15 * measured / sqrt(distance.get_confidence() / 64.0);
+		std = 0.5 * measured / sqrt(distance.get_confidence() / 64.0);
 	}
 
 	[[nodiscard]] std::optional<double> p(const Eigen::Vector3f& X) override {
