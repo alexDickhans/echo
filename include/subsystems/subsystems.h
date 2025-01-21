@@ -60,7 +60,7 @@ inline void subsystemInit() {
     topIntake = new TopIntake({-12, 13}, pros::Distance(20));
     bottomIntake = new BottomIntake(pros::Motor(18));
     lift = new LiftSubsystem({-5, 7}, PID(4.5, 0.0, 3.0));
-    goalClamp = new GoalClamp(pros::adi::DigitalOut('b'));
+    goalClamp = new GoalClamp(pros::adi::DigitalOut('b'), pros::adi::DigitalOut('d'));
     drivetrain = new Drivetrain({-8, -16}, {3, 4}, {21}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'),
                                 pros::adi::DigitalOut('c'), []() { return goalClamp->getLastValue(); });
 
@@ -374,7 +374,7 @@ inline void subsystemInit() {
             TopIntakePositionCommand::fromForwardPositionCommand(topIntake, 3.8, 0.0),
             bottomIntake->movePct(1.0), lift->positionCommand(0.0)
         }));
-    PathCommands::registerCommand("clamp", goalClamp->levelCommand(true));
+    PathCommands::registerCommand("clamp", goalClampTrue);
     PathCommands::registerCommand("declamp", goalClamp->levelCommand(false));
     PathCommands::registerCommand("declampElim", goalClamp->levelCommand(false));
     PathCommands::registerCommand(
