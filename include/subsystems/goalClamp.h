@@ -4,11 +4,14 @@
 
 class GoalClamp : public Subsystem {
     pros::adi::DigitalOut solenoid;
+    pros::adi::DigitalOut led;
 
     bool lastValue = false;
 
 public:
-    explicit GoalClamp(pros::adi::DigitalOut solenoid) : solenoid(std::move(solenoid)) {}
+    explicit GoalClamp(pros::adi::DigitalOut solenoid, pros::adi::DigitalOut led) : solenoid(std::move(solenoid)),
+        led(std::move(led)) {
+    }
 
     void periodic() override {
         // no - op
@@ -16,6 +19,7 @@ public:
 
     void setLevel(const bool value) {
         solenoid.set_value(value);
+        led.set_value(value);
         lastValue = value;
     }
 

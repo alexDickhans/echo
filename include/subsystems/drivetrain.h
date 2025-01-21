@@ -120,6 +120,7 @@ public:
                                      {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}})
                             .cast<float>();
 
+            auto time = pros::micros();
 
             particleFilter.update([this, angleDistribution, avgDistribution, displacementMatrix]() mutable {
                 const auto noisy = avgDistribution(de);
@@ -133,6 +134,25 @@ public:
                     Eigen::Rotation2Df(particleFilter.getAngle().Convert(radian)) * localDisplacement;
 
             exponentialPose += Eigen::Vector3f(globalDisplacement.x(), globalDisplacement.y(), dTheta.Convert(radian));
+
+            TELEMETRY.send("{\"time\": " + std::to_string(pros::millis()/1000.0) + ", \"data\":[");
+            for (size_t i = 0; i < CONFIG::NUM_PARTICLES; i ++) {
+                auto particle = this->getParticle(i);
+                TELEMETRY.send("[");
+                TELEMETRY.send(std::to_string(particle.x()));
+                TELEMETRY.send(",");
+                TELEMETRY.send(std::to_string(particle.y()));
+                TELEMETRY.send(",");
+                TELEMETRY.send(std::to_string(particle.z()));
+                TELEMETRY.send("],");
+            }
+            TELEMETRY.send("[");
+            TELEMETRY.send(std::to_string(exponentialPose.x()));
+            TELEMETRY.send(",");
+            TELEMETRY.send(std::to_string(exponentialPose.y()));
+            TELEMETRY.send(",");
+            TELEMETRY.send(std::to_string(exponentialPose.z()));
+            TELEMETRY.send("]]}\n");
 
             lastTheta = particleFilter.getAngle();
         } else {
