@@ -128,16 +128,16 @@ inline void subsystemInit() {
                 lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 7.5_in)),
                 lift->positionCommand(72_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.25_s),
                 lift->positionCommand(72_deg)->race(drivetrain->hangDown(-1.0, 4_in)),
-                lift->positionCommand(117_deg)->race(drivetrain->hangDown(-1.0, -1.7_in)),
-                lift->positionCommand(30_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
+                lift->positionCommand(124_deg)->race(drivetrain->hangDown(-1.0, -1.5_in)),
+                lift->positionCommand(20_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
                 lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.7))->withTimeout(0.3_s),
                 lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s)
             });
     hang = new Sequence({
         drivetrain->activatePto(), drivetrain->retractAlignMech(),
-        lift->moveToPosition(110_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.4_s),
-        lift->positionCommand(110_deg)->race(drivetrain->hangDown(-1.0, -1.7_in)),
-        lift->positionCommand(30_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
+        lift->moveToPosition(120_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.4_s),
+        lift->positionCommand(120_deg)->race(drivetrain->hangDown(-1.0, -1.5_in)),
+        lift->positionCommand(20_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
         lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.6))->withTimeout(0.3_s),
         lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s),
         barToBarHang, barToBarHang
