@@ -22,6 +22,9 @@ public:
                 return AWP::sawp();
             case POS_ELIM:
                 return Elims::pos_elim();
+            case POS_ELIM_NO_ALLIANCE:
+                return Elims::pos_elim_no_alliance();
+
             case NEG_ELIM:
                 return Elims::neg_elim();
             case NEG_ELIM_POLE_TOUCH:
