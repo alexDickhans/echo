@@ -26,6 +26,7 @@
 #include "motionProfiling/pathCommands.h"
 #include "pros/adi.hpp"
 #include "topIntake.h"
+#include "ledArray.h"
 
 #include <queue>
 
@@ -34,6 +35,7 @@ TopIntake *topIntake;
 BottomIntake *bottomIntake;
 LiftSubsystem *lift;
 GoalClamp *goalClamp;
+LEDArray *leds;
 
 Command *loadOneRingHigh;
 Command *loadOneRingLow;
@@ -60,9 +62,10 @@ inline void subsystemInit() {
     topIntake = new TopIntake({-12, 13}, pros::Distance(20));
     bottomIntake = new BottomIntake(pros::Motor(18));
     lift = new LiftSubsystem({-5, 7}, PID(4.5, 0.0, 3.0));
-    goalClamp = new GoalClamp(pros::adi::DigitalOut('b'), pros::adi::DigitalOut('d'));
+    goalClamp = new GoalClamp(pros::adi::DigitalOut('b'));
     drivetrain = new Drivetrain({-8, -16}, {3, 4}, {21}, {-2}, pros::Imu(14), pros::adi::DigitalOut('a'),
                                 pros::adi::DigitalOut('c'), []() { return goalClamp->getLastValue(); });
+    leds = new LEDArray(pros::adi::Led('h', 4));
 
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2438.0 / 2485.0, pros::Distance(15)));
     drivetrain->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2438.0 / 2480.0, pros::Distance(1)));
@@ -81,8 +84,10 @@ inline void subsystemInit() {
                                                                      lift->positionCommand(0.0_deg),
                                                                      [&]() { return hasRings; }));
     CommandScheduler::registerSubsystem(goalClamp, goalClamp->levelCommand(false));
+    CommandScheduler::registerSubsystem(leds, leds->repeatColor({0xFFFFFF, 0x000000})->withTimeout(200_ms)->andThen(
+                                            leds->repeatColor({0x000000, 0xFFFFFF})->withTimeout(200_ms)));
 
-    goalClampTrue = goalClamp->levelCommand(true);
+    goalClampTrue = goalClamp->levelCommand(true)->with(leds->colorCommand(0x000000));
 
     loadOneRingLow = new Sequence({
         new ParallelRaceGroup({
@@ -212,8 +217,6 @@ inline void subsystemInit() {
     primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
 
     primary.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
-
-    primary.getTrigger(DIGITAL_B)->onTrue(drivetrain->releaseString()->with(lift->positionCommand(65_deg)));
 
     primary.getTrigger(DIGITAL_A)
             ->onTrue(new Sequence({
