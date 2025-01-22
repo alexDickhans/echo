@@ -7,6 +7,7 @@ enum Auton_ {
   AWP_PUSH,
   SAWP,
   POS_ELIM,
+  POS_ELIM_NO_ALLIANCE,
   NEG_ELIM,
   NEG_ELIM_POLE_TOUCH,
   SKILLS,
