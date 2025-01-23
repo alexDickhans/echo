@@ -30,7 +30,7 @@ namespace CONFIG {
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 30_deg;
-    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 125_deg;
+    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 120_deg;
     constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 60_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
