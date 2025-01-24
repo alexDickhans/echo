@@ -36,7 +36,7 @@ public:
 		return new RunCommand([this, angle]() { this->setTarget(angle); }, {this});
 	}
 
-	FunctionalCommand* moveToPosition(Angle angle, Angle threshold = 2_deg) {
+	FunctionalCommand* moveToPosition(Angle angle, Angle threshold = 6_deg) {
 		return new FunctionalCommand([]() {}, [this, angle]() { this->setTarget(angle); }, [](bool _) {}, [this, threshold, angle]() { return Qabs(this->getPosition() - angle) < threshold; }, {this});
 	}
 
