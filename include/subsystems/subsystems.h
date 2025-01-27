@@ -212,7 +212,7 @@ inline void subsystemInit() {
                                        [&]() { return outtakeWallStake; }),
             }));
 
-    primary.getTrigger(DIGITAL_RIGHT)->toggleOnTrue(goalClampTrue);
+    primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
 
     primary.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
 
