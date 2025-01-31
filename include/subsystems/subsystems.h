@@ -214,8 +214,6 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
 
-    primary.getTrigger(DIGITAL_DOWN)->whileTrue(hang);
-
     primary.getTrigger(DIGITAL_A)
             ->onTrue(new Sequence({
                 new ParallelCommandGroup({
