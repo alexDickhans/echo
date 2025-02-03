@@ -245,7 +245,7 @@ inline void subsystemInit() {
             ->whileTrue(
                 drivetrain->retractAlignMech()->with(lift->moveToPosition(110_deg)->with(drivetrain->retractPto())));
     partner.getTrigger(DIGITAL_Y)->whileTrue(
-        (new WaitCommand(150_ms))->andThen(
+        (new WaitCommand(200_ms))->andThen(
             new ScheduleCommand(drivetrain->releaseString()->with(lift->positionCommand(65_deg)))));
 
     partner.getTrigger(DIGITAL_A)->whileTrue(new ParallelCommandGroup(
