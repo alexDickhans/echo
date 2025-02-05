@@ -43,7 +43,7 @@ public:
                                                 lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                 topIntake->pctCommand(-1.0),
                                         }))
-                                               ->withTimeout(0.8_s)}))
+                                               ->withTimeout(0.6_s)}))
                                 ->asProxy()),
                 new Ramsete(drivetrain, &skills_2),
                 drivetrain->pct(0.25, 0.25)->withTimeout(0.1_s),
@@ -82,7 +82,7 @@ public:
                                                 lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
                                                 topIntake->pctCommand(-1.0),
                                         }))
-                                               ->withTimeout(1.0_s)}))
+                                               ->withTimeout(0.6_s)}))
                                 ->asProxy()),
                 new Ramsete(drivetrain, &skills_4),
                 new ScheduleCommand(hang),
