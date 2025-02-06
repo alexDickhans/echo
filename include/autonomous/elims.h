@@ -65,9 +65,8 @@ public:
 
         return new Sequence({
             drivetrain->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
-            lift->positionCommand(50_deg)->withTimeout(50_ms)->asProxy(),
-            new ScheduleCommand(lift->positionCommand(50_deg)->withTimeout(530_ms)),
-            new TankMotionProfiling(drivetrain, {60_in / second, 100_in / second / second}, 14_in, flip, 180_deg),
+            new ScheduleCommand(lift->positionCommand(50_deg)->withTimeout(500_ms)),
+            new TankMotionProfiling(drivetrain, {60_in / second, 100_in / second / second}, 12_in, flip, 180_deg),
             new Ramsete(drivetrain, flip ? &negative_1_blue : &negative_1_red),
             SharedCommands::descoreCorner(),
             new Ramsete(drivetrain, flip ? &negative_2_blue : &negative_2_red),
