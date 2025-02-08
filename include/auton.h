@@ -1,4 +1,4 @@
 #pragma once
 #include "autonomous/autons.h"
-#define AUTON Auton::SAWP
+#define AUTON Auton::SKILLS
 auto ALLIANCE=RED;
