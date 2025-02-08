@@ -125,17 +125,17 @@ inline void subsystemInit() {
 
     barToBarHang =
             new Sequence({
-                lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 7.5_in)),
+                lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 7.8_in)),
                 lift->positionCommand(72_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.25_s),
                 lift->positionCommand(78_deg)->race(drivetrain->hangDown(-1.0, 4_in)),
-                lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -1.8_in)),
+                lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
                 lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.57))->withTimeout(0.3_s),
                 lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s)
             });
     hang = new Sequence({
         drivetrain->activatePto(), drivetrain->retractAlignMech(),
         lift->moveToPosition(120_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.4_s),
-        lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -1.8_in)),
+        lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
         lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.57))->withTimeout(0.3_s),
         lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s),
         barToBarHang, barToBarHang
@@ -314,7 +314,23 @@ inline void subsystemInit() {
             topIntake->pctCommand(0.0)->with(lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)))));
     PathCommands::registerCommand(
         "intakeOneNeutralStakes",
-        loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(bottomIntake->movePct(0.0)->with(
+        (new Sequence({
+        new ParallelRaceGroup({
+            bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
+            TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.50, 0.0),
+            new WaitUntilCommand([&]() { return topIntake->ringPresent(); })
+        }),
+            new ParallelRaceGroup({
+            bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
+            TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.50, 0.0),
+            new WaitCommand(200_ms),
+        }),
+        new ParallelRaceGroup({
+            bottomIntake->movePct(1.0),
+            lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
+            new ParallelCommandGroup({TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.50)}),
+        }),
+    }))->andThen(lift->moveToPosition(25_deg)->with(bottomIntake->movePct(0.0)->with(
             TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.4, 0.0)))));
 
     PathCommands::registerCommand("bottomIntakeOffTopOn",
