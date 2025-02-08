@@ -125,17 +125,17 @@ inline void subsystemInit() {
 
     barToBarHang =
             new Sequence({
-                lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 7.5_in)),
+                lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 7.65_in)),
                 lift->positionCommand(72_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.25_s),
                 lift->positionCommand(78_deg)->race(drivetrain->hangDown(-1.0, 4_in)),
-                lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -1.8_in)),
+                lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
                 lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.57))->withTimeout(0.3_s),
                 lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s)
             });
     hang = new Sequence({
         drivetrain->activatePto(), drivetrain->retractAlignMech(),
         lift->moveToPosition(120_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.4_s),
-        lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -1.8_in)),
+        lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
         lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.57))->withTimeout(0.3_s),
         lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s),
         barToBarHang, barToBarHang
