@@ -28,8 +28,8 @@ public:
                 new ScheduleCommand(intakeOntoGoal->withTimeout(300_ms)),
                 new WaitCommand(200_ms),
                 new Ramsete(drivetrain, &skills_1),
-                drivetrain->pct(0.2, 0.2)->withTimeout(0.1_s),
-                drivetrain->pct(0.2, 0.2)->race(
+                drivetrain->pct(0.1, 0.1)->withTimeout(0.2_s),
+                drivetrain->pct(0.1, 0.1)->race(
                         (new Sequence({new ParallelRaceGroup({
                                                bottomIntake->movePct(0.0),
                                                lift->moveToPosition(CONFIG::WALL_STAKE_SCORE_HEIGHT),
