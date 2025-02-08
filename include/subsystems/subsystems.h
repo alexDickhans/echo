@@ -314,7 +314,23 @@ inline void subsystemInit() {
             topIntake->pctCommand(0.0)->with(lift->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)))));
     PathCommands::registerCommand(
         "intakeOneNeutralStakes",
-        loadOneRingHigh->andThen(lift->moveToPosition(25_deg)->with(bottomIntake->movePct(0.0)->with(
+        (new Sequence({
+        new ParallelRaceGroup({
+            bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
+            TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.50, 0.0),
+            new WaitUntilCommand([&]() { return topIntake->ringPresent(); })
+        }),
+            new ParallelRaceGroup({
+            bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
+            TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.50, 0.0),
+            new WaitCommand(200_ms),
+        }),
+        new ParallelRaceGroup({
+            bottomIntake->movePct(1.0),
+            lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
+            new ParallelCommandGroup({TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.50)}),
+        }),
+    }))->andThen(lift->moveToPosition(25_deg)->with(bottomIntake->movePct(0.0)->with(
             TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.4, 0.0)))));
 
     PathCommands::registerCommand("bottomIntakeOffTopOn",
