@@ -222,9 +222,9 @@ public:
     }
 
     QLength getStringDistance() const {
-        return (this->left11W.get_position(0) +
-                this->right11W.get_position(1)) /
-               2.0 / CONFIG::STRING_RATIO * 2.0 * M_PI * CONFIG::WINCH_RADIUS;
+        return
+                this->right11W.get_position(1) /
+               1.0 / CONFIG::STRING_RATIO * 2.0 * M_PI * CONFIG::WINCH_RADIUS;
     }
 
     QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
