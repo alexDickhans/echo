@@ -5,6 +5,9 @@
 #include "feedback/pid.h"
 #include "units/units.hpp"
 
+#include "auton.h"
+#include "autonomous/autons.h"
+
 namespace CONFIG {
     constexpr double INTAKE_RATIO = 74.0 / 96.0; // 66 chain links
     constexpr float DRIVE_NOISE = 0.05;
@@ -52,10 +55,17 @@ namespace CONFIG {
 
     inline double K_s = 0.12;
 
+#if AUTON == Skills
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.553, 0.044};
+    inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.1560, 0.0204};
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.53, 0.040};
+    inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.1482, 0.0175};
+#else
     inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.52, 0.042};
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.1377, 0.0184};
     inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.50, 0.037};
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.1302, 0.0155};
+#endif
 
     constexpr QLength START_STRING_LENGTH = 4.5_in;
     constexpr QLength WINCH_RADIUS = 0.303_in / 2.0;

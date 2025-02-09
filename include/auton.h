@@ -1,4 +1,4 @@
 #pragma once
 #include "autonomous/autons.h"
-#define AUTON Auton::AWP_PUSH
-auto ALLIANCE=RED;
+#define AUTON NONE
+inline auto ALLIANCE=RED;
