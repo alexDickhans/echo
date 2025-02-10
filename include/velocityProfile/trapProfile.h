@@ -67,15 +67,19 @@ public:
         if (t.getValue() < endAccel) {
             result.velocity += t.getValue() * constraints.maxAcceleration;
             result.position += (current.velocity + t.getValue() * constraints.maxAcceleration / 2.0) * t.getValue();
+            std::cout << "1" << std::endl;
         } else if (t.getValue() < endFullspeed) {
             result.velocity = constraints.maxVelocity;
             result.position += (current.velocity + endAccel * constraints.maxAcceleration / 2.0) * endAccel +
                                constraints.maxVelocity * (t.getValue() - endAccel);
+            std::cout << "2" << std::endl;
+
         } else if (t.getValue() <= endDecel) {
             result.velocity = goal.velocity + (endDecel - t.getValue()) * constraints.maxAcceleration;
             double timeLeft = endDecel - t.getValue();
             result.position =
                     goal.position - (goal.velocity + timeLeft * constraints.maxAcceleration / 2.0) * timeLeft;
+            std::cout << "3" << std::endl;
         } else {
             result = goal;
         }
