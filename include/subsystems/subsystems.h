@@ -45,6 +45,7 @@ Command *goalClampTrue;
 
 Command *hang;
 Command *barToBarHang;
+Command *barToBarHang2;
 
 CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
@@ -125,20 +126,28 @@ inline void subsystemInit() {
 
     barToBarHang =
             new Sequence({
-                lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 7.8_in)),
-                lift->positionCommand(72_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.25_s),
+                lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 8.32_in)),
+                lift->positionCommand(72_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.35_s),
                 lift->positionCommand(78_deg)->race(drivetrain->hangDown(-1.0, 4_in)),
-                lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
+                lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -2.5_in)),
                 lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.57))->withTimeout(0.3_s),
                 lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s)
+            });
+    barToBarHang2 =
+            new Sequence({
+                lift->positionCommand(35_deg)->race(drivetrain->hangUp(1.0, 8.32_in)),
+                lift->positionCommand(72_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.35_s),
+                lift->positionCommand(78_deg)->race(drivetrain->hangDown(-1.0, 4_in)),
+                lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -2.9_in)),
+                lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.57))->withTimeout(1.0_s),
             });
     hang = new Sequence({
         drivetrain->activatePto(), drivetrain->retractAlignMech(),
         lift->moveToPosition(120_deg)->race(drivetrain->hangPctCommand(0.0))->withTimeout(0.4_s),
-        lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -2.0_in)),
-        lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.57))->withTimeout(0.3_s),
+        lift->positionCommand(100_deg)->race(drivetrain->hangDown(-1.0, -2.1_in)),
+        lift->positionCommand(25_deg)->race(drivetrain->hangPctCommand(-0.54))->withTimeout(0.3_s),
         lift->positionCommand(90_deg)->race(drivetrain->hangPctCommand(1.0))->withTimeout(0.1_s),
-        barToBarHang, barToBarHang
+        barToBarHang, barToBarHang2
     });
 
     Trigger([]() { return pros::competition::is_disabled(); }).onTrue(drivetrain->retractPto());

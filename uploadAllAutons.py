@@ -24,8 +24,8 @@ def write_auton_file(auton, alliance="RED"):
     with open(AUTON_FILE_PATH, "w") as f:
         f.write("#pragma once\n")
         f.write("#include \"autonomous/autons.h\"\n")
-        f.write(f"#define AUTON Auton::{auton}\n")
-        f.write(f"auto ALLIANCE={alliance};\n")
+        f.write(f"#define AUTON {auton}\n")
+        f.write(f"inline auto ALLIANCE={alliance};\n")
     print(f"Auton file updated with {auton} and default alliance {alliance}.")
 
 def compile_auton(slot, auton):
