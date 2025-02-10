@@ -240,7 +240,7 @@
   "commands": [
     {
       "t": 0.0,
-      "name": "dejam2"
+      "name": "dejam"
     },
     {
       "t": 1.277,
@@ -264,7 +264,7 @@
     },
     {
       "t": 4.689,
-      "name": "dejam2"
+      "name": "dejam"
     },
     {
       "t": 6.831,
