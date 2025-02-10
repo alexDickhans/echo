@@ -109,13 +109,13 @@ inline void subsystemInit() {
     loadOneRingHigh = new Sequence({
         new ParallelRaceGroup({
             bottomIntake->movePct(1.0), lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-            TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.50, 0.0),
+            TopIntakePositionCommand::fromReversePositionCommand(topIntake, -0.45, 0.0),
             new WaitUntilCommand([&]() { return topIntake->ringPresent(); })
         }),
         new ParallelRaceGroup({
             bottomIntake->movePct(1.0),
             lift->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
-            new ParallelCommandGroup({TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.50)}),
+            new ParallelCommandGroup({TopIntakePositionCommand::fromReversePositionCommand(topIntake, -1.45)}),
         }),
     });
     intakeOntoGoal = new ParallelCommandGroup({
