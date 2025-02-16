@@ -1,5 +1,7 @@
 #pragma once
 
+#include "command/instantCommand.h"
+
 #include "config.h"
 
 #include "command/command.h"
@@ -20,18 +22,16 @@ class TopIntake : public Subsystem {
     pros::AIVision vision;
     pros::Distance intakeDistance;
 
+    double positionOffset = 0.0;
+
 public:
-    explicit TopIntake(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance) :
-        intakeMotor(motors), vision(17), intakeDistance(std::move(intakeDistance)) {
+    explicit
+    TopIntake(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance) : intakeMotor(motors),
+        vision(17), intakeDistance(std::move(intakeDistance)) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         intakeMotor.set_gearing(pros::MotorGears::green);
         vision.set_color(RED_COLOR_DESC);
         vision.set_color(BLUE_COLOR_DESC);
-        pros::delay(10);
-        // if (intakeMotor.tare_position_all() == 1) {
-        //     std::cout << errno << std::endl;
-        //     pros::delay(10);
-        // }
     }
 
     void periodic() override {
@@ -78,10 +78,18 @@ public:
 
     RunCommand *controllerCommand(pros::Controller *controller) {
         return new RunCommand(
-                [this, controller]() {
-                    this->setPct(controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0);
-                },
-                {this});
+            [this, controller]() {
+                this->setPct(controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0);
+            },
+            {this});
+    }
+
+    void changeOffset(const double quantity) {
+        positionOffset += quantity;
+    }
+
+    InstantCommand *adjustOffset(const double quantity) {
+        return new InstantCommand([quantity, this]() { this->adjustOffset(quantity); }, {});
     }
 
     ~TopIntake() override = default;
