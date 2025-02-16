@@ -43,7 +43,7 @@ public:
     void setPct(double pct) const { this->intakeMotor.move_voltage(pct * 12000.0); }
 
     double getPosition() {
-        return (this->intakeMotor.get_position(0) + this->intakeMotor.get_position(1)) / (2 * CONFIG::INTAKE_RATIO);
+        return (this->intakeMotor.get_position(0) + this->intakeMotor.get_position(1)) / (2 * CONFIG::INTAKE_RATIO) + positionOffset;
     }
 
     double getVelocity() {
