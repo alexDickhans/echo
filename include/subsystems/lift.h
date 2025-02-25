@@ -32,15 +32,11 @@ public:
 		return angleDifference((motor.get_position(1)) / CONFIG::LIFT_RATIO * revolution, 0_deg);
 	}
 
-	RunCommand* positionCommand(Angle angle) {
-		return new RunCommand([this, angle]() { this->setTarget(angle); }, {this});
-	}
-
-	FunctionalCommand* moveToPosition(Angle angle, Angle threshold = 8_deg) {
+	FunctionalCommand* positionCommand(Angle angle, Angle threshold = 8_deg) {
 		return new FunctionalCommand([]() {}, [this, angle]() { this->setTarget(angle); }, [](bool _) {}, [this, threshold, angle]() { return Qabs(this->getPosition() - angle) < threshold; }, {this});
 	}
 
-	RunCommand* controller(pros::Controller& controller, pros::controller_analog_e_t channel) {
+	RunCommand* controllerCommand(pros::Controller& controller, pros::controller_analog_e_t channel) {
 		Angle targetPosition = 0.0;
 		return new RunCommand([this, controller, targetPosition, channel]() mutable {
                     targetPosition = targetPosition + controller.get_analog(channel) / 127.0 * 1.0_deg; targetPosition = std::clamp(targetPosition, 0_deg, 130_deg); this->setTarget(targetPosition); }, {this});

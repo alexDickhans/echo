@@ -10,13 +10,13 @@
  */
 class Rotate : public Command {
 private:
-	Drivetrain *drivetrain;
+	DrivetrainSubsystem *drivetrain;
 	PID pid{CONFIG::TURN_PID};
 	double static_voltage;
 	bool finish{true};
 
 public:
-	Rotate(Drivetrain *drivetrain, const Angle angle, const bool flip, const double static_voltage = 0.0,
+	Rotate(DrivetrainSubsystem *drivetrain, const Angle angle, const bool flip, const double static_voltage = 0.0,
            const bool finish = true)
 		: drivetrain(drivetrain),
 		  static_voltage(static_voltage),

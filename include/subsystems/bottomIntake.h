@@ -6,11 +6,11 @@
 
 #include "pros/motors.hpp"
 
-class BottomIntake : public Subsystem {
+class MotorSubsystem : public Subsystem {
     pros::Motor intakeMotor;
 
 public:
-    explicit BottomIntake(pros::Motor intake_motor) :
+    explicit MotorSubsystem(pros::Motor intake_motor) :
         intakeMotor(std::move(intake_motor)) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
     }
@@ -32,13 +32,9 @@ public:
         return new RunCommand([this]() { this->setPct(0.0); }, {this});
     }
 
-    RunCommand *movePct(double pct) {
+    RunCommand *pctCommand(double pct) {
         return new RunCommand([this, pct]() { this->setPct(pct); }, {this});
     }
 
-    RunCommand *speedCommand(double speed) {
-        return new RunCommand([this, speed]() { this->setSpeed(speed); }, {this});
-    }
-
-    ~BottomIntake() override = default;
+    ~MotorSubsystem() override = default;
 };

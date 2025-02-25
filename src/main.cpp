@@ -37,7 +37,7 @@ Command* autonCommand;
     while (true) {
         auto start_time = pros::millis();
 
-        auto pose = drivetrain->getPose();
+        auto pose = drivetrainSubsystem->getPose();
 
         // pros::lcd::set_text(1, std::to_string(pose.x() * metre.Convert(inch)) + ", " +
         //                                std::to_string(pose.y() * metre.Convert(inch)) + ", " +

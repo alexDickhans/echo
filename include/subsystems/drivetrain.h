@@ -21,7 +21,7 @@ struct DriveSpeeds {
     QAngularVelocity angularVelocity = 0.0;
 };
 
-class Drivetrain : public Subsystem {
+class DrivetrainSubsystem : public Subsystem {
 private:
     pros::MotorGroup left11W, right11W, left5W, right5W;
     pros::Imu imu;
@@ -59,7 +59,7 @@ private:
     Angle lastTheta = 0.0;
 
 public:
-    Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
+    DrivetrainSubsystem(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
                pros::Imu imu, pros::adi::DigitalOut pto, pros::adi::DigitalOut stringRelease,
                std::function<bool()> hasGoal) :
@@ -494,5 +494,5 @@ public:
         return new RunCommand([this, left, right]() { this->setPct(left, right); }, {this});
     }
 
-    ~Drivetrain() override = default;
+    ~DrivetrainSubsystem() override = default;
 };

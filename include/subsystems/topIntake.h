@@ -17,7 +17,7 @@ enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 inline pros::aivision_color_s_t RED_COLOR_DESC(1, 196, 80, 127, 40, 0.25);
 inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 40, 0.25);
 
-class TopIntake : public Subsystem {
+class TopIntakeSubsystem : public Subsystem {
     pros::MotorGroup intakeMotor;
     pros::AIVision vision;
     pros::Distance intakeDistance;
@@ -25,8 +25,7 @@ class TopIntake : public Subsystem {
     double positionOffset = 0.0;
 
 public:
-    explicit
-    TopIntake(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance) : intakeMotor(motors),
+    explicit TopIntakeSubsystem(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance) : intakeMotor(motors),
         vision(17), intakeDistance(std::move(intakeDistance)) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         intakeMotor.set_gearing(pros::MotorGears::green);
@@ -92,5 +91,5 @@ public:
         return new InstantCommand([quantity, this]() { this->adjustOffset(quantity); }, {});
     }
 
-    ~TopIntake() override = default;
+    ~TopIntakeSubsystem() override = default;
 };
