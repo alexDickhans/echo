@@ -135,25 +135,6 @@ public:
 
             exponentialPose += Eigen::Vector3f(globalDisplacement.x(), globalDisplacement.y(), dTheta.Convert(radian));
 
-            TELEMETRY.send("{\"time\": " + std::to_string(pros::millis()/1000.0) + ", \"data\":[");
-            for (size_t i = 0; i < CONFIG::NUM_PARTICLES; i ++) {
-                auto particle = this->getParticle(i);
-                TELEMETRY.send("[");
-                TELEMETRY.send(std::to_string(particle.x()));
-                TELEMETRY.send(",");
-                TELEMETRY.send(std::to_string(particle.y()));
-                TELEMETRY.send(",");
-                TELEMETRY.send(std::to_string(particle.z()));
-                TELEMETRY.send("],");
-            }
-            TELEMETRY.send("[");
-            TELEMETRY.send(std::to_string(exponentialPose.x()));
-            TELEMETRY.send(",");
-            TELEMETRY.send(std::to_string(exponentialPose.y()));
-            TELEMETRY.send(",");
-            TELEMETRY.send(std::to_string(exponentialPose.z()));
-            TELEMETRY.send("]]}\n");
-
             lastTheta = particleFilter.getAngle();
         } else {
             const QLength currentLength = this->getStringDistance();

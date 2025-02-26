@@ -85,30 +85,41 @@ inline void subsystemInit() {
     intakeOntoGoal = new ParallelCommandGroup({
         bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
     });
-    loadLB = new ParallelRaceGroup({
-        bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
-        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT)
-    }); // Add stall detection code
+    loadLB = new Sequence({
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0),
+            topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(200_ms); }),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT),
+        }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(0.0), topIntakeSubsystem->pctCommand(-1.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT), new WaitCommand(50_ms)
+        }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(0.0), topIntakeSubsystem->pctCommand(1.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT), new WaitCommand(100_ms)
+        })
+    });
 
     barToBarHang =
             new Sequence({
-                liftSubsystem->positionCommand(35_deg)->race(drivetrainSubsystem->hangUp(1.0, 8.32_in)),
-                liftSubsystem->positionCommand(72_deg)->race(drivetrainSubsystem->hangPctCommand(0.0))->withTimeout(
+                hangSubsystem->levelCommand(false)->race(drivetrainSubsystem->hangUp(1.0, 8.32_in)),
+                hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangPctCommand(0.0))->withTimeout(
                     0.35_s),
-                liftSubsystem->positionCommand(78_deg)->race(drivetrainSubsystem->hangDown(-1.0, 4_in)),
-                liftSubsystem->positionCommand(100_deg)->race(drivetrainSubsystem->hangDown(-1.0, -2.5_in)),
-                liftSubsystem->positionCommand(25_deg)->race(drivetrainSubsystem->hangPctCommand(-0.57))->
+                hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangDown(-1.0, 4_in)),
+                hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangDown(-1.0, -2.5_in)),
+                hangSubsystem->levelCommand(false)->race(drivetrainSubsystem->hangPctCommand(-0.57))->
                 withTimeout(0.3_s),
-                liftSubsystem->positionCommand(90_deg)->race(drivetrainSubsystem->hangPctCommand(1.0))->withTimeout(
+                hangSubsystem->levelCommand(false)->race(drivetrainSubsystem->hangPctCommand(1.0))->withTimeout(
                     0.1_s)
             });
     hang = new Sequence({
         drivetrainSubsystem->activatePto(), drivetrainSubsystem->retractAlignMech(),
-        liftSubsystem->positionCommand(120_deg, 0.0)->race(drivetrainSubsystem->hangPctCommand(0.0))->
+        hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangPctCommand(0.0))->
         withTimeout(0.4_s),
-        liftSubsystem->positionCommand(100_deg)->race(drivetrainSubsystem->hangDown(-1.0, -2.1_in)),
-        liftSubsystem->positionCommand(25_deg)->race(drivetrainSubsystem->hangPctCommand(-0.54))->withTimeout(0.3_s),
-        liftSubsystem->positionCommand(90_deg)->race(drivetrainSubsystem->hangPctCommand(1.0))->withTimeout(0.1_s),
+        hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangDown(-1.0, -2.1_in)),
+        hangSubsystem->levelCommand(false)->race(drivetrainSubsystem->hangPctCommand(-0.54))->withTimeout(0.3_s),
+        hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangPctCommand(1.0))->withTimeout(0.1_s),
         barToBarHang, barToBarHang
     });
 
@@ -157,11 +168,14 @@ inline void subsystemInit() {
 
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
 
-    primary.getTrigger(DIGITAL_L1)->whileTrue(new Command()); // LB up
-    primary.getTrigger(DIGITAL_L2)->toggleOnTrue(new Command()); // LB down
+    primary.getTrigger(DIGITAL_L1)->whileTrue(liftSubsystem->pctCommand(1.0))->onFalse(
+        liftSubsystem->holdPositionCommand()); // LB up
+    primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->pctCommand(-1.0))->onFalse(
+        new ConditionalCommand(liftSubsystem->holdPositionCommand(), liftSubsystem->positionCommand(0_deg),
+                               []() { return liftSubsystem->getPosition() < 10_deg; })); // LB down
 
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
-    primary.getTrigger(DIGITAL_R1)->onTrue(new Command()); // loading position
+    primary.getTrigger(DIGITAL_R1)->onTrue(loadLB); // loading position
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
 

@@ -46,7 +46,7 @@ public:
 		CommandScheduler& instance = getInstance();
 
 		// Return if the command is already scheduled
-		if (scheduled(command)) {
+		if (command == nullptr || scheduled(command)) {
 			return;
 		}
 

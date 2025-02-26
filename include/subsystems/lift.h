@@ -13,6 +13,8 @@ private:
 	pros::MotorGroup motor;
 
 	PID pid;
+
+	std::optional<double> voltage;
 public:
 	explicit LiftSubsystem(const std::initializer_list<int8_t> &motors, const PID& pid) : motor(motors), pid(pid) {
 		motor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
@@ -20,16 +22,25 @@ public:
 	}
 
 	void periodic() override {
-		auto command = pid.update(this->getPosition().Convert(radian));
-		motor.move_voltage(command * 12000.0);
+		if (voltage.has_value()) {
+			motor.move_voltage(voltage.value() * 12000.0);
+		} else {
+			const auto command = pid.update(this->getPosition().Convert(radian));
+			motor.move_voltage(command * 12000.0);
+		}
 	}
 
 	void setTarget(Angle angle) {
 		pid.setTarget(angle.Convert(radian));
+		voltage = std::nullopt;
+	}
+
+	void setVoltage(double voltage) {
+		this->voltage = voltage;
 	}
 
 	Angle getPosition() const {
-		return angleDifference((motor.get_position(1)) / CONFIG::LIFT_RATIO * revolution, 0_deg);
+		return angleDifference((motor.get_position(0)) / CONFIG::LIFT_RATIO * revolution, 0_deg);
 	}
 
 	FunctionalCommand* positionCommand(Angle angle, Angle threshold = 8_deg) {
@@ -40,6 +51,14 @@ public:
 		Angle targetPosition = 0.0;
 		return new RunCommand([this, controller, targetPosition, channel]() mutable {
                     targetPosition = targetPosition + controller.get_analog(channel) / 127.0 * 1.0_deg; targetPosition = std::clamp(targetPosition, 0_deg, 130_deg); this->setTarget(targetPosition); }, {this});
+	}
+
+	FunctionalCommand* holdPositionCommand() {
+		return new FunctionalCommand([]() {}, [this]() { this->setTarget(this->getPosition()); }, [](bool _) {}, []() { return false; }, {this});
+	}
+
+	RunCommand* pctCommand(double voltage) {
+		return new RunCommand([this, voltage]() mutable { this->setVoltage(voltage); }, {this});
 	}
 
 	~LiftSubsystem() override = default;

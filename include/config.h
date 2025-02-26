@@ -16,7 +16,7 @@ namespace CONFIG {
     constexpr QLength DRIVE_RADIUS = 3.25_in / 2.0;
     constexpr float DRIVE_RATIO = 60.0 / 36.0;
     constexpr float STRING_RATIO = 1.0;
-    constexpr double LIFT_RATIO = 6.0;
+    constexpr double LIFT_RATIO = 18.0/6.0;
     constexpr QLength TRACK_WIDTH = 14_in;
     constexpr size_t NUM_PARTICLES = 250;
     constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
@@ -34,6 +34,7 @@ namespace CONFIG {
 
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 34_deg;
     constexpr Angle WALL_STAKE_SCORE_HEIGHT = 128_deg;
+    constexpr Angle DESCORE_HEIGHT = 128_deg;
     constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 60_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {

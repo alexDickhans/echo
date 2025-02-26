@@ -24,6 +24,8 @@ class TopIntakeSubsystem : public Subsystem {
 
     double positionOffset = 0.0;
 
+    QTime lastFree = 0.0;
+
 public:
     explicit TopIntakeSubsystem(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance) : intakeMotor(motors),
         vision(17), intakeDistance(std::move(intakeDistance)) {
@@ -35,6 +37,9 @@ public:
 
     void periodic() override {
         // No-op
+        if (abs(intakeMotor.get_current_draw()) < 500) {
+            lastFree = pros::millis() * millisecond;
+        }
     }
 
     void setPosition(double position) const { this->intakeMotor.move_absolute(position * CONFIG::INTAKE_RATIO, 200); }
@@ -81,6 +86,10 @@ public:
                 this->setPct(controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0);
             },
             {this});
+    }
+
+    bool stalled(QTime duration) const {
+        return pros::millis() * 1_ms - lastFree > duration;
     }
 
     void changeOffset(const double quantity) {
