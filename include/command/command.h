@@ -2,6 +2,8 @@
 
 #include "subsystem.h"
 #include "units/units.hpp"
+#include <vector>
+#include <functional>
 
 /**
  * @brief Enum for different cancel behaviors for Commands

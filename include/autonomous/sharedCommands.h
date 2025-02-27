@@ -13,25 +13,7 @@ public:
      * @return Command that scores on alliance
      */
     static Command *scoreAlliance() {
-        return (new ParallelCommandGroup({
-                    bottomIntakeSubsystem->movePctCommand(0.0),
-                    liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
-                    topIntakeSubsystem->pctCommand(-0.47),
-                }))
-                ->withTimeout(0.28_s)
-                ->andThen((new ParallelCommandGroup({
-                        bottomIntakeSubsystem->movePctCommand(0.0),
-                        liftSubsystem->positionCommand(0),
-                        topIntakeSubsystem->pctCommand(-1.0),
-                    }))
-                    ->withTimeout(0.1_s))
-                ->andThen((new ParallelCommandGroup({
-                        bottomIntakeSubsystem->movePctCommand(0.0),
-                        liftSubsystem->positionCommand(0),
-                        topIntakeSubsystem->pctCommand(1.0),
-                    }))
-                    ->withTimeout(0.6_s))
-                ->asProxy();
+        return new Command();
     }
 
 
@@ -42,25 +24,7 @@ public:
      * @return Command that scores on alliance
      */
     static Command *scoreAlliance2() {
-        return new Sequence({
-            new ParallelRaceGroup({
-                bottomIntakeSubsystem->movePctCommand(0.0),
-                liftSubsystem->positionCommand(7_deg),
-                topIntakeSubsystem->pctCommand(0.0),
-            }),
-            new ParallelRaceGroup({
-                bottomIntakeSubsystem->movePctCommand(0.0),
-                liftSubsystem->positionCommand(7_deg),
-                topIntakeSubsystem->pctCommand(1.0),
-                new WaitCommand(10_ms),
-            }),
-            (new ParallelCommandGroup({
-                bottomIntakeSubsystem->movePctCommand(0.0),
-                liftSubsystem->positionCommand(0_deg),
-                topIntakeSubsystem->pctCommand(1.0),
-            }))
-            ->withTimeout(500_ms)
-        });
+        return new Command();
     }
 
     /**

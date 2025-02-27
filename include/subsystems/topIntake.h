@@ -27,10 +27,10 @@ class TopIntakeSubsystem : public Subsystem {
     QTime lastFree = 0.0;
 
 public:
-    explicit TopIntakeSubsystem(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance) : intakeMotor(motors),
-        vision(17), intakeDistance(std::move(intakeDistance)) {
+    explicit TopIntakeSubsystem(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance, pros::AIVision vision) : intakeMotor(motors),
+        vision(vision), intakeDistance(std::move(intakeDistance)) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
-        intakeMotor.set_gearing(pros::MotorGears::green);
+        intakeMotor.set_gearing(pros::MotorGears::blue);
         vision.set_color(RED_COLOR_DESC);
         vision.set_color(BLUE_COLOR_DESC);
     }

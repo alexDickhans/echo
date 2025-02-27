@@ -30,62 +30,18 @@ public:
                 new Ramsete(drivetrainSubsystem, &skills_1),
                 drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(0.2_s),
                 drivetrainSubsystem->pct(0.1, 0.1)->race(
-                        (new Sequence({new ParallelRaceGroup({
-                                               bottomIntakeSubsystem->movePctCommand(0.0),
-                                               liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                               topIntakeSubsystem->pctCommand(0.0),
-                                       }),
-                                       new ParallelRaceGroup({bottomIntakeSubsystem->movePctCommand(0.0),
-                                                              liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                              topIntakeSubsystem->pctCommand(0.0), new WaitCommand(100_ms)}),
-                                       (new ParallelCommandGroup({
-                                                bottomIntakeSubsystem->movePctCommand(0.0),
-                                                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                topIntakeSubsystem->pctCommand(-1.0),
-                                        }))
-                                               ->withTimeout(0.6_s)}))
-                                ->asProxy()),
+                        (new Command())),
                 new Ramsete(drivetrainSubsystem, &skills_2),
                 drivetrainSubsystem->pct(0.25, 0.25)->withTimeout(0.1_s),
-                (new ParallelCommandGroup({
-                         bottomIntakeSubsystem->movePctCommand(0.0),
-                         liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT),
-                         topIntakeSubsystem->pctCommand(-0.47),
-                 }))
-                        ->withTimeout(0.28_s)
-                        ->andThen((new ParallelCommandGroup({
-                                           bottomIntakeSubsystem->movePctCommand(0.0),
-                                           liftSubsystem->positionCommand(0),
-                                           topIntakeSubsystem->pctCommand(-1.0),
-                                   }))
-                                          ->withTimeout(0.1_s))
-                        ->andThen((new ParallelCommandGroup({
-                                           bottomIntakeSubsystem->movePctCommand(0.0),
-                                           liftSubsystem->positionCommand(0),
-                                           topIntakeSubsystem->pctCommand(1.0),
-                                   }))
-                                          ->withTimeout(0.3_s))
+                (new Command())
                         ->asProxy(),
                 new Ramsete(drivetrainSubsystem, &skills_3),
                 drivetrainSubsystem->pct(0.2, 0.2)->withTimeout(0.1_s),
                 drivetrainSubsystem->pct(0.2, 0.2)->race(
-                        (new Sequence({new ParallelRaceGroup({
-                                               bottomIntakeSubsystem->movePctCommand(0.0),
-                                               liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                               topIntakeSubsystem->pctCommand(0.0),
-                                       }),
-                                       new ParallelRaceGroup({bottomIntakeSubsystem->movePctCommand(0.0),
-                                                              liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                              topIntakeSubsystem->pctCommand(0.0), new WaitCommand(100_ms)}),
-                                       (new ParallelCommandGroup({
-                                                bottomIntakeSubsystem->movePctCommand(0.0),
-                                                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT),
-                                                topIntakeSubsystem->pctCommand(-1.0),
-                                        }))
-                                               ->withTimeout(0.6_s)}))
+                        (new Sequence({new Command()}))
                                 ->asProxy()),
                 new Ramsete(drivetrainSubsystem, &skills_4),
-                new ScheduleCommand(hangSubsystem),
+                new ScheduleCommand(hang),
         });
     }
 };

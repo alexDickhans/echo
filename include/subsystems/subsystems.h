@@ -21,8 +21,6 @@
 #include "solenoidSubsystem.h"
 #include "lift.h"
 #include "localization/distance.h"
-#include "localization/gps.h"
-#include "localization/line.h"
 #include "motionProfiling/pathCommands.h"
 #include "pros/adi.hpp"
 #include "topIntake.h"
@@ -45,15 +43,15 @@ inline Command *barToBarHang;
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
-std::vector<int> ejectionPoints{};
-RingColor lastColor;
+inline std::vector<int> ejectionPoints{};
+inline RingColor lastColor;
 
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(6, 921600));
 
-    topIntakeSubsystem = new TopIntakeSubsystem({-12, 13}, pros::Distance(20));
-    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(18));
-    liftSubsystem = new LiftSubsystem({-5, 7}, PID(4.5, 0.0, 3.0));
+    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::Distance(20), pros::AIVision(17));
+    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
+    liftSubsystem = new LiftSubsystem({-1}, PID(4.5, 0.0, 3.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('b'));
     drivetrainSubsystem = new DrivetrainSubsystem({-8, -16}, {3, 4}, {21}, {-2}, pros::Imu(14),
                                                   pros::adi::DigitalOut('a'),

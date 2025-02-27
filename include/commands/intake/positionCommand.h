@@ -22,15 +22,6 @@ public:
     }
 
     static TopIntakePositionCommand *
-    fromReversePositionCommand(TopIntakeSubsystem *intake, float setpoint, float tolerance = CONFIG::TOP_INTAKE_DEFAULT_TOLERANCE,
-                               PID pid = CONFIG::TOP_INTAKE_PID,
-                               std::optional<std::pair<TrapProfile, TrapProfile::State>> profile = std::nullopt) {
-        return new TopIntakePositionCommand(
-                intake, tolerance,
-                [setpoint](float position) { return static_cast<float>(std::ceil(position) + setpoint); }, pid);
-    }
-
-    static TopIntakePositionCommand *
     fromForwardPositionCommand(TopIntakeSubsystem *intake, float setpoint, float tolerance = CONFIG::TOP_INTAKE_DEFAULT_TOLERANCE,
                                PID pid = CONFIG::TOP_INTAKE_PID,
                                std::optional<std::pair<TrapProfile, TrapProfile::State>> profile = std::nullopt) {
