@@ -21,7 +21,7 @@ struct DriveSpeeds {
     QAngularVelocity angularVelocity = 0.0;
 };
 
-class Drivetrain : public Subsystem {
+class DrivetrainSubsystem : public Subsystem {
 private:
     pros::MotorGroup left11W, right11W, left5W, right5W;
     pros::Imu imu;
@@ -59,7 +59,7 @@ private:
     Angle lastTheta = 0.0;
 
 public:
-    Drivetrain(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
+    DrivetrainSubsystem(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
                pros::Imu imu, pros::adi::DigitalOut pto, pros::adi::DigitalOut stringRelease,
                std::function<bool()> hasGoal) :
@@ -134,25 +134,6 @@ public:
                     Eigen::Rotation2Df(particleFilter.getAngle().Convert(radian)) * localDisplacement;
 
             exponentialPose += Eigen::Vector3f(globalDisplacement.x(), globalDisplacement.y(), dTheta.Convert(radian));
-
-            TELEMETRY.send("{\"time\": " + std::to_string(pros::millis()/1000.0) + ", \"data\":[");
-            for (size_t i = 0; i < CONFIG::NUM_PARTICLES; i ++) {
-                auto particle = this->getParticle(i);
-                TELEMETRY.send("[");
-                TELEMETRY.send(std::to_string(particle.x()));
-                TELEMETRY.send(",");
-                TELEMETRY.send(std::to_string(particle.y()));
-                TELEMETRY.send(",");
-                TELEMETRY.send(std::to_string(particle.z()));
-                TELEMETRY.send("],");
-            }
-            TELEMETRY.send("[");
-            TELEMETRY.send(std::to_string(exponentialPose.x()));
-            TELEMETRY.send(",");
-            TELEMETRY.send(std::to_string(exponentialPose.y()));
-            TELEMETRY.send(",");
-            TELEMETRY.send(std::to_string(exponentialPose.z()));
-            TELEMETRY.send("]]}\n");
 
             lastTheta = particleFilter.getAngle();
         } else {
@@ -494,5 +475,5 @@ public:
         return new RunCommand([this, left, right]() { this->setPct(left, right); }, {this});
     }
 
-    ~Drivetrain() override = default;
+    ~DrivetrainSubsystem() override = default;
 };

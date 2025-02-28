@@ -8,30 +8,21 @@
 
 class TopIntakePositionCommand : public Command {
 private:
-    TopIntake *intake;
+    TopIntakeSubsystem *intake;
     PID pid;
     float tolerance;
 
     std::function<float(float)> positionCallback;
 
 public:
-    TopIntakePositionCommand(TopIntake *intake, float tolerance, const std::function<float(float)> &position_callback,
+    TopIntakePositionCommand(TopIntakeSubsystem *intake, float tolerance, const std::function<float(float)> &position_callback,
                              const PID &pid) :
         intake(intake), pid(pid), tolerance(tolerance), positionCallback(position_callback) {
         this->pid.setTarget(position_callback(this->intake->getPosition()));
     }
 
     static TopIntakePositionCommand *
-    fromReversePositionCommand(TopIntake *intake, float setpoint, float tolerance = CONFIG::TOP_INTAKE_DEFAULT_TOLERANCE,
-                               PID pid = CONFIG::TOP_INTAKE_PID,
-                               std::optional<std::pair<TrapProfile, TrapProfile::State>> profile = std::nullopt) {
-        return new TopIntakePositionCommand(
-                intake, tolerance,
-                [setpoint](float position) { return static_cast<float>(std::ceil(position) + setpoint); }, pid);
-    }
-
-    static TopIntakePositionCommand *
-    fromForwardPositionCommand(TopIntake *intake, float setpoint, float tolerance = CONFIG::TOP_INTAKE_DEFAULT_TOLERANCE,
+    fromForwardPositionCommand(TopIntakeSubsystem *intake, float setpoint, float tolerance = CONFIG::TOP_INTAKE_DEFAULT_TOLERANCE,
                                PID pid = CONFIG::TOP_INTAKE_PID,
                                std::optional<std::pair<TrapProfile, TrapProfile::State>> profile = std::nullopt) {
         return new TopIntakePositionCommand(
@@ -40,7 +31,7 @@ public:
     }
 
     static TopIntakePositionCommand *
-    fromClosePositionCommand(TopIntake *intake, float setpoint, float tolerance = CONFIG::TOP_INTAKE_DEFAULT_TOLERANCE,
+    fromClosePositionCommand(TopIntakeSubsystem *intake, float setpoint, float tolerance = CONFIG::TOP_INTAKE_DEFAULT_TOLERANCE,
                              PID pid = CONFIG::TOP_INTAKE_PID,
                              std::optional<std::pair<TrapProfile, TrapProfile::State>> profile = std::nullopt) {
         return new TopIntakePositionCommand(

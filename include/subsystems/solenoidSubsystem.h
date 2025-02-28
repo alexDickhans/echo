@@ -2,13 +2,13 @@
 
 #include "command/subsystem.h"
 
-class GoalClamp : public Subsystem {
+class SolenoidSubsystem : public Subsystem {
     pros::adi::DigitalOut solenoid;
 
     bool lastValue = false;
 
 public:
-    explicit GoalClamp(pros::adi::DigitalOut solenoid) : solenoid(std::move(solenoid)) {
+    explicit SolenoidSubsystem(pros::adi::DigitalOut solenoid) : solenoid(std::move(solenoid)) {
     }
 
     void periodic() override {
@@ -26,5 +26,5 @@ public:
 
     [[nodiscard]] bool getLastValue() const { return lastValue; }
 
-    ~GoalClamp() override = default;
+    ~SolenoidSubsystem() override = default;
 };

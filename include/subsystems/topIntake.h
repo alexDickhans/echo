@@ -1,5 +1,7 @@
 #pragma once
 
+#include "command/instantCommand.h"
+
 #include "config.h"
 
 #include "command/command.h"
@@ -15,27 +17,29 @@ enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 inline pros::aivision_color_s_t RED_COLOR_DESC(1, 196, 80, 127, 40, 0.25);
 inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 40, 0.25);
 
-class TopIntake : public Subsystem {
+class TopIntakeSubsystem : public Subsystem {
     pros::MotorGroup intakeMotor;
     pros::AIVision vision;
     pros::Distance intakeDistance;
 
+    double positionOffset = 0.0;
+
+    QTime lastFree = 0.0;
+
 public:
-    explicit TopIntake(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance) :
-        intakeMotor(motors), vision(17), intakeDistance(std::move(intakeDistance)) {
+    explicit TopIntakeSubsystem(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance, pros::AIVision vision) : intakeMotor(motors),
+        vision(vision), intakeDistance(std::move(intakeDistance)) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
-        intakeMotor.set_gearing(pros::MotorGears::green);
+        intakeMotor.set_gearing(pros::MotorGears::blue);
         vision.set_color(RED_COLOR_DESC);
         vision.set_color(BLUE_COLOR_DESC);
-        pros::delay(10);
-        // if (intakeMotor.tare_position_all() == 1) {
-        //     std::cout << errno << std::endl;
-        //     pros::delay(10);
-        // }
     }
 
     void periodic() override {
         // No-op
+        if (abs(intakeMotor.get_current_draw()) < 500) {
+            lastFree = pros::millis() * millisecond;
+        }
     }
 
     void setPosition(double position) const { this->intakeMotor.move_absolute(position * CONFIG::INTAKE_RATIO, 200); }
@@ -43,7 +47,7 @@ public:
     void setPct(double pct) const { this->intakeMotor.move_voltage(pct * 12000.0); }
 
     double getPosition() {
-        return (this->intakeMotor.get_position(0) + this->intakeMotor.get_position(1)) / (2 * CONFIG::INTAKE_RATIO);
+        return (this->intakeMotor.get_position(0) + this->intakeMotor.get_position(1)) / (2 * CONFIG::INTAKE_RATIO) + positionOffset;
     }
 
     double getVelocity() {
@@ -78,11 +82,23 @@ public:
 
     RunCommand *controllerCommand(pros::Controller *controller) {
         return new RunCommand(
-                [this, controller]() {
-                    this->setPct(controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0);
-                },
-                {this});
+            [this, controller]() {
+                this->setPct(controller->get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) / 127.0);
+            },
+            {this});
     }
 
-    ~TopIntake() override = default;
+    bool stalled(QTime duration) const {
+        return pros::millis() * 1_ms - lastFree > duration;
+    }
+
+    void changeOffset(const double quantity) {
+        positionOffset += quantity;
+    }
+
+    InstantCommand *adjustOffset(const double quantity) {
+        return new InstantCommand([quantity, this]() { this->adjustOffset(quantity); }, {});
+    }
+
+    ~TopIntakeSubsystem() override = default;
 };

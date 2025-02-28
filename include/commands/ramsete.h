@@ -12,7 +12,7 @@
  */
 class Ramsete : public Command {
 private:
-    Drivetrain *drivetrain;
+    DrivetrainSubsystem *drivetrain;
 
     float zeta;
     float beta;
@@ -26,7 +26,7 @@ private:
     DriveSpeeds lastSpeeds{0.0, 0.0};
 
 public:
-    Ramsete(Drivetrain *drivetrain, MotionProfile *motion_profile, const float zeta = CONFIG::RAMSETE_ZETA,
+    Ramsete(DrivetrainSubsystem *drivetrain, MotionProfile *motion_profile, const float zeta = CONFIG::RAMSETE_ZETA,
             const float beta = CONFIG::RAMSETE_BETA) :
         drivetrain(drivetrain), zeta(zeta), beta(beta), motionProfile(motion_profile) {
         startTime = 0.0;

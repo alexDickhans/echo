@@ -12,7 +12,7 @@
 */
 class TankMotionProfiling : public Command {
 private:
-    Drivetrain *drivetrain;
+    DrivetrainSubsystem *drivetrain;
     TrapezoidalVelocityProfile velocityProfile;
 
     QTime startTime = 0.0;
@@ -32,7 +32,7 @@ private:
     std::optional<std::function<Angle(QTime)>> angleFunction;
 
 public:
-    TankMotionProfiling(Drivetrain *drivetrain, const ProfileConstraints &profile_constraints, const QLength &distance,
+    TankMotionProfiling(DrivetrainSubsystem *drivetrain, const ProfileConstraints &profile_constraints, const QLength &distance,
                         const bool flip, const Angle &target_angle, const QCurvature &curvature = 0.0,
                         const bool useTurnPID = true, const QVelocity initialVelocity = 0.0,
                         const QVelocity endVelocity = 0.0,
