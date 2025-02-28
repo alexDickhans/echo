@@ -20,7 +20,6 @@ public:
     }
 
     void setPct(const double pct) {
-        // std::cout << pct << std::endl;
         this->intakeMotor.move_voltage(pct * 12000.0);
     }
 

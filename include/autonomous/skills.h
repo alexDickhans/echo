@@ -29,17 +29,12 @@ public:
                 new WaitCommand(200_ms),
                 new Ramsete(drivetrainSubsystem, &skills_1),
                 drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(0.2_s),
-                drivetrainSubsystem->pct(0.1, 0.1)->race(
-                        (new Command())),
+                drivetrainSubsystem->pct(0.1, 0.1),
                 new Ramsete(drivetrainSubsystem, &skills_2),
                 drivetrainSubsystem->pct(0.25, 0.25)->withTimeout(0.1_s),
-                (new Command())
-                        ->asProxy(),
                 new Ramsete(drivetrainSubsystem, &skills_3),
                 drivetrainSubsystem->pct(0.2, 0.2)->withTimeout(0.1_s),
-                drivetrainSubsystem->pct(0.2, 0.2)->race(
-                        (new Sequence({new Command()}))
-                                ->asProxy()),
+                drivetrainSubsystem->pct(0.2, 0.2),
                 new Ramsete(drivetrainSubsystem, &skills_4),
                 new ScheduleCommand(hang),
         });

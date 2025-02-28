@@ -54,7 +54,7 @@ public:
 	}
 
 	FunctionalCommand* holdPositionCommand() {
-		return new FunctionalCommand([]() {}, [this]() { this->setTarget(this->getPosition()); }, [](bool _) {}, []() { return false; }, {this});
+		return new FunctionalCommand([this]() { this->setTarget(this->getPosition()); }, []() {}, [](bool _) {}, []() { return false; }, {this});
 	}
 
 	RunCommand* pctCommand(double voltage) {
