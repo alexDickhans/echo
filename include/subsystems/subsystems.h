@@ -49,24 +49,24 @@ inline RingColor lastColor;
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
-    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::Distance(20), pros::AIVision(14));
+    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(14));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
-    liftSubsystem = new LiftSubsystem({-1}, PID(4.5, 0.0, 3.0));
+    liftSubsystem = new LiftSubsystem({-1}, PID(2, 0.0, 0.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')}); // 'd' left, 'b' right
-    drivetrainSubsystem = new DrivetrainSubsystem({-20, 19, -18}, {-10, 12, -13}, {}, {}, pros::Imu(14),
+    drivetrainSubsystem = new DrivetrainSubsystem({-10, 12, -13}, {20, -19, 18}, {}, {}, pros::Imu(9),
                                                   pros::adi::DigitalOut('a'), []() {
                                                       return goalClampSubsystem->getLastValue();
-                                                  }); // wheels listed back to front
+                                                  }); // wheels listed back to front 8 for rotation sensor on pto
 
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2438.0 / 2485.0,
-                                                            pros::Distance(0)));
+                                                            pros::Distance(5)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2438.0 / 2480.0,
                                                             pros::Distance(6)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2438.0 / 2505.0,
-                                                            pros::Distance(0)));
+                                                            pros::Distance(7)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2438.0 / 2483.0,
-                                                            pros::Distance(0)));
+                                                            pros::Distance(10)));
 
     drivetrainSubsystem->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
@@ -129,10 +129,10 @@ inline void subsystemInit() {
 
     Trigger([]() { return pros::competition::is_disabled(); }).onTrue(drivetrainSubsystem->retractPto());
 
-    Trigger([]() { return topIntakeSubsystem->ringPresentEject() && intakeOntoGoal->scheduled(); })
+    Trigger([]() { return topIntakeSubsystem->getRing() != RingColor::None && intakeOntoGoal->scheduled(); })
             .onFalse((new WaitCommand(30_ms))->andThen(new InstantCommand(
                 []() mutable {
-                    lastColor = topIntakeSubsystem->getRingColor();
+                    lastColor = topIntakeSubsystem->getRing();
                     primary.print(0, 0, "%d", lastColor);
                     if (static_cast<Alliance>(lastColor) != ALLIANCE && lastColor != RingColor::None)
                         ejectionPoints.
@@ -176,7 +176,7 @@ inline void subsystemInit() {
         liftSubsystem->holdPositionCommand()); // LB up
     primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->pctCommand(-1.0))->onFalse(
         new ConditionalCommand(liftSubsystem->holdPositionCommand(), liftSubsystem->positionCommand(0_deg),
-                               []() { return liftSubsystem->getPosition() > 10_deg; })); // LB down
+                               []() { return liftSubsystem->getPosition() > 20_deg; })); // LB down
 
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
     primary.getTrigger(DIGITAL_R1)->toggleOnTrue(loadLB); // loading position

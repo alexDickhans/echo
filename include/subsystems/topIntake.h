@@ -20,15 +20,14 @@ inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 40, 0.25);
 class TopIntakeSubsystem : public Subsystem {
     pros::MotorGroup intakeMotor;
     pros::AIVision vision;
-    pros::Distance intakeDistance;
 
     double positionOffset = 0.0;
 
     QTime lastFree = 0.0;
 
 public:
-    explicit TopIntakeSubsystem(const std::initializer_list<int8_t> &motors, pros::Distance intakeDistance, pros::AIVision vision) : intakeMotor(motors),
-        vision(vision), intakeDistance(std::move(intakeDistance)) {
+    explicit TopIntakeSubsystem(const std::initializer_list<int8_t> &motors, pros::AIVision vision) : intakeMotor(motors),
+        vision(vision) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         intakeMotor.set_gearing(pros::MotorGears::blue);
         vision.set_color(RED_COLOR_DESC);
@@ -55,11 +54,7 @@ public:
                (2 * CONFIG::INTAKE_RATIO);
     }
 
-    bool ringPresent() { return intakeDistance.get() < 90; }
-
-    bool ringPresentEject() { return intakeDistance.get() < 40; }
-
-    RingColor getRingColor() {
+    RingColor getRing() {
         if (vision.get_object_count() != 0) {
             auto largestObject = 0;
             size_t largestSize = 0;

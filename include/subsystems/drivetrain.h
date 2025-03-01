@@ -91,59 +91,50 @@ public:
     void addLocalizationSensor(Sensor *sensor) { particleFilter.addSensor(sensor); }
 
     void periodic() override {
+        const QLength leftLength = this->getLeftDistance();
+        const QLength rightLength = this->getRightDistance();
 
-        if (ptoActive != true) {
-            const QLength leftLength = this->getLeftDistance();
-            const QLength rightLength = this->getRightDistance();
+        leftChange = leftLength - lastLeft;
+        rightChange = rightLength - lastRight;
 
-            leftChange = leftLength - lastLeft;
-            rightChange = rightLength - lastRight;
+        lastLeft = leftLength;
+        lastRight = rightLength;
 
-            lastLeft = leftLength;
-            lastRight = rightLength;
+        auto avg = (leftChange + rightChange) / 2.0;
 
-            auto avg = (leftChange + rightChange) / 2.0;
+        std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
+                                                       avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
+        std::uniform_real_distribution angleDistribution(
+                particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
+                particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
 
-            std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
-                                                           avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
-            std::uniform_real_distribution angleDistribution(
-                    particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
-                    particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
+        // Exponential Pose Tracking
+        const Angle dTheta = particleFilter.getAngle() - lastTheta;
 
-            // Exponential Pose Tracking
-            const Angle dTheta = particleFilter.getAngle() - lastTheta;
+        const auto localMeasurement = Eigen::Vector2f({avg.getValue(), 0});
+        const auto displacementMatrix =
+                Eigen::Matrix2d({{1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
+                                 {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}})
+                        .cast<float>();
 
-            const auto localMeasurement = Eigen::Vector2f({avg.getValue(), 0});
-            const auto displacementMatrix =
-                    Eigen::Matrix2d({{1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
-                                     {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}})
-                            .cast<float>();
+        auto time = pros::micros();
 
-            auto time = pros::micros();
+        particleFilter.update([this, angleDistribution, avgDistribution, displacementMatrix]() mutable {
+            const auto noisy = avgDistribution(de);
+            const auto angle = angleDistribution(de);
 
-            particleFilter.update([this, angleDistribution, avgDistribution, displacementMatrix]() mutable {
-                const auto noisy = avgDistribution(de);
-                const auto angle = angleDistribution(de);
+            return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
+        });
 
-                return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
-            });
+        const Eigen::Vector2f localDisplacement = displacementMatrix * localMeasurement;
+        const Eigen::Vector2f globalDisplacement =
+                Eigen::Rotation2Df(particleFilter.getAngle().Convert(radian)) * localDisplacement;
 
-            const Eigen::Vector2f localDisplacement = displacementMatrix * localMeasurement;
-            const Eigen::Vector2f globalDisplacement =
-                    Eigen::Rotation2Df(particleFilter.getAngle().Convert(radian)) * localDisplacement;
+        exponentialPose += Eigen::Vector3f(globalDisplacement.x(), globalDisplacement.y(), dTheta.Convert(radian));
 
-            exponentialPose += Eigen::Vector3f(globalDisplacement.x(), globalDisplacement.y(), dTheta.Convert(radian));
+        lastTheta = particleFilter.getAngle();
 
-            lastTheta = particleFilter.getAngle();
-        } else {
-            const QLength currentLength = this->getStringDistance();
-
-            const auto change = currentLength - lastStringLength;
-
-            this->stringLength += change;
-
-            lastStringLength = currentLength;
-        }
+        // Calculate string position
 
         if (recording) {
             uLinear.emplace_back(lastULinear);
@@ -161,8 +152,6 @@ public:
     void setPct(const double left, const double right) {
         this->left11W.move_voltage(left * 12000.0);
         this->right11W.move_voltage(right * 12000.0);
-        this->left5W.move_voltage(left * 8000.0); // 5.5W have a lower max voltage then the 11W motors
-        this->right5W.move_voltage(right * 8000.0);
 
         lastULinear = (left + right) / 2.0;
         lastUAngular = (right - left) / 2.0;
