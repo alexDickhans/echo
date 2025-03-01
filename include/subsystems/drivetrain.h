@@ -26,7 +26,6 @@ private:
     pros::MotorGroup left11W, right11W, left5W, right5W;
     pros::Imu imu;
     pros::adi::DigitalOut pto;
-    pros::adi::DigitalOut stringRelease;
     bool ptoActive = false;
 
     QLength leftChange, rightChange;
@@ -61,14 +60,14 @@ private:
 public:
     DrivetrainSubsystem(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
-               pros::Imu imu, pros::adi::DigitalOut pto, pros::adi::DigitalOut stringRelease,
+               pros::Imu imu, pros::adi::DigitalOut pto,
                std::function<bool()> hasGoal) :
         left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)),
         pto(std::move(pto)), particleFilter([this, imu]() {
             const Angle angle = -imu.get_rotation() * degree;
             return isfinite(angle.getValue()) ? angle : 0.0;
         }),
-        hasGoal(std::move(hasGoal)), stringRelease(stringRelease) {
+        hasGoal(std::move(hasGoal)) {
         this->leftChange = 0.0;
         this->rightChange = 0.0;
 
@@ -303,14 +302,6 @@ public:
                                          127.0);
                 },
                 {this});
-    }
-
-    InstantCommand *releaseString() {
-        return new InstantCommand([this]() { this->stringRelease.set_value(true); }, {});
-    }
-
-    InstantCommand *retractAlignMech() {
-        return new InstantCommand([this]() { this->stringRelease.set_value(false); }, {});
     }
 
     InstantCommand *activatePto() {

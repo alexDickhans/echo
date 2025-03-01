@@ -49,21 +49,20 @@ inline RingColor lastColor;
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
-    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::Distance(20), pros::AIVision(17));
+    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::Distance(20), pros::AIVision(14));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
     liftSubsystem = new LiftSubsystem({-1}, PID(4.5, 0.0, 3.0));
-    goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('b'));
-    hangSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('a'));
-    drivetrainSubsystem = new DrivetrainSubsystem({}, {}, {}, {}, pros::Imu(14),
-                                                  pros::adi::DigitalOut('a'),
-                                                  pros::adi::DigitalOut('c'), []() {
+    goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
+    hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')}); // 'd' left, 'b' right
+    drivetrainSubsystem = new DrivetrainSubsystem({-20, 19, -18}, {-10, 12, -13}, {}, {}, pros::Imu(14),
+                                                  pros::adi::DigitalOut('a'), []() {
                                                       return goalClampSubsystem->getLastValue();
-                                                  });
+                                                  }); // wheels listed back to front
 
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2438.0 / 2485.0,
                                                             pros::Distance(0)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2438.0 / 2480.0,
-                                                            pros::Distance(0)));
+                                                            pros::Distance(6)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2438.0 / 2505.0,
                                                             pros::Distance(0)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2438.0 / 2483.0,
@@ -119,7 +118,7 @@ inline void subsystemInit() {
                     0.1_s)
             });
     hang = new Sequence({
-        drivetrainSubsystem->activatePto(), drivetrainSubsystem->retractAlignMech(),
+        drivetrainSubsystem->activatePto(),
         hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangPctCommand(0.0))->
         withTimeout(0.4_s),
         hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangDown(-1.0, -2.1_in)),

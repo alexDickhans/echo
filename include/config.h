@@ -14,10 +14,10 @@ namespace CONFIG {
     constexpr Angle ANGLE_NOISE = 3_deg;
 
     constexpr QLength DRIVE_RADIUS = 2.75_in / 2.0;
-    constexpr float DRIVE_RATIO = 60.0 / 36.0;
+    constexpr float DRIVE_RATIO = 48.0 / 36.0;
     constexpr float STRING_RATIO = 1.0;
     constexpr double LIFT_RATIO = 18.0/6.0;
-    constexpr QLength TRACK_WIDTH = 14_in;
+    constexpr QLength TRACK_WIDTH = 11_in;
     constexpr size_t NUM_PARTICLES = 250;
     constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
