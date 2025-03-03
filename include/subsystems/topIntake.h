@@ -95,5 +95,9 @@ public:
         return new InstantCommand([quantity, this]() { this->adjustOffset(quantity); }, {});
     }
 
+    double getTopMotorTemp() const {
+        return this->intakeMotor.get_temperature();
+    }
+
     ~TopIntakeSubsystem() override = default;
 };

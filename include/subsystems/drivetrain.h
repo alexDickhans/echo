@@ -23,7 +23,7 @@ struct DriveSpeeds {
 
 class DrivetrainSubsystem : public Subsystem {
 private:
-    pros::MotorGroup left11W, right11W, left5W, right5W;
+    pros::MotorGroup left11W, right11W;
     pros::Imu imu;
     pros::adi::DigitalOut pto;
     pros::Rotation winchRotation;
@@ -56,10 +56,9 @@ private:
 
 public:
     DrivetrainSubsystem(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
-               const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
                pros::Imu imu, pros::adi::DigitalOut pto, pros::Rotation winchRotation,
                std::function<bool()> hasGoal) :
-        left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)),
+        left11W(left11_w), right11W(right11_w), imu(std::move(imu)),
         pto(std::move(pto)), winchRotation(std::move(winchRotation)), particleFilter([this, imu]() {
             const Angle angle = -imu.get_rotation() * degree;
             return isfinite(angle.getValue()) ? angle : 0.0;
@@ -70,14 +69,9 @@ public:
 
         left11W.set_gearing_all(pros::MotorGears::blue);
         right11W.set_gearing_all(pros::MotorGears::blue);
-        left5W.set_gearing_all(pros::MotorGears::green);
-        right5W.set_gearing_all(pros::MotorGears::green);
 
         left11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         right11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
-
-        left5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
-        right5W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
         lastLeft = this->getLeftDistance();
         lastRight = this->getRightDistance();
@@ -449,6 +443,19 @@ public:
 
     RunCommand *pct(double left, double right) {
         return new RunCommand([this, left, right]() { this->setPct(left, right); }, {this});
+    }
+
+    double getTopMotorTemp() const {
+        double maxTemp = 0.0;
+
+        for (const auto &motor : left11W) {
+            maxTemp = std::max(maxTemp, motor.get_temperature());
+        }
+
+        for (const auto &motor : right11W) {
+            maxTemp = std::max(maxTemp, motor.get_temperature());
+        }
+        return maxTemp;
     }
 
     ~DrivetrainSubsystem() override = default;
