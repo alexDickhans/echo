@@ -61,5 +61,9 @@ public:
 		return new RunCommand([this, voltage]() mutable { this->setVoltage(voltage); }, {this});
 	}
 
+	double getTopMotorTemp() const {
+		return this->motor.get_temperature();
+	}
+
 	~LiftSubsystem() override = default;
 };

@@ -35,5 +35,9 @@ public:
         return new RunCommand([this, pct]() { this->setPct(pct); }, {this});
     }
 
+    double getTopMotorTemp() const {
+        return this->intakeMotor.get_temperature();
+    }
+
     ~MotorSubsystem() override = default;
 };

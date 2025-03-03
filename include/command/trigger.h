@@ -185,4 +185,16 @@ public:
 		});
 		return this;
 	}
+
+	Trigger* andOther(Trigger* trigger) const {
+		return new Trigger([trigger, this] () {return trigger->condition() && this->condition();});
+	}
+
+	Trigger* orOther(Trigger* trigger) const {
+		return new Trigger([trigger, this] () {return trigger->condition() || this->condition();});
+	}
+
+	Trigger* negate() const {
+		return new Trigger([this] () {return !this->condition();});
+	}
 };
