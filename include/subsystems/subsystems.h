@@ -62,13 +62,13 @@ inline void subsystemInit() {
                                                       return goalClampSubsystem->getLastValue();
                                                   }); // wheels listed back to front; 8 for rotation sensor on pto
 
-    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2438.0 / 2485.0,
+    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2388.0 / 2445.0,
                                                             pros::Distance(5)));
-    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2438.0 / 2480.0,
+    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2388.0 / 2428.0,
                                                             pros::Distance(6)));
-    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2438.0 / 2505.0,
+    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2388.0 / 2415.0,
                                                             pros::Distance(7)));
-    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2438.0 / 2483.0,
+    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2388.0 / 2443.0,
                                                             pros::Distance(10)));
 
     drivetrainSubsystem->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
