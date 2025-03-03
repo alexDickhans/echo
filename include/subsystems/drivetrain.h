@@ -26,6 +26,7 @@ private:
     pros::MotorGroup left11W, right11W, left5W, right5W;
     pros::Imu imu;
     pros::adi::DigitalOut pto;
+    pros::Rotation winchRotation;
     bool ptoActive = false;
 
     QLength leftChange, rightChange;
@@ -49,10 +50,6 @@ private:
 
     std::function<bool()> hasGoal;
 
-    QLength stringLength = CONFIG::START_STRING_LENGTH;
-
-    QLength lastStringLength = 0.0;
-
     Eigen::Vector3f exponentialPose = Eigen::Vector3f::Zero();
 
     Angle lastTheta = 0.0;
@@ -60,10 +57,10 @@ private:
 public:
     DrivetrainSubsystem(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
-               pros::Imu imu, pros::adi::DigitalOut pto,
+               pros::Imu imu, pros::adi::DigitalOut pto, pros::Rotation winchRotation,
                std::function<bool()> hasGoal) :
         left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)),
-        pto(std::move(pto)), particleFilter([this, imu]() {
+        pto(std::move(pto)), winchRotation(std::move(winchRotation)), particleFilter([this, imu]() {
             const Angle angle = -imu.get_rotation() * degree;
             return isfinite(angle.getValue()) ? angle : 0.0;
         }),
@@ -84,6 +81,8 @@ public:
 
         lastLeft = this->getLeftDistance();
         lastRight = this->getRightDistance();
+
+        winchRotation.reset_position();
 
         imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled() || AUTON == SKILLS);
     }
@@ -133,8 +132,6 @@ public:
         exponentialPose += Eigen::Vector3f(globalDisplacement.x(), globalDisplacement.y(), dTheta.Convert(radian));
 
         lastTheta = particleFilter.getAngle();
-
-        // Calculate string position
 
         if (recording) {
             uLinear.emplace_back(lastULinear);
@@ -191,14 +188,10 @@ public:
     }
 
     QLength getStringDistance() const {
-        return
-                this->right11W.get_position(1) /
-               1.0 / CONFIG::STRING_RATIO * 2.0 * M_PI * CONFIG::WINCH_RADIUS;
+        return (winchRotation.get_position() * 0.01_deg).Convert(radian) * CONFIG::WINCH_RADIUS + CONFIG::START_STRING_LENGTH;
     }
 
     QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
-
-    auto setPto(const bool newValue) -> void { this->pto.set_value(newValue); }
 
     void initNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle, const bool flip) {
         imu.set_rotation(angle.Convert(degree) * (flip ? 1 : -1));
@@ -297,16 +290,14 @@ public:
         return new InstantCommand(
                 [this]() {
                     this->pto.set_value(true);
-                    ptoActive = true;
-                    this->lastStringLength = this->getStringDistance();
                 },
                 {});
     }
+
     InstantCommand *retractPto() {
         return new InstantCommand(
                 [this]() {
                     this->pto.set_value(false);
-                    ptoActive = false;
                 },
                 {});
     }
@@ -324,15 +315,20 @@ public:
                                      []() { return false; }, {this});
     }
 
-    FunctionalCommand *hangUp(double pct, QLength stringLength) {
+    FunctionalCommand *hangOut(double pct, QLength stringLength) {
         return new FunctionalCommand([this, pct]() mutable { this->setPct(pct, pct); }, [this]() {},
-                                     [this](bool _) { std::cout << "Hang" << std::endl; },
-                                     [this, stringLength]() { return this->stringLength > stringLength; }, {this});
+                                     [this](bool _) {},
+                                     [this, stringLength]() { return this->getStringDistance() > stringLength; }, {this});
     }
 
-    FunctionalCommand *hangDown(double pct, QLength stringLength) {
-        return new FunctionalCommand([this, pct]() mutable { this->setPct(pct, pct); }, [this]() {}, [this](bool _) {},
-                                     [this, stringLength]() { return this->stringLength < stringLength; }, {this});
+    FunctionalCommand *hangIn(double pct, QLength stringLength) {
+        return new FunctionalCommand([this, pct]() mutable { this->setPct(-pct, -pct); }, [this]() {}, [this](bool _) {},
+                                     [this, stringLength]() { return this->getStringDistance() < stringLength; }, {this});
+    }
+
+    FunctionalCommand *hangOutNoPto(QLength stringLength) {
+        return new FunctionalCommand([this]() mutable { this->retractPto(); }, [this]() {}, [this](bool _) { this->activatePto(); },
+                                     [this, stringLength]() { return this->getStringDistance() > stringLength; }, {this});
     }
 
     FunctionalCommand *hangPctCommand(double pct) {

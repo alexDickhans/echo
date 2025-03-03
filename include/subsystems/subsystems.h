@@ -39,6 +39,8 @@ inline Command *intakeOntoGoal;
 inline Command *goalClampTrue;
 inline Command *hang;
 inline Command *barToBarHang;
+inline Command* gripBar;
+inline Command *letOutString;
 
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
@@ -51,13 +53,14 @@ inline void subsystemInit() {
 
     topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(14));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
-    liftSubsystem = new LiftSubsystem({-1}, PID(2, 0.0, 0.0));
+    liftSubsystem = new LiftSubsystem({-1}, PID(2.0, 0.0, 0.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
-    hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')}); // 'd' left, 'b' right
-    drivetrainSubsystem = new DrivetrainSubsystem({-10, 12, -13}, {20, -19, 18}, {}, {}, pros::Imu(9),
-                                                  pros::adi::DigitalOut('a'), []() {
+    hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
+    // 'd' left, 'b' right
+    drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {20, -19, 18}, {}, {}, pros::Imu(9),
+                                                  pros::adi::DigitalOut('a'), pros::Rotation(8), []() {
                                                       return goalClampSubsystem->getLastValue();
-                                                  }); // wheels listed back to front 8 for rotation sensor on pto
+                                                  }); // wheels listed back to front; 8 for rotation sensor on pto
 
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2438.0 / 2485.0,
                                                             pros::Distance(5)));
@@ -82,6 +85,7 @@ inline void subsystemInit() {
     intakeOntoGoal = new ParallelCommandGroup({
         bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
     });
+
     loadLB = new Sequence({
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0),
@@ -105,29 +109,33 @@ inline void subsystemInit() {
         new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT))
     });
 
+    letOutString = new ParallelRaceGroup({
+        drivetrainSubsystem->hangOutNoPto(8.0_in),
+        hangSubsystem->levelCommand(false)->with(liftSubsystem->positionCommand(50_deg))->until([]() {
+            return drivetrainSubsystem->getStringDistance() > 5_in;
+        })->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg))),
+    });
+
+    gripBar = new Sequence({new ParallelRaceGroup({
+                    drivetrainSubsystem->hangIn(1.0, 0.0_in),
+                    hangSubsystem->levelCommand(true),
+                    liftSubsystem->positionCommand(70_deg)
+                }),
+                new ParallelRaceGroup({
+                    drivetrainSubsystem->hangPctCommand(0.2),
+                    hangSubsystem->levelCommand(false),
+                    liftSubsystem->positionCommand(70_deg)
+                })});
+
     barToBarHang =
             new Sequence({
-                hangSubsystem->levelCommand(false)->race(drivetrainSubsystem->hangUp(1.0, 8.32_in)),
-                hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangPctCommand(0.0))->withTimeout(
-                    0.35_s),
-                hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangDown(-1.0, 4_in)),
-                hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangDown(-1.0, -2.5_in)),
-                hangSubsystem->levelCommand(false)->race(drivetrainSubsystem->hangPctCommand(-0.57))->
-                withTimeout(0.3_s),
-                hangSubsystem->levelCommand(false)->race(drivetrainSubsystem->hangPctCommand(1.0))->withTimeout(
-                    0.1_s)
+                letOutString,
+                gripBar
             });
     hang = new Sequence({
         drivetrainSubsystem->activatePto(),
-        hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangPctCommand(0.0))->
-        withTimeout(0.4_s),
-        hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangDown(-1.0, -2.1_in)),
-        hangSubsystem->levelCommand(false)->race(drivetrainSubsystem->hangPctCommand(-0.54))->withTimeout(0.3_s),
-        hangSubsystem->levelCommand(true)->race(drivetrainSubsystem->hangPctCommand(1.0))->withTimeout(0.1_s),
-        barToBarHang, barToBarHang
+        gripBar
     });
-
-    Trigger([]() { return pros::competition::is_disabled(); }).onTrue(drivetrainSubsystem->retractPto());
 
     Trigger([]() { return topIntakeSubsystem->getRing() != RingColor::None && intakeOntoGoal->scheduled(); })
             .onFalse((new WaitCommand(30_ms))->andThen(new InstantCommand(
@@ -171,6 +179,7 @@ inline void subsystemInit() {
                     new ScheduleCommand(loadLB)));
 
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
+    primary.getTrigger(DIGITAL_A)->whileTrue(hang);
 
     primary.getTrigger(DIGITAL_L1)->whileTrue(liftSubsystem->pctCommand(1.0))->onFalse(
         liftSubsystem->holdPositionCommand()); // LB up
@@ -181,6 +190,9 @@ inline void subsystemInit() {
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
     primary.getTrigger(DIGITAL_R1)->toggleOnTrue(loadLB); // loading position
 
+    primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
+    primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->activatePto());
+    primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
 
     PathCommands::registerCommand("clamp", goalClampTrue);
