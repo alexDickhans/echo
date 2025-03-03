@@ -26,7 +26,7 @@ private:
     pros::MotorGroup left11W, right11W, left5W, right5W;
     pros::Imu imu;
     pros::adi::DigitalOut pto;
-    pros::adi::DigitalOut stringRelease;
+    pros::Rotation winchRotation;
     bool ptoActive = false;
 
     QLength leftChange, rightChange;
@@ -50,10 +50,6 @@ private:
 
     std::function<bool()> hasGoal;
 
-    QLength stringLength = CONFIG::START_STRING_LENGTH;
-
-    QLength lastStringLength = 0.0;
-
     Eigen::Vector3f exponentialPose = Eigen::Vector3f::Zero();
 
     Angle lastTheta = 0.0;
@@ -61,14 +57,14 @@ private:
 public:
     DrivetrainSubsystem(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                const std::initializer_list<int8_t> &left5_w, const std::initializer_list<int8_t> &right5_w,
-               pros::Imu imu, pros::adi::DigitalOut pto, pros::adi::DigitalOut stringRelease,
+               pros::Imu imu, pros::adi::DigitalOut pto, pros::Rotation winchRotation,
                std::function<bool()> hasGoal) :
         left11W(left11_w), right11W(right11_w), left5W(left5_w), right5W(right5_w), imu(std::move(imu)),
-        pto(std::move(pto)), particleFilter([this, imu]() {
+        pto(std::move(pto)), winchRotation(std::move(winchRotation)), particleFilter([this, imu]() {
             const Angle angle = -imu.get_rotation() * degree;
             return isfinite(angle.getValue()) ? angle : 0.0;
         }),
-        hasGoal(std::move(hasGoal)), stringRelease(stringRelease) {
+        hasGoal(std::move(hasGoal)) {
         this->leftChange = 0.0;
         this->rightChange = 0.0;
 
@@ -86,65 +82,56 @@ public:
         lastLeft = this->getLeftDistance();
         lastRight = this->getRightDistance();
 
+        winchRotation.reset_position();
+
         imu.reset(pros::competition::is_autonomous() || pros::competition::is_disabled() || AUTON == SKILLS);
     }
 
     void addLocalizationSensor(Sensor *sensor) { particleFilter.addSensor(sensor); }
 
     void periodic() override {
+        const QLength leftLength = this->getLeftDistance();
+        const QLength rightLength = this->getRightDistance();
 
-        if (ptoActive != true) {
-            const QLength leftLength = this->getLeftDistance();
-            const QLength rightLength = this->getRightDistance();
+        leftChange = leftLength - lastLeft;
+        rightChange = rightLength - lastRight;
 
-            leftChange = leftLength - lastLeft;
-            rightChange = rightLength - lastRight;
+        lastLeft = leftLength;
+        lastRight = rightLength;
 
-            lastLeft = leftLength;
-            lastRight = rightLength;
+        auto avg = (leftChange + rightChange) / 2.0;
 
-            auto avg = (leftChange + rightChange) / 2.0;
+        std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
+                                                       avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
+        std::uniform_real_distribution angleDistribution(
+                particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
+                particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
 
-            std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
-                                                           avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
-            std::uniform_real_distribution angleDistribution(
-                    particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
-                    particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
+        // Exponential Pose Tracking
+        const Angle dTheta = particleFilter.getAngle() - lastTheta;
 
-            // Exponential Pose Tracking
-            const Angle dTheta = particleFilter.getAngle() - lastTheta;
+        const auto localMeasurement = Eigen::Vector2f({avg.getValue(), 0});
+        const auto displacementMatrix =
+                Eigen::Matrix2d({{1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
+                                 {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}})
+                        .cast<float>();
 
-            const auto localMeasurement = Eigen::Vector2f({avg.getValue(), 0});
-            const auto displacementMatrix =
-                    Eigen::Matrix2d({{1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
-                                     {dTheta.getValue() / 2.0, 1.0 - pow(dTheta.getValue(), 2)}})
-                            .cast<float>();
+        auto time = pros::micros();
 
-            auto time = pros::micros();
+        particleFilter.update([this, angleDistribution, avgDistribution, displacementMatrix]() mutable {
+            const auto noisy = avgDistribution(de);
+            const auto angle = angleDistribution(de);
 
-            particleFilter.update([this, angleDistribution, avgDistribution, displacementMatrix]() mutable {
-                const auto noisy = avgDistribution(de);
-                const auto angle = angleDistribution(de);
+            return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
+        });
 
-                return Eigen::Rotation2Df(angle) * Eigen::Vector2f({noisy, 0.0});
-            });
+        const Eigen::Vector2f localDisplacement = displacementMatrix * localMeasurement;
+        const Eigen::Vector2f globalDisplacement =
+                Eigen::Rotation2Df(particleFilter.getAngle().Convert(radian)) * localDisplacement;
 
-            const Eigen::Vector2f localDisplacement = displacementMatrix * localMeasurement;
-            const Eigen::Vector2f globalDisplacement =
-                    Eigen::Rotation2Df(particleFilter.getAngle().Convert(radian)) * localDisplacement;
+        exponentialPose += Eigen::Vector3f(globalDisplacement.x(), globalDisplacement.y(), dTheta.Convert(radian));
 
-            exponentialPose += Eigen::Vector3f(globalDisplacement.x(), globalDisplacement.y(), dTheta.Convert(radian));
-
-            lastTheta = particleFilter.getAngle();
-        } else {
-            const QLength currentLength = this->getStringDistance();
-
-            const auto change = currentLength - lastStringLength;
-
-            this->stringLength += change;
-
-            lastStringLength = currentLength;
-        }
+        lastTheta = particleFilter.getAngle();
 
         if (recording) {
             uLinear.emplace_back(lastULinear);
@@ -162,8 +149,6 @@ public:
     void setPct(const double left, const double right) {
         this->left11W.move_voltage(left * 12000.0);
         this->right11W.move_voltage(right * 12000.0);
-        this->left5W.move_voltage(left * 8000.0); // 5.5W have a lower max voltage then the 11W motors
-        this->right5W.move_voltage(right * 8000.0);
 
         lastULinear = (left + right) / 2.0;
         lastUAngular = (right - left) / 2.0;
@@ -203,14 +188,10 @@ public:
     }
 
     QLength getStringDistance() const {
-        return
-                this->right11W.get_position(1) /
-               1.0 / CONFIG::STRING_RATIO * 2.0 * M_PI * CONFIG::WINCH_RADIUS;
+        return (winchRotation.get_position() * 0.01_deg).Convert(radian) * CONFIG::WINCH_RADIUS + CONFIG::START_STRING_LENGTH;
     }
 
     QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
-
-    auto setPto(const bool newValue) -> void { this->pto.set_value(newValue); }
 
     void initNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle, const bool flip) {
         imu.set_rotation(angle.Convert(degree) * (flip ? 1 : -1));
@@ -305,28 +286,18 @@ public:
                 {this});
     }
 
-    InstantCommand *releaseString() {
-        return new InstantCommand([this]() { this->stringRelease.set_value(true); }, {});
-    }
-
-    InstantCommand *retractAlignMech() {
-        return new InstantCommand([this]() { this->stringRelease.set_value(false); }, {});
-    }
-
     InstantCommand *activatePto() {
         return new InstantCommand(
                 [this]() {
                     this->pto.set_value(true);
-                    ptoActive = true;
-                    this->lastStringLength = this->getStringDistance();
                 },
                 {});
     }
+
     InstantCommand *retractPto() {
         return new InstantCommand(
                 [this]() {
                     this->pto.set_value(false);
-                    ptoActive = false;
                 },
                 {});
     }
@@ -344,15 +315,20 @@ public:
                                      []() { return false; }, {this});
     }
 
-    FunctionalCommand *hangUp(double pct, QLength stringLength) {
+    FunctionalCommand *hangOut(double pct, QLength stringLength) {
         return new FunctionalCommand([this, pct]() mutable { this->setPct(pct, pct); }, [this]() {},
-                                     [this](bool _) { std::cout << "Hang" << std::endl; },
-                                     [this, stringLength]() { return this->stringLength > stringLength; }, {this});
+                                     [this](bool _) {},
+                                     [this, stringLength]() { return this->getStringDistance() > stringLength; }, {this});
     }
 
-    FunctionalCommand *hangDown(double pct, QLength stringLength) {
-        return new FunctionalCommand([this, pct]() mutable { this->setPct(pct, pct); }, [this]() {}, [this](bool _) {},
-                                     [this, stringLength]() { return this->stringLength < stringLength; }, {this});
+    FunctionalCommand *hangIn(double pct, QLength stringLength) {
+        return new FunctionalCommand([this, pct]() mutable { this->setPct(-pct, -pct); }, [this]() {}, [this](bool _) {},
+                                     [this, stringLength]() { return this->getStringDistance() < stringLength; }, {this});
+    }
+
+    FunctionalCommand *hangOutNoPto(QLength stringLength) {
+        return new FunctionalCommand([this]() mutable { this->retractPto(); }, [this]() {}, [this](bool _) { this->activatePto(); },
+                                     [this, stringLength]() { return this->getStringDistance() > stringLength; }, {this});
     }
 
     FunctionalCommand *hangPctCommand(double pct) {

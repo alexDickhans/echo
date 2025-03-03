@@ -1,14 +1,19 @@
 #pragma once
 
+#include <utility>
+
 #include "command/subsystem.h"
 
 class SolenoidSubsystem : public Subsystem {
-    pros::adi::DigitalOut solenoid;
+    std::vector<pros::adi::DigitalOut> solenoids;
 
     bool lastValue = false;
 
 public:
-    explicit SolenoidSubsystem(pros::adi::DigitalOut solenoid) : solenoid(std::move(solenoid)) {
+    explicit SolenoidSubsystem(pros::adi::DigitalOut solenoid) : solenoids({std::move(solenoid)}) {
+    }
+
+    explicit SolenoidSubsystem(const std::vector<pros::adi::DigitalOut> &solenoids) : solenoids(solenoids) {
     }
 
     void periodic() override {
@@ -16,7 +21,9 @@ public:
     }
 
     void setLevel(const bool value) {
-        solenoid.set_value(value);
+        for (auto &&solenoid: solenoids) {
+            solenoid.set_value(value);
+        }
         lastValue = value;
     }
 

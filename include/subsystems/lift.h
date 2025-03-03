@@ -40,7 +40,7 @@ public:
 	}
 
 	Angle getPosition() const {
-		return angleDifference((motor.get_position(0)) / CONFIG::LIFT_RATIO * revolution, 0_deg);
+		return ((motor.get_position(0)) / CONFIG::LIFT_RATIO * revolution);
 	}
 
 	FunctionalCommand* positionCommand(Angle angle, Angle threshold = 8_deg) {
@@ -54,7 +54,7 @@ public:
 	}
 
 	FunctionalCommand* holdPositionCommand() {
-		return new FunctionalCommand([this]() { this->setTarget(this->getPosition()); }, []() {}, [](bool _) {}, []() { return false; }, {this});
+		return new FunctionalCommand([this]() { this->setTarget(this->getPosition() + copysign(20.0, this->motor.get_actual_velocity()) * degree); }, []() {}, [](bool _) {}, []() { return false; }, {this});
 	}
 
 	RunCommand* pctCommand(double voltage) {
