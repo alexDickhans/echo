@@ -27,7 +27,7 @@ Command* autonCommand;
                 break;
         }
 
-        pros::c::task_delay_until(&start_time, 20);
+        pros::c::task_delay_until(&start_time, 50);
     }
 }
 

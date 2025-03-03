@@ -14,8 +14,8 @@
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
-inline pros::aivision_color_s_t RED_COLOR_DESC(1, 196, 80, 127, 40, 0.25);
-inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 40, 0.25);
+inline pros::aivision_color_s_t RED_COLOR_DESC(1, 196, 80, 127, 60, 0.50);
+inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 60, 0.50);
 
 class TopIntakeSubsystem : public Subsystem {
     pros::MotorGroup intakeMotor;
@@ -46,7 +46,7 @@ public:
     void setPct(double pct) const { this->intakeMotor.move_voltage(pct * 12000.0); }
 
     double getPosition() {
-        return (this->intakeMotor.get_position(0) + this->intakeMotor.get_position(1)) / (2 * CONFIG::INTAKE_RATIO) + positionOffset;
+        return this->intakeMotor.get_position(0) / CONFIG::INTAKE_RATIO + positionOffset;
     }
 
     double getVelocity() {
@@ -60,7 +60,7 @@ public:
             size_t largestSize = 0;
 
             for (auto object: vision.get_all_objects()) {
-                if (size_t size = object.object.color.width * object.object.color.height; size > largestSize) {
+                if (size_t size = object.object.color.width * object.object.color.height; size > largestSize && object.object.color.width > 200) {
                     largestSize = size;
                     largestObject = object.id;
                 }

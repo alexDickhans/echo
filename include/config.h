@@ -9,7 +9,7 @@
 #include "autonomous/autons.h"
 
 namespace CONFIG {
-    constexpr double INTAKE_RATIO = 68 / (9 * 3); // 66 chain links
+    constexpr double INTAKE_RATIO = 68.0 / (9.0 * 3.0); // 66 chain links
     constexpr float DRIVE_NOISE = 0.05;
     constexpr Angle ANGLE_NOISE = 3_deg;
 
