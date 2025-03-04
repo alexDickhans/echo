@@ -54,7 +54,7 @@ inline void subsystemInit() {
 
     if (pros::battery::get_capacity() < 50.0) {
         primary.rumble("..-");
-        pros::delay(1000);
+        pros::delay(2000);
     }
 
     topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(21));
@@ -74,7 +74,7 @@ inline void subsystemInit() {
             topIntakeSubsystem->getTopMotorTemp(),
             bottomIntakeSubsystem->getTopMotorTemp(),
             liftSubsystem->getTopMotorTemp()
-        }) > 39.0) {
+        }) >= 45.0) {
         primary.rumble(".--");
     }
 
@@ -118,14 +118,14 @@ inline void subsystemInit() {
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
         }),
         new ParallelRaceGroup({
-            bottomIntakeSubsystem->pctCommand(0.0), topIntakeSubsystem->pctCommand(-1.0),
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(50_ms)
         }),
         new ParallelRaceGroup({
-            bottomIntakeSubsystem->pctCommand(0.0), topIntakeSubsystem->pctCommand(1.0),
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(100_ms)
         }),
-        new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT))
+        new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
     });
 
     letOutString = new ParallelRaceGroup({
@@ -175,7 +175,7 @@ inline void subsystemInit() {
 
     Trigger([]() {
                 return std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.38 &&
-                       (intakeOntoGoal->scheduled() || loadLB->scheduled()) &&
+                       intakeOntoGoal->scheduled() &&
                        std::find(ejectionPoints.begin(), ejectionPoints.end(),
                                  static_cast<int>(std::floor(topIntakeSubsystem->getPosition()))) != ejectionPoints.
                        end();

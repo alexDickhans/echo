@@ -60,7 +60,7 @@ public:
             size_t largestSize = 0;
 
             for (auto object: vision.get_all_objects()) {
-                if (size_t size = object.object.color.width * object.object.color.height; size > largestSize && object.object.color.width > 200) {
+                if (size_t size = object.object.color.width * object.object.color.height; size > largestSize && object.object.color.width > 150) {
                     largestSize = size;
                     largestObject = object.id;
                 }
