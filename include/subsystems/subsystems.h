@@ -121,7 +121,7 @@ inline void subsystemInit() {
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(50_ms)
         }),
         new ParallelRaceGroup({
-            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.3),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(100_ms)
         }),
         new ParallelRaceGroup({
