@@ -14,8 +14,8 @@
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
-inline pros::aivision_color_s_t RED_COLOR_DESC(1, 196, 80, 127, 60, 0.50);
-inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 60, 0.50);
+inline pros::aivision_color_s_t RED_COLOR_DESC(1, 196, 80, 127, 20, 0.20);
+inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 20, 0.20);
 
 class TopIntakeSubsystem : public Subsystem {
     pros::MotorGroup intakeMotor;
@@ -24,6 +24,7 @@ class TopIntakeSubsystem : public Subsystem {
     double positionOffset = 0.0;
 
     QTime lastFree = 0.0;
+    RingColor ringColor = None;
 
 public:
     explicit TopIntakeSubsystem(const std::initializer_list<int8_t> &motors, pros::AIVision vision) : intakeMotor(motors),
@@ -36,9 +37,11 @@ public:
 
     void periodic() override {
         // No-op
-        if (abs(intakeMotor.get_current_draw()) < 500) {
+        if (abs(intakeMotor.get_current_draw()) < 600) {
             lastFree = pros::millis() * millisecond;
         }
+
+        ringColor = updateRingColor();
     }
 
     void setPosition(double position) const { this->intakeMotor.move_absolute(position * CONFIG::INTAKE_RATIO, 200); }
@@ -55,12 +58,16 @@ public:
     }
 
     RingColor getRing() {
+        return ringColor;
+    }
+
+    RingColor updateRingColor() {
         if (vision.get_object_count() != 0) {
             auto largestObject = 0;
             size_t largestSize = 0;
 
             for (auto object: vision.get_all_objects()) {
-                if (size_t size = object.object.color.width * object.object.color.height; size > largestSize && object.object.color.width > 200) {
+                if (size_t size = object.object.color.width * object.object.color.height; size > largestSize && object.object.color.width > 150) {
                     largestSize = size;
                     largestObject = object.id;
                 }

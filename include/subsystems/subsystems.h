@@ -54,7 +54,7 @@ inline void subsystemInit() {
 
     if (pros::battery::get_capacity() < 50.0) {
         primary.rumble("..-");
-        pros::delay(1000);
+        pros::delay(2000);
     }
 
     topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(21));
@@ -63,7 +63,7 @@ inline void subsystemInit() {
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
-    drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {20, -19, 18}, pros::Imu(9),
+    drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {16, -19, 18}, pros::Imu(9),
                                                   pros::adi::DigitalOut('a'), pros::Rotation(8), []() {
                                                       return goalClampSubsystem->getLastValue();
                                                   }); // wheels listed back to front; 8 for rotation sensor on pto
@@ -74,10 +74,9 @@ inline void subsystemInit() {
             topIntakeSubsystem->getTopMotorTemp(),
             bottomIntakeSubsystem->getTopMotorTemp(),
             liftSubsystem->getTopMotorTemp()
-        }) > 39.0) {
+        }) >= 45.0) {
         primary.rumble(".--");
     }
-
 
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2388.0 / 2445.0,
                                                             pros::Distance(5)));
@@ -114,18 +113,22 @@ inline void subsystemInit() {
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0),
-            topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(200_ms); }),
+            topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
         }),
         new ParallelRaceGroup({
-            bottomIntakeSubsystem->pctCommand(0.0), topIntakeSubsystem->pctCommand(-1.0),
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(50_ms)
         }),
         new ParallelRaceGroup({
-            bottomIntakeSubsystem->pctCommand(0.0), topIntakeSubsystem->pctCommand(1.0),
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.3),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(100_ms)
         }),
-        new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT))
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(300_ms)
+        }),
+        new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
     });
 
     letOutString = new ParallelRaceGroup({
@@ -165,31 +168,44 @@ inline void subsystemInit() {
             .onTrue((new InstantCommand(
                 []() mutable {
                     auto ring = topIntakeSubsystem->getRing();
-                    std::cout << "RING: " << ring << std::endl;
-                    if (static_cast<Alliance>(ring) != ALLIANCE && ring != RingColor::None)
+                    if (static_cast<Alliance>(ring) != ALLIANCE && ring)
                         ejectionPoints.
                                 emplace_back(static_cast<int>(std::floor(topIntakeSubsystem->getPosition())) + 1);
+
+                    loadingLB = loadLB->scheduled();
                 },
-                {}))->andThen(new ConditionalCommand(liftSubsystem->positionCommand(0.0, 0.0), new InstantCommand([]() {
-                                                     }, {}), []() { return !loadLB->scheduled(); })));
+                {}))->andThen(new ConditionalCommand(new ScheduleCommand(liftSubsystem->positionCommand(0.0, 0.0)),
+                                                     new InstantCommand([]() {
+                                                     }, {}), []() {
+                                                         return loadLB->scheduled() && static_cast<Alliance>(
+                                                                    topIntakeSubsystem->getRing()) != ALLIANCE;
+                                                     })));
 
     Trigger([]() {
                 return std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.38 &&
-                       (intakeOntoGoal->scheduled() || loadLB->scheduled()) &&
+                       intakeOntoGoal->scheduled() &&
+                       std::find(ejectionPoints.begin(), ejectionPoints.end(),
+                                 static_cast<int>(std::floor(topIntakeSubsystem->getPosition()))) != ejectionPoints.
+                       end();
+            })
+            .onTrue(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s)->andThen(
+                    new ScheduleCommand(intakeOntoGoal)));
+
+    Trigger([]() {
+                std::cout << loadLB->scheduled() << std::endl;
+                return std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.38 &&
+                       loadingLB &&
                        std::find(ejectionPoints.begin(), ejectionPoints.end(),
                                  static_cast<int>(std::floor(topIntakeSubsystem->getPosition()))) != ejectionPoints.
                        end();
             })
             .onTrue((new InstantCommand(
                     []() mutable {
-                        loadingLB = loadLB->scheduled();
-                        std::cout << "RING: eject " << std::endl;
-                        std::erase(ejectionPoints, static_cast<int>(std::floor(topIntakeSubsystem->getPosition())));
+                        loadingLB = false;
                     },
                     {}))
                 ->andThen(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s)->andThen(
-                    new ConditionalCommand(new ScheduleCommand(loadLB), new ScheduleCommand(intakeOntoGoal),
-                                           [] { return loadingLB; }))));
+                    new ScheduleCommand(loadLB))));
 
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(hang);

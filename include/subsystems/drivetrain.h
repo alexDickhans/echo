@@ -448,13 +448,14 @@ public:
     double getTopMotorTemp() const {
         double maxTemp = 0.0;
 
-        for (const auto &motor : left11W) {
-            maxTemp = std::max(maxTemp, motor.get_temperature());
+        for (auto temp : left11W.get_temperature_all()) {
+            maxTemp = std::max(maxTemp, temp);
         }
 
-        for (const auto &motor : right11W) {
-            maxTemp = std::max(maxTemp, motor.get_temperature());
+        for (auto temp : right11W.get_temperature_all()) {
+            maxTemp = std::max(maxTemp, temp);
         }
+
         return maxTemp;
     }
 
