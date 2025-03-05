@@ -42,6 +42,8 @@ inline Command *hang;
 inline Command *barToBarHang;
 inline Command *gripBar;
 inline Command *letOutString;
+inline Command *basicLoadLB;
+inline Command *doubleLoadLB;
 
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
@@ -107,7 +109,7 @@ inline void subsystemInit() {
         bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
     });
 
-    loadLB = new Sequence({
+    basicLoadLB = new Sequence({
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0),
             topIntakeSubsystem->pctCommand(1.0),
@@ -131,6 +133,10 @@ inline void subsystemInit() {
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(300_ms)
         }),
+    });
+
+    loadLB = new Sequence({
+        basicLoadLB,
         new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
     });
 
@@ -173,7 +179,8 @@ inline void subsystemInit() {
                     auto ring = topIntakeSubsystem->getRing();
                     if (static_cast<Alliance>(ring) != ALLIANCE && ring)
                         ejectionPoints.
-                                emplace_back(static_cast<int>(std::floor(topIntakeSubsystem->getPosition() + 0.4)) + 1); // +0.4 Makes the intake have a little more range when trying to eject
+                                emplace_back(static_cast<int>(std::floor(topIntakeSubsystem->getPosition() + 0.4)) + 1);
+                    // +0.4 Makes the intake have a little more range when trying to eject, should be the distance from the hook zero position to where the ai vision sensor can first detect the ring
 
                     loadingLB = loadLB->scheduled();
                 },
