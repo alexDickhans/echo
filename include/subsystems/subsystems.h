@@ -49,57 +49,34 @@ inline Command *intakeNoEject;
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
+inline void initializeController() {
 
-inline void subsystemInit() {
-    TELEMETRY.setSerial(new pros::Serial(0, 921600));
+    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
+    primary.getTrigger(DIGITAL_A)->whileTrue(hang);
 
-    pros::Task([]() {
-        if (pros::battery::get_capacity() < 50.0) {
-            primary.rumble("..-");
-            pros::delay(2000);
-        }
+    primary.getTrigger(DIGITAL_L1)->whileTrue(liftSubsystem->pctCommand(1.0))->onFalse(
+        liftSubsystem->holdPositionCommand()); // LB up
+    primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->pctCommand(-1.0))->onFalse(
+        new ConditionalCommand(liftSubsystem->holdPositionCommand(), liftSubsystem->positionCommand(0_deg),
+                               []() { return liftSubsystem->getPosition() > 90_deg; })); // LB down
 
-        // Check motor temps
-        if (std::max({
-                drivetrainSubsystem->getTopMotorTemp(),
-                topIntakeSubsystem->getTopMotorTemp(),
-                bottomIntakeSubsystem->getTopMotorTemp(),
-                liftSubsystem->getTopMotorTemp()
-            }) >= 45.0) {
-            primary.rumble(".--");
-        }
-    });
+    primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeWithEject);
+    primary.getTrigger(DIGITAL_R1)->toggleOnTrue(loadLB); // loading position
 
-    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(21));
-    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
-    liftSubsystem = new LiftSubsystem({-1}, PID(2.0, 0.0, 0.0));
-    goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
-    hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
-    // 'd' left, 'b' right
-    drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {16, -19, 18}, pros::Imu(9),
-                                                  pros::adi::DigitalOut('a'), pros::Rotation(8), []() {
-                                                      return goalClampSubsystem->getLastValue();
-                                                  }); // wheels listed back to front; 8 for rotation sensor on pto
+    primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
+    primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->activatePto());
+    primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
+    primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
+}
 
-    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2388.0 / 2445.0,
-                                                            pros::Distance(5)));
-    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2388.0 / 2428.0,
-                                                            pros::Distance(6)));
-    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2388.0 / 2415.0,
-                                                            pros::Distance(7)));
-    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2388.0 / 2443.0,
-                                                            pros::Distance(10)));
+inline void initializePathCommands() {
+    PathCommands::registerCommand("clamp", goalClampTrue);
+    PathCommands::registerCommand("declamp", goalClampSubsystem->levelCommand(false));
+    PathCommands::registerCommand("intakeWithEject", intakeWithEject);
+    PathCommands::registerCommand("intakeNoEject", intakeNoEject);
+}
 
-    drivetrainSubsystem->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
-
-    CommandScheduler::registerSubsystem(drivetrainSubsystem, drivetrainSubsystem->tank(primary));
-    CommandScheduler::registerSubsystem(topIntakeSubsystem,
-                                        TopIntakePositionCommand::fromClosePositionCommand(
-                                            topIntakeSubsystem, 0.0, 0.0));
-    CommandScheduler::registerSubsystem(bottomIntakeSubsystem, bottomIntakeSubsystem->stopIntake());
-    CommandScheduler::registerSubsystem(liftSubsystem, liftSubsystem->positionCommand(5_deg, 0.0));
-    CommandScheduler::registerSubsystem(goalClampSubsystem, goalClampSubsystem->levelCommand(false));
-    CommandScheduler::registerSubsystem(hangSubsystem, hangSubsystem->levelCommand(false));
+inline void initializeCommands() {
 
     goalClampTrue = goalClampSubsystem->levelCommand(true);
 
@@ -173,26 +150,61 @@ inline void subsystemInit() {
         drivetrainSubsystem->activatePto(),
         gripBar
     });
+}
 
-    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
-    primary.getTrigger(DIGITAL_A)->whileTrue(hang);
+inline void subsystemInit() {
+    TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
-    primary.getTrigger(DIGITAL_L1)->whileTrue(liftSubsystem->pctCommand(1.0))->onFalse(
-        liftSubsystem->holdPositionCommand()); // LB up
-    primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->pctCommand(-1.0))->onFalse(
-        new ConditionalCommand(liftSubsystem->holdPositionCommand(), liftSubsystem->positionCommand(0_deg),
-                               []() { return liftSubsystem->getPosition() > 90_deg; })); // LB down
+    pros::Task([]() {
+        if (pros::battery::get_capacity() < 50.0) {
+            primary.rumble("..-");
+            pros::delay(2000);
+        }
 
-    primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeWithEject);
-    primary.getTrigger(DIGITAL_R1)->toggleOnTrue(loadLB); // loading position
+        // Check motor temps
+        if (std::max({
+                drivetrainSubsystem->getTopMotorTemp(),
+                topIntakeSubsystem->getTopMotorTemp(),
+                bottomIntakeSubsystem->getTopMotorTemp(),
+                liftSubsystem->getTopMotorTemp()
+            }) >= 45.0) {
+            primary.rumble(".--");
+        }
+    });
 
-    primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
-    primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->activatePto());
-    primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
-    primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
+    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(21));
+    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
+    liftSubsystem = new LiftSubsystem({-1}, PID(2.0, 0.0, 0.0));
+    goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
+    hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
+    // 'd' left, 'b' right
+    drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {16, -19, 18}, pros::Imu(9),
+                                                  pros::adi::DigitalOut('a'), pros::Rotation(8), []() {
+                                                      return goalClampSubsystem->getLastValue();
+                                                  }); // wheels listed back to front; 8 for rotation sensor on pto
 
-    PathCommands::registerCommand("clamp", goalClampTrue);
-    PathCommands::registerCommand("declamp", goalClampSubsystem->levelCommand(false));
-    PathCommands::registerCommand("intakeWithEject", intakeWithEject);
-    PathCommands::registerCommand("intakeNoEject", intakeNoEject);
+    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2388.0 / 2445.0,
+                                                            pros::Distance(5)));
+    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2388.0 / 2428.0,
+                                                            pros::Distance(6)));
+    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2388.0 / 2415.0,
+                                                            pros::Distance(7)));
+    drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2388.0 / 2443.0,
+                                                            pros::Distance(10)));
+
+    drivetrainSubsystem->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
+
+    CommandScheduler::registerSubsystem(drivetrainSubsystem, drivetrainSubsystem->tank(primary));
+    CommandScheduler::registerSubsystem(topIntakeSubsystem,
+                                        TopIntakePositionCommand::fromClosePositionCommand(
+                                            topIntakeSubsystem, 0.0, 0.0));
+    CommandScheduler::registerSubsystem(bottomIntakeSubsystem, bottomIntakeSubsystem->stopIntake());
+    CommandScheduler::registerSubsystem(liftSubsystem, liftSubsystem->positionCommand(5_deg, 0.0));
+    CommandScheduler::registerSubsystem(goalClampSubsystem, goalClampSubsystem->levelCommand(false));
+    CommandScheduler::registerSubsystem(hangSubsystem, hangSubsystem->levelCommand(false));
+
+    initializeCommands();
+    initializeController();
+    initializePathCommands();
+
 }

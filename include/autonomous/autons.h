@@ -22,4 +22,4 @@ enum Alliance_ {
   BLUE = 2
 } typedef Alliance;
 
-#define OPPONENTS ALLIANCE == RED ? BLUE : RED
+#define OPPONENTS (ALLIANCE == RED ? BLUE : RED)
