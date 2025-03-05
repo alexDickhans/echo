@@ -52,7 +52,7 @@ bool loadingLB = false;
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
-    pros::Task([] () {
+    pros::Task([]() {
         if (pros::battery::get_capacity() < 50.0) {
             primary.rumble("..-");
             pros::delay(2000);
@@ -111,8 +111,8 @@ inline void subsystemInit() {
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0),
             topIntakeSubsystem->pctCommand(1.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-            new WaitCommand(500_ms)
+            liftSubsystem->positionCommand(0.0, 0.0),
+            new WaitUntilCommand([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE; })
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0),
@@ -173,26 +173,11 @@ inline void subsystemInit() {
                     auto ring = topIntakeSubsystem->getRing();
                     if (static_cast<Alliance>(ring) != ALLIANCE && ring)
                         ejectionPoints.
-                                emplace_back(static_cast<int>(std::floor(topIntakeSubsystem->getPosition())) + 1);
+                                emplace_back(static_cast<int>(std::floor(topIntakeSubsystem->getPosition() + 0.4)) + 1); // +0.4 Makes the intake have a little more range when trying to eject
 
                     loadingLB = loadLB->scheduled();
                 },
-                {}))->andThen(new ConditionalCommand(new ScheduleCommand(liftSubsystem->positionCommand(0.0, 0.0)),
-                                                     new InstantCommand([]() {
-                                                     }, {}), []() {
-                                                         return loadLB->scheduled() && static_cast<Alliance>(
-                                                                    topIntakeSubsystem->getRing()) != ALLIANCE;
-                                                     })));
-
-    Trigger([]() {
-                return std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.38 &&
-                       intakeOntoGoal->scheduled() &&
-                       std::find(ejectionPoints.begin(), ejectionPoints.end(),
-                                 static_cast<int>(std::floor(topIntakeSubsystem->getPosition()))) != ejectionPoints.
-                       end();
-            })
-            .onTrue(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s)->andThen(
-                    new ScheduleCommand(intakeOntoGoal)));
+                {})));
 
     Trigger([]() {
                 std::cout << loadLB->scheduled() << std::endl;
@@ -202,13 +187,14 @@ inline void subsystemInit() {
                                  static_cast<int>(std::floor(topIntakeSubsystem->getPosition()))) != ejectionPoints.
                        end();
             })
-            .onTrue((new InstantCommand(
+            .onTrue(
+                topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s)->andThen(
+                    new ConditionalCommand(new ScheduleCommand(loadLB), new ScheduleCommand(intakeOntoGoal),
+                                           []() { return loadingLB; }))->andThen((new InstantCommand(
                     []() mutable {
                         loadingLB = false;
                     },
-                    {}))
-                ->andThen(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s)->andThen(
-                    new ScheduleCommand(loadLB))));
+                    {}))));
 
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(hang);
