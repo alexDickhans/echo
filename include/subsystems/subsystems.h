@@ -36,7 +36,7 @@ inline SolenoidSubsystem *goalClampSubsystem;
 inline SolenoidSubsystem *hangSubsystem;
 
 inline Command *loadLB;
-inline Command *intakeOntoGoal;
+inline Command *intakeWithEject;
 inline Command *goalClampTrue;
 inline Command *hang;
 inline Command *barToBarHang;
@@ -44,12 +44,11 @@ inline Command *gripBar;
 inline Command *letOutString;
 inline Command *basicLoadLB;
 inline Command *doubleLoadLB;
+inline Command *intakeNoEject;
 
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
-inline std::vector<int> ejectionPoints{};
-bool loadingLB = false;
 
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
@@ -70,7 +69,6 @@ inline void subsystemInit() {
             primary.rumble(".--");
         }
     });
-
 
     topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(21));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
@@ -105,14 +103,20 @@ inline void subsystemInit() {
 
     goalClampTrue = goalClampSubsystem->levelCommand(true);
 
-    intakeOntoGoal = new ParallelCommandGroup({
-        bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
-    });
+    intakeNoEject = new ParallelCommandGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)});
+
+    intakeWithEject = (new Sequence({
+        intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
+        intakeNoEject->until([]() {
+            auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
+            return position > 0.38 && position < 0.5; // tune these variables to make ejection work better
+        }),
+        bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s))
+    }))->repeatedly();
 
     basicLoadLB = new Sequence({
         new ParallelRaceGroup({
-            bottomIntakeSubsystem->pctCommand(1.0),
-            topIntakeSubsystem->pctCommand(1.0),
+            intakeWithEject,
             liftSubsystem->positionCommand(0.0, 0.0),
             new WaitUntilCommand([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE; })
         }),
@@ -170,39 +174,6 @@ inline void subsystemInit() {
         gripBar
     });
 
-    Trigger([]() {
-                return topIntakeSubsystem->getRing() != RingColor::None && (
-                           intakeOntoGoal->scheduled() || loadLB->scheduled());
-            })
-            .onTrue((new InstantCommand(
-                []() mutable {
-                    auto ring = topIntakeSubsystem->getRing();
-                    if (static_cast<Alliance>(ring) != ALLIANCE && ring)
-                        ejectionPoints.
-                                emplace_back(static_cast<int>(std::floor(topIntakeSubsystem->getPosition() + 0.4)) + 1);
-                    // +0.4 Makes the intake have a little more range when trying to eject, should be the distance from the hook zero position to where the ai vision sensor can first detect the ring
-
-                    loadingLB = loadLB->scheduled();
-                },
-                {})));
-
-    Trigger([]() {
-                std::cout << loadLB->scheduled() << std::endl;
-                return std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.38 &&
-                       loadingLB &&
-                       std::find(ejectionPoints.begin(), ejectionPoints.end(),
-                                 static_cast<int>(std::floor(topIntakeSubsystem->getPosition()))) != ejectionPoints.
-                       end();
-            })
-            .onTrue(
-                topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s)->andThen(
-                    new ConditionalCommand(new ScheduleCommand(loadLB), new ScheduleCommand(intakeOntoGoal),
-                                           []() { return loadingLB; }))->andThen((new InstantCommand(
-                    []() mutable {
-                        loadingLB = false;
-                    },
-                    {}))));
-
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(hang);
 
@@ -212,7 +183,7 @@ inline void subsystemInit() {
         new ConditionalCommand(liftSubsystem->holdPositionCommand(), liftSubsystem->positionCommand(0_deg),
                                []() { return liftSubsystem->getPosition() > 90_deg; })); // LB down
 
-    primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeOntoGoal);
+    primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeWithEject);
     primary.getTrigger(DIGITAL_R1)->toggleOnTrue(loadLB); // loading position
 
     primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
@@ -222,4 +193,6 @@ inline void subsystemInit() {
 
     PathCommands::registerCommand("clamp", goalClampTrue);
     PathCommands::registerCommand("declamp", goalClampSubsystem->levelCommand(false));
+    PathCommands::registerCommand("intakeWithEject", intakeWithEject);
+    PathCommands::registerCommand("intakeNoEject", intakeNoEject);
 }
