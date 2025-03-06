@@ -72,6 +72,8 @@ inline void initializeController() {
             andOther(primary.getTrigger(DIGITAL_L2))->toggleOnTrue(
                 liftSubsystem->positionCommand(90_deg, 10_deg)->andThen(
                     hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(90_deg, 0.0))));
+
+    primary.getTrigger(DIGITAL_B)->onTrue(liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
 }
 
 inline void initializePathCommands() {
@@ -155,7 +157,7 @@ inline void subsystemInit() {
 
     topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(21));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
-    liftSubsystem = new LiftSubsystem({-1}, PID(2.0, 0.0, 0.0));
+    liftSubsystem = new LiftSubsystem({-1}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
