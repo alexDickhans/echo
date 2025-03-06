@@ -53,6 +53,12 @@ inline void initializeController() {
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(hang);
 
+    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->onTrue(
+        (new WaitCommand(20_ms))->andThen(
+            hangSubsystem->levelCommand(true)->with(new ScheduleCommand(liftSubsystem->positionCommand(90_deg, 0.0))))->
+        with(new InstantCommand([]() {
+        }, {topIntakeSubsystem, bottomIntakeSubsystem})));
+
     primary.getTrigger(DIGITAL_L1)->whileTrue(liftSubsystem->positionCommand(200_deg, 0.0)); // LB up
     primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->positionCommand(240_deg, 0.0)); // LB down
 
@@ -68,12 +74,8 @@ inline void initializeController() {
             ->whileTrue(new ConditionalCommand(hang, liftSubsystem->positionCommand(140_deg, 0.0),
                                                []() { return hangSubsystem->getLastValue(); }));
 
-    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
-            andOther(primary.getTrigger(DIGITAL_L2))->toggleOnTrue(
-                liftSubsystem->positionCommand(90_deg, 10_deg)->andThen(
-                    hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(90_deg, 0.0))));
-
-    primary.getTrigger(DIGITAL_B)->onTrue(liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
+    primary.getTrigger(DIGITAL_B)->onTrue(
+        liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
 }
 
 inline void initializePathCommands() {
@@ -121,23 +123,28 @@ inline void initializeCommands() {
         new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
     });
 
-    letOutString = new ParallelRaceGroup({
-        drivetrainSubsystem->hangOut(1.0, 8.0_in),
-        hangSubsystem->levelCommand(false)->with(liftSubsystem->positionCommand(50_deg))->until([]() {
-            return drivetrainSubsystem->getStringDistance() > 5_in;
-        })->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg))),
-    });
+    letOutString = (new ParallelRaceGroup({
+        drivetrainSubsystem->hangOut(1.0, -5.0_in),
+        hangSubsystem->levelCommand(false),
+        liftSubsystem->positionCommand(70_deg, 0.0)
+    }))->andThen(new ParallelRaceGroup({
+        drivetrainSubsystem->hangOut(1.0, 7.0_in),
+        hangSubsystem->levelCommand(false)->with(liftSubsystem->positionCommand(15_deg, 0.0))->until([]() {
+            return drivetrainSubsystem->getStringDistance() > 3.0_in;
+        })->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg, 0.0))),
+    }));
 
     gripBar = new Sequence({
         new ParallelRaceGroup({
-            drivetrainSubsystem->hangIn(1.0, 0.0_in),
+            drivetrainSubsystem->hangIn(1.0, -7.5_in),
             hangSubsystem->levelCommand(true),
-            liftSubsystem->positionCommand(70_deg)
+            liftSubsystem->positionCommand(70_deg, 0.0)
         }),
         new ParallelRaceGroup({
             drivetrainSubsystem->hangPctCommand(0.2),
             hangSubsystem->levelCommand(false),
-            liftSubsystem->positionCommand(70_deg)
+            liftSubsystem->positionCommand(70_deg, 0.0),
+            new WaitCommand(100_ms),
         })
     });
 
@@ -148,7 +155,11 @@ inline void initializeCommands() {
             });
     hang = new Sequence({
         drivetrainSubsystem->activatePto(),
-        gripBar
+        drivetrainSubsystem->pct(-0.1, -0.1)->withTimeout(150_ms),
+        drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(150_ms),
+        gripBar,
+        barToBarHang,
+        barToBarHang
     });
 }
 

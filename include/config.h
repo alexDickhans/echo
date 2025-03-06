@@ -63,6 +63,6 @@ namespace CONFIG {
     inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.53, 0.040};
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.08, 0.0175};
 
-    constexpr QLength START_STRING_LENGTH = 4.5_in;
+    constexpr QLength START_STRING_LENGTH = 0.0;
     constexpr QLength WINCH_RADIUS = 0.303_in / 2.0;
 } // namespace CONFIG
