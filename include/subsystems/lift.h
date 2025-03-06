@@ -31,7 +31,6 @@ public:
         }
 
         // No-op
-        std::cout << motor.get_current_draw() << std::endl;
         if (abs(motor.get_current_draw()) < 2000) {
             lastFree = pros::millis() * millisecond;
         }

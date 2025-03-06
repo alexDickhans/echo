@@ -162,7 +162,7 @@ inline void subsystemInit() {
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
     drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {16, -19, 18}, pros::Imu(9),
-                                                  pros::adi::DigitalOut('a'), pros::Rotation(8), []() {
+                                                  pros::adi::DigitalOut('a'), pros::Rotation(-8), []() {
                                                       return goalClampSubsystem->getLastValue();
                                                   }); // wheels listed back to front; 8 for rotation sensor on pto
 
