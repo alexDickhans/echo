@@ -50,15 +50,11 @@ inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
 inline void initializeController() {
-
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(hang);
 
-    primary.getTrigger(DIGITAL_L1)->whileTrue(liftSubsystem->pctCommand(1.0))->onFalse(
-        liftSubsystem->holdPositionCommand()); // LB up
-    primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->pctCommand(-1.0))->onFalse(
-        new ConditionalCommand(liftSubsystem->holdPositionCommand(), liftSubsystem->positionCommand(0_deg),
-                               []() { return liftSubsystem->getPosition() > 90_deg; })); // LB down
+    primary.getTrigger(DIGITAL_L1)->whileTrue(liftSubsystem->positionCommand(200_deg, 0.0)); // LB up
+    primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->positionCommand(240_deg, 0.0)); // LB down
 
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeWithEject);
     primary.getTrigger(DIGITAL_R1)->toggleOnTrue(loadLB); // loading position
@@ -68,6 +64,9 @@ inline void initializeController() {
     primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)->whileTrue(liftSubsystem->positionCommand(140_deg, 0.0));
+
+    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
+            andOther(primary.getTrigger(DIGITAL_L2))->onTrue(hangSubsystem->levelCommand(true));
 }
 
 inline void initializePathCommands() {
@@ -78,10 +77,11 @@ inline void initializePathCommands() {
 }
 
 inline void initializeCommands() {
-
     goalClampTrue = goalClampSubsystem->levelCommand(true);
 
-    intakeNoEject = new ParallelCommandGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)});
+    intakeNoEject = new ParallelCommandGroup({
+        bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
+    });
 
     intakeWithEject = (new Sequence({
         intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
@@ -199,5 +199,4 @@ inline void subsystemInit() {
     initializeCommands();
     initializeController();
     initializePathCommands();
-
 }
