@@ -27,7 +27,7 @@ namespace CONFIG {
 
     constexpr QVelocity MAX_SPEED = 68_in / second;
 
-    inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 4.0);
+    inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 8.0);
 
     inline PID TURN_PID = PID(0.9, 0.0, 6.0);
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
