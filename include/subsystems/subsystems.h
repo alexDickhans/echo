@@ -114,7 +114,7 @@ inline void initializeCommands() {
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(300_ms)
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(400_ms)
         }),
     });
 
@@ -155,8 +155,8 @@ inline void initializeCommands() {
             });
     hang = new Sequence({
         drivetrainSubsystem->activatePto(),
-        drivetrainSubsystem->pct(-0.1, -0.1)->withTimeout(150_ms),
-        drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(150_ms),
+        drivetrainSubsystem->pct(-0.1, -0.1)->withTimeout(70_ms),
+        drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(70_ms),
         gripBar,
         barToBarHang,
         barToBarHang
