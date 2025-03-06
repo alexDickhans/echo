@@ -14,11 +14,11 @@
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
-inline pros::aivision_color_s_t RED_COLOR_DESC(1, 196, 80, 127, 20, 0.20);
-inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 20, 0.20);
+inline pros::aivision_color_s_t RED_COLOR_DESC(1, 196, 80, 127, 30, 0.4);
+inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 52, 73, 125, 30, 0.4);
 
 class TopIntakeSubsystem : public Subsystem {
-    pros::MotorGroup intakeMotor;
+    pros::Motor intakeMotor;
     pros::AIVision vision;
 
     double positionOffset = 0.0;
@@ -27,7 +27,7 @@ class TopIntakeSubsystem : public Subsystem {
     RingColor ringColor = None;
 
 public:
-    explicit TopIntakeSubsystem(const std::initializer_list<int8_t> &motors, pros::AIVision vision) : intakeMotor(motors),
+    explicit TopIntakeSubsystem(const pros::Motor &motors, pros::AIVision vision) : intakeMotor(motors),
         vision(vision) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         intakeMotor.set_gearing(pros::MotorGears::blue);
