@@ -62,11 +62,16 @@ inline void initializeController() {
     primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
     primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->activatePto());
     primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
+
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
-    primary.getTrigger(DIGITAL_Y)->whileTrue(liftSubsystem->positionCommand(140_deg, 0.0));
+    primary.getTrigger(DIGITAL_Y)
+            ->whileTrue(new ConditionalCommand(hang, liftSubsystem->positionCommand(140_deg, 0.0),
+                                               []() { return hangSubsystem->getLastValue(); }));
 
     primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
-            andOther(primary.getTrigger(DIGITAL_L2))->onTrue(hangSubsystem->levelCommand(true));
+            andOther(primary.getTrigger(DIGITAL_L2))->toggleOnTrue(
+                liftSubsystem->positionCommand(90_deg, 10_deg)->andThen(
+                    hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(90_deg, 0.0))));
 }
 
 inline void initializePathCommands() {
