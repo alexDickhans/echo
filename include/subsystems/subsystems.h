@@ -67,6 +67,7 @@ inline void initializeController() {
     primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->activatePto());
     primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
+    primary.getTrigger(DIGITAL_Y)->whileTrue(liftSubsystem->positionCommand(140_deg, 0.0));
 }
 
 inline void initializePathCommands() {
@@ -94,21 +95,13 @@ inline void initializeCommands() {
     basicLoadLB = new Sequence({
         new ParallelRaceGroup({
             intakeWithEject,
-            liftSubsystem->positionCommand(0.0, 0.0),
+            liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0),
             new WaitUntilCommand([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE; })
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0),
             topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-        }),
-        new ParallelRaceGroup({
-            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(50_ms)
-        }),
-        new ParallelRaceGroup({
-            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.3),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(100_ms)
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
@@ -199,7 +192,7 @@ inline void subsystemInit() {
                                         TopIntakePositionCommand::fromClosePositionCommand(
                                             topIntakeSubsystem, 0.0, 0.0));
     CommandScheduler::registerSubsystem(bottomIntakeSubsystem, bottomIntakeSubsystem->stopIntake());
-    CommandScheduler::registerSubsystem(liftSubsystem, liftSubsystem->positionCommand(5_deg, 0.0));
+    CommandScheduler::registerSubsystem(liftSubsystem, liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0));
     CommandScheduler::registerSubsystem(goalClampSubsystem, goalClampSubsystem->levelCommand(false));
     CommandScheduler::registerSubsystem(hangSubsystem, hangSubsystem->levelCommand(false));
 

@@ -70,8 +70,8 @@ public:
     FunctionalCommand *holdPositionCommand() {
         return new FunctionalCommand([this]() {
                                          this->setTarget(
-                                             this->getPosition() + this->motor.get_actual_velocity() * 0.1/60 *
-                                             revolution);
+                                             this->getPosition() + 5 *
+                                             degree);
                                      }, []() {
                                      }, [](bool _) {
                                      }, []() { return false; }, {this});
