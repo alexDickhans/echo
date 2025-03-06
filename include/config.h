@@ -32,8 +32,8 @@ namespace CONFIG {
     inline PID TURN_PID = PID(0.9, 0.0, 6.0);
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
-    constexpr Angle LIFT_IDLE_POSITION = 8_deg;
-    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 20_deg;
+    constexpr Angle LIFT_IDLE_POSITION = 6_deg;
+    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 24_deg;
     constexpr Angle WALL_STAKE_PRIME_HEIGHT = 70_deg;
     constexpr Angle WALL_STAKE_SCORE_HEIGHT = 128_deg;
     constexpr Angle DESCORE_HEIGHT = 140_deg;

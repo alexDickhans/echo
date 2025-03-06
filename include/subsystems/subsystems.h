@@ -155,13 +155,13 @@ inline void initializeCommands() {
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
-    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(21));
+    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(16));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
     liftSubsystem = new LiftSubsystem({-1}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
-    drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {16, -19, 18}, pros::Imu(9),
+    drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {17, -19, 18}, pros::Imu(9),
                                                   pros::adi::DigitalOut('a'), pros::Rotation(-8), []() {
                                                       return goalClampSubsystem->getLastValue();
                                                   }); // wheels listed back to front; 8 for rotation sensor on pto
