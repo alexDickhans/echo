@@ -139,10 +139,10 @@ public:
             xLinear.emplace_back(currentXLinear);
             xAngular.emplace_back(currentXAngular);
 
-            std::cout << "ULinear: " << pros::millis() << ": " << lastULinear << std::endl;
-            std::cout << "UAngular: " << pros::millis() << ": " << lastUAngular << std::endl;
-            std::cout << "XLinear: " << pros::millis() << ": " << currentXLinear << std::endl;
-            std::cout << "XAngular: " << pros::millis() << ": " << currentXAngular << std::endl;
+            std::cout << "ULinear " << pros::millis() << ": " << lastULinear << std::endl;
+            std::cout << "UAngular " << pros::millis() << ": " << lastUAngular << std::endl;
+            std::cout << "XLinear " << pros::millis() << ": " << currentXLinear << std::endl;
+            std::cout << "XAngular " << pros::millis() << ": " << currentXAngular << std::endl;
         }
     }
 

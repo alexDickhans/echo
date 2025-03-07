@@ -7,11 +7,12 @@ def read_terminal_output(file_path, name):
 
     with open(file_path, 'r') as file:
         for line in file:
-            if line.startswith(name):
+            if name in line:
                 parts = line.split(':')
-                if len(parts) == 2:
+                if len(parts) == 3:
                     try:
-                        x, y = map(float, parts[1].strip().split())
+                        x = float(parts[1].split(" ")[-1])
+                        y = float(parts[2].split(" ")[1])
                         x_values.append(x)
                         y_values.append(y)
                     except ValueError:
@@ -19,7 +20,7 @@ def read_terminal_output(file_path, name):
     return x_values, y_values
 
 def plot_data(x, y, name):
-    plt.plot(x, y, marker='o')
+    plt.plot(x, y, marker='')
     plt.title(f'Plot for {name}')
     plt.xlabel('X values')
     plt.ylabel('Y values')
