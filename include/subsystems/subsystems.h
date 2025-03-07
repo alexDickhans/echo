@@ -43,8 +43,8 @@ inline Command *barToBarHang;
 inline Command *gripBar;
 inline Command *letOutString;
 inline Command *basicLoadLB;
-inline Command *doubleLoadLB;
 inline Command *intakeNoEject;
+inline Command *hangRelease;
 
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
@@ -53,17 +53,15 @@ inline void initializeController() {
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(hang);
 
-    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->onTrue(
-        (new WaitCommand(20_ms))->andThen(
-            hangSubsystem->levelCommand(true)->with(new ScheduleCommand(liftSubsystem->positionCommand(90_deg, 0.0))))->
-        with(new InstantCommand([]() {
-        }, {topIntakeSubsystem, bottomIntakeSubsystem})));
+    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->onTrue(hangRelease);
 
-    primary.getTrigger(DIGITAL_L1)->whileTrue(liftSubsystem->positionCommand(200_deg, 0.0)); // LB up
+    primary.getTrigger(DIGITAL_L1)->andOther(primary.getTrigger(DIGITAL_R1)->negate())->whileTrue(
+        liftSubsystem->positionCommand(200_deg, 0.0)); // LB up
     primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->positionCommand(240_deg, 0.0)); // LB down
 
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeWithEject);
-    primary.getTrigger(DIGITAL_R1)->toggleOnTrue(loadLB); // loading position
+    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1)->negate())->toggleOnTrue(loadLB);
+    // loading position
 
     primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
     primary.getTrigger(DIGITAL_UP)->whileTrue(drivetrainSubsystem->characterizeLinear());
@@ -83,6 +81,18 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("declamp", goalClampSubsystem->levelCommand(false));
     PathCommands::registerCommand("intakeWithEject", intakeWithEject);
     PathCommands::registerCommand("intakeNoEject", intakeNoEject);
+    PathCommands::registerCommand("basicLoadLB", basicLoadLB);
+    PathCommands::registerCommand("basicLoadLB2Ring", basicLoadLB->andThen(new ParallelCommandGroup({
+                                      topIntakeSubsystem->pctCommand(0.0), bottomIntakeSubsystem->pctCommand(1.0),
+                                      liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0)
+                                  })));
+    PathCommands::registerCommand("bottomIntakeOffTopOn",
+                                  topIntakeSubsystem->pctCommand(1.0)->with(bottomIntakeSubsystem->pctCommand(0.0)));
+    PathCommands::registerCommand("stopIntake",
+                                  bottomIntakeSubsystem->pctCommand(0.0)->with(topIntakeSubsystem->pctCommand(0.0)));
+    PathCommands::registerCommand("stopIntake3",
+                                  TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.8, 0.0));
+    PathCommands::registerCommand("hangRelease", hangRelease);
 }
 
 inline void initializeCommands() {
@@ -153,15 +163,27 @@ inline void initializeCommands() {
                 letOutString,
                 gripBar
             });
-    hang = new ParallelCommandGroup({new Sequence({
-        drivetrainSubsystem->activatePto(),
-        drivetrainSubsystem->pct(-0.1, -0.1)->withTimeout(70_ms),
-        drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(70_ms),
-        gripBar,
-        barToBarHang,
-        barToBarHang,
-        drivetrainSubsystem->pct(0.0, 0.0),
-    }), topIntakeSubsystem->pctCommand(0.0), bottomIntakeSubsystem->pctCommand(0.0)});
+
+    hang = new ParallelCommandGroup({
+        new Sequence({
+            drivetrainSubsystem->activatePto(),
+            drivetrainSubsystem->pct(-0.1, -0.1)->withTimeout(70_ms),
+            drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(70_ms),
+            gripBar,
+            barToBarHang,
+            barToBarHang,
+            drivetrainSubsystem->pct(0.0, 0.0),
+        }),
+        topIntakeSubsystem->pctCommand(0.0), bottomIntakeSubsystem->pctCommand(0.0)
+    });
+
+    hangRelease =
+            new ParallelCommandGroup({
+                hangSubsystem->levelCommand(true),
+                liftSubsystem->positionCommand(90_deg, 0.0),
+                topIntakeSubsystem->pctCommand(0.0),
+                bottomIntakeSubsystem->pctCommand(0.0)
+            });
 }
 
 inline void subsystemInit() {

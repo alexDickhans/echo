@@ -292,15 +292,11 @@
   "commands": [
     {
       "t": 0.0,
-      "name": "intakeGoal"
+      "name": "intakeWithEject"
     },
     {
       "t": 8.778,
       "name": "declamp"
-    },
-    {
-      "t": 8.822,
-      "name": "dejam2"
     },
     {
       "t": 10.23,

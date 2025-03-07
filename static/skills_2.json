@@ -223,32 +223,28 @@
           "y": -1.157
         },
         {
-          "x": 0.094,
-          "y": -1.367
+          "x": 0.044,
+          "y": -1.291
         },
         {
-          "x": 0.095,
-          "y": -1.542
+          "x": 0.045,
+          "y": -1.413
         }
       ],
       "constraints": {
-        "velocity": 0.625,
-        "accel": 3.048
+        "velocity": 0.25,
+        "accel": 2.576
       }
     }
   ],
   "commands": [
     {
       "t": 1.601,
-      "name": "intakeOneNeutralStakes"
+      "name": "basicLoadLB"
     },
     {
       "t": 7.974,
       "name": "clamp"
-    },
-    {
-      "t": 8.388,
-      "name": "liftArmAlliance"
     }
   ]
 }
