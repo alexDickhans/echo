@@ -9,13 +9,15 @@ def read_terminal_output(file_path, names):
             for name in names:
                 if name in line:
                     parts = line.split(':')
-                    print (line)
                     if len(parts) == 2:
                         try:
                             x = float(parts[0].split(" ")[-1])
                             y = float(parts[1].split(" ")[1])
-                            x_values.append(x)
-                            y_values.append(y)
+
+                            x = x - 30 if name == "XAngular" else x
+                            y = y * 10 if name == "UAngular" else y
+                            data[name][0].append(x)
+                            data[name][1].append(y)
                         except ValueError:
                             continue
 
@@ -29,11 +31,10 @@ def plot_data(data):
 
     for i, (name, (x, y)) in enumerate(data.items()):
         if i == 0:
-            ax1.plot(x, y, marker='o', color=colors[i % len(colors)], label=name)
+            ax1.plot(x, y, color=colors[i % len(colors)], label=name)
             ax1.set_xlabel('X values')
             ax1.set_ylabel(f'Y values ({name})', color=colors[i % len(colors)])
             ax1.tick_params(axis='y', labelcolor=colors[i % len(colors)])
-            print(x)
         else:
             if ax2 is None:
                 ax2 = ax1.twinx()
@@ -41,9 +42,10 @@ def plot_data(data):
                 ax2 = ax2.twinx()
                 ax2.spines['right'].set_position(('outward', 60 * (i - 1)))
 
-            ax2.plot(x, y, marker='o', color=colors[i % len(colors)], label=name)
+            ax2.plot(x, y, color=colors[i % len(colors)], label=name)
             ax2.set_ylabel(f'Y values ({name})', color=colors[i % len(colors)])
             ax2.tick_params(axis='y', labelcolor=colors[i % len(colors)])
+            ax2.set_ylim(ax1.get_ylim())  # Align the secondary y-axis with the primary y-axis
 
     fig.tight_layout()
     plt.title('Plot for multiple variables')
