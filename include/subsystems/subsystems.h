@@ -65,8 +65,8 @@ inline void initializeController() {
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeWithEject);
     primary.getTrigger(DIGITAL_R1)->toggleOnTrue(loadLB); // loading position
 
-    primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
-    primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->activatePto());
+    primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
+    primary.getTrigger(DIGITAL_UP)->whileTrue(drivetrainSubsystem->characterizeLinear());
     primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);

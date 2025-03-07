@@ -14,7 +14,7 @@
 #include "auton.h"
 #include "autonomous/autons.h"
 
-// #include "sysid/oneDofVelocitySystem.h"
+#include "sysid/oneDofVelocitySystem.h"
 
 struct DriveSpeeds {
     QVelocity linearVelocity = 0.0;
@@ -138,11 +138,6 @@ public:
 
             xLinear.emplace_back(currentXLinear);
             xAngular.emplace_back(currentXAngular);
-
-            std::cout << "ULinear " << pros::millis() << ": " << lastULinear << std::endl;
-            std::cout << "UAngular " << pros::millis() << ": " << lastUAngular << std::endl;
-            std::cout << "XLinear " << pros::millis() << ": " << currentXLinear << std::endl;
-            std::cout << "XAngular " << pros::millis() << ": " << currentXAngular << std::endl;
         }
     }
 
@@ -263,14 +258,14 @@ public:
     }
 
     void analyzeSysIdData() const {
-        // OneDofVelocitySystem linear;
-        // OneDofVelocitySystem angular;
-        //
-        // linear.characterize(xLinear, uLinear);
-        // angular.characterize(xAngular, uAngular);
-        //
-        // std::cout << "Linear: " << linear.getFF() << std::endl;
-        // std::cout << "Angular: " << angular.getFF() << std::endl;
+        OneDofVelocitySystem linear;
+        OneDofVelocitySystem angular;
+
+        linear.characterize(xLinear, uLinear);
+        angular.characterize(xAngular, uAngular);
+
+        std::cout << "Linear: " << linear.getFF() << std::endl;
+        std::cout << "Angular: " << angular.getFF() << std::endl;
     }
 
     RunCommand *tank(pros::Controller &controller) {
