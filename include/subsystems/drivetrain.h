@@ -136,6 +136,8 @@ public:
             xLinear.emplace_back(((leftChange + rightChange) / (2.0 * 0.01)).getValue());
             xAngular.emplace_back((-imu.get_gyro_rate().z) * (degree / second).getValue());
         }
+
+        std::cout << "WINCH RPM " << pros::millis() << ": " << this->winchRotation.get_velocity() << std::endl;
     }
 
     Angle getAngle() const { return -imu.get_rotation() * degree; }

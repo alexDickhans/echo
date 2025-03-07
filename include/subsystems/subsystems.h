@@ -141,7 +141,7 @@ inline void initializeCommands() {
             liftSubsystem->positionCommand(70_deg, 0.0)
         }),
         new ParallelRaceGroup({
-            drivetrainSubsystem->hangPctCommand(0.25),
+            drivetrainSubsystem->hangPctCommand(-0.1),
             hangSubsystem->levelCommand(false),
             liftSubsystem->positionCommand(70_deg, 0.0),
             new WaitCommand(200_ms),
