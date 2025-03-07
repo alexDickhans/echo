@@ -133,11 +133,17 @@ public:
             uLinear.emplace_back(lastULinear);
             uAngular.emplace_back(lastUAngular);
 
-            xLinear.emplace_back(((leftChange + rightChange) / (2.0 * 0.01)).getValue());
-            xAngular.emplace_back((-imu.get_gyro_rate().z) * (degree / second).getValue());
-        }
+            auto currentXLinear = ((leftChange + rightChange) / (2.0 * 0.01)).getValue();
+            auto currentXAngular = (-imu.get_gyro_rate().z) * (degree / second).getValue();
 
-        std::cout << "WINCH RPM " << pros::millis() << ": " << this->winchRotation.get_velocity() << std::endl;
+            xLinear.emplace_back(currentXLinear);
+            xAngular.emplace_back(currentXAngular);
+
+            std::cout << "ULinear: " << pros::millis() << ": " << lastULinear << std::endl;
+            std::cout << "UAngular: " << pros::millis() << ": " << lastUAngular << std::endl;
+            std::cout << "XLinear: " << pros::millis() << ": " << currentXLinear << std::endl;
+            std::cout << "XAngular: " << pros::millis() << ": " << currentXAngular << std::endl;
+        }
     }
 
     Angle getAngle() const { return -imu.get_rotation() * degree; }
