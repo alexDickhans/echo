@@ -141,10 +141,10 @@ inline void initializeCommands() {
             liftSubsystem->positionCommand(70_deg, 0.0)
         }),
         new ParallelRaceGroup({
-            drivetrainSubsystem->hangPctCommand(0.2),
+            drivetrainSubsystem->hangPctCommand(0.25),
             hangSubsystem->levelCommand(false),
             liftSubsystem->positionCommand(70_deg, 0.0),
-            new WaitCommand(100_ms),
+            new WaitCommand(200_ms),
         })
     });
 
@@ -153,14 +153,15 @@ inline void initializeCommands() {
                 letOutString,
                 gripBar
             });
-    hang = new Sequence({
+    hang = new ParallelCommandGroup({new Sequence({
         drivetrainSubsystem->activatePto(),
         drivetrainSubsystem->pct(-0.1, -0.1)->withTimeout(70_ms),
         drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(70_ms),
         gripBar,
         barToBarHang,
-        barToBarHang
-    });
+        barToBarHang,
+        drivetrainSubsystem->pct(0.0, 0.0),
+    }), topIntakeSubsystem->pctCommand(0.0), bottomIntakeSubsystem->pctCommand(0.0)});
 }
 
 inline void subsystemInit() {
@@ -172,7 +173,7 @@ inline void subsystemInit() {
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
-    drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {17, -19, 18}, pros::Imu(9),
+    drivetrainSubsystem = new DrivetrainSubsystem({-11, 13, -14}, {17, -19, 18}, pros::Imu(9),
                                                   pros::adi::DigitalOut('a'), pros::Rotation(-8), []() {
                                                       return goalClampSubsystem->getLastValue();
                                                   }); // wheels listed back to front; 8 for rotation sensor on pto
