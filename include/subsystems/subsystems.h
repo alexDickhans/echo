@@ -53,6 +53,12 @@ inline void initializeController() {
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(hang);
 
+    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->onTrue(
+        (new WaitCommand(20_ms))->andThen(
+            hangSubsystem->levelCommand(true)->with(new ScheduleCommand(liftSubsystem->positionCommand(90_deg, 0.0))))->
+        with(new InstantCommand([]() {
+        }, {topIntakeSubsystem, bottomIntakeSubsystem})));
+
     primary.getTrigger(DIGITAL_L1)->whileTrue(liftSubsystem->positionCommand(200_deg, 0.0)); // LB up
     primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->positionCommand(240_deg, 0.0)); // LB down
 
@@ -62,11 +68,14 @@ inline void initializeController() {
     primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
     primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->activatePto());
     primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
-    primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
-    primary.getTrigger(DIGITAL_Y)->whileTrue(liftSubsystem->positionCommand(140_deg, 0.0));
 
-    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
-            andOther(primary.getTrigger(DIGITAL_L2))->onTrue(hangSubsystem->levelCommand(true));
+    primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
+    primary.getTrigger(DIGITAL_Y)
+            ->whileTrue(new ConditionalCommand(hang, liftSubsystem->positionCommand(140_deg, 0.0),
+                                               []() { return hangSubsystem->getLastValue(); }));
+
+    primary.getTrigger(DIGITAL_B)->onTrue(
+        liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
 }
 
 inline void initializePathCommands() {
@@ -87,9 +96,9 @@ inline void initializeCommands() {
         intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
         intakeNoEject->until([]() {
             auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-            return position > 0.38 && position < 0.5; // tune these variables to make ejection work better
+            return position > 0.38 && position < 0.45; // tune these variables to make ejection work better
         }),
-        bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s))
+        bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.03_s))
     }))->repeatedly();
 
     basicLoadLB = new Sequence({
@@ -105,7 +114,7 @@ inline void initializeCommands() {
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(300_ms)
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(400_ms)
         }),
     });
 
@@ -114,23 +123,28 @@ inline void initializeCommands() {
         new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
     });
 
-    letOutString = new ParallelRaceGroup({
-        drivetrainSubsystem->hangOut(1.0, 8.0_in),
-        hangSubsystem->levelCommand(false)->with(liftSubsystem->positionCommand(50_deg))->until([]() {
-            return drivetrainSubsystem->getStringDistance() > 5_in;
-        })->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg))),
-    });
+    letOutString = (new ParallelRaceGroup({
+        drivetrainSubsystem->hangOut(1.0, -5.0_in),
+        hangSubsystem->levelCommand(false),
+        liftSubsystem->positionCommand(70_deg, 0.0)
+    }))->andThen(new ParallelRaceGroup({
+        drivetrainSubsystem->hangOut(1.0, 7.0_in),
+        hangSubsystem->levelCommand(false)->with(liftSubsystem->positionCommand(15_deg, 0.0))->until([]() {
+            return drivetrainSubsystem->getStringDistance() > 3.0_in;
+        })->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg, 0.0))),
+    }));
 
     gripBar = new Sequence({
         new ParallelRaceGroup({
-            drivetrainSubsystem->hangIn(1.0, 0.0_in),
+            drivetrainSubsystem->hangIn(1.0, -7.5_in),
             hangSubsystem->levelCommand(true),
-            liftSubsystem->positionCommand(70_deg)
+            liftSubsystem->positionCommand(70_deg, 0.0)
         }),
         new ParallelRaceGroup({
-            drivetrainSubsystem->hangPctCommand(0.2),
+            drivetrainSubsystem->hangPctCommand(-0.1),
             hangSubsystem->levelCommand(false),
-            liftSubsystem->positionCommand(70_deg)
+            liftSubsystem->positionCommand(70_deg, 0.0),
+            new WaitCommand(200_ms),
         })
     });
 
@@ -139,23 +153,28 @@ inline void initializeCommands() {
                 letOutString,
                 gripBar
             });
-    hang = new Sequence({
+    hang = new ParallelCommandGroup({new Sequence({
         drivetrainSubsystem->activatePto(),
-        gripBar
-    });
+        drivetrainSubsystem->pct(-0.1, -0.1)->withTimeout(70_ms),
+        drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(70_ms),
+        gripBar,
+        barToBarHang,
+        barToBarHang,
+        drivetrainSubsystem->pct(0.0, 0.0),
+    }), topIntakeSubsystem->pctCommand(0.0), bottomIntakeSubsystem->pctCommand(0.0)});
 }
 
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
-    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(21));
+    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(16));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
-    liftSubsystem = new LiftSubsystem({-1}, PID(2.0, 0.0, 0.0));
+    liftSubsystem = new LiftSubsystem({-1}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
-    drivetrainSubsystem = new DrivetrainSubsystem({-11, 12, -13}, {16, -19, 18}, pros::Imu(9),
-                                                  pros::adi::DigitalOut('a'), pros::Rotation(8), []() {
+    drivetrainSubsystem = new DrivetrainSubsystem({-11, 13, -14}, {17, -19, 18}, pros::Imu(9),
+                                                  pros::adi::DigitalOut('a'), pros::Rotation(-8), []() {
                                                       return goalClampSubsystem->getLastValue();
                                                   }); // wheels listed back to front; 8 for rotation sensor on pto
 

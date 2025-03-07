@@ -27,13 +27,13 @@ namespace CONFIG {
 
     constexpr QVelocity MAX_SPEED = 68_in / second;
 
-    inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 4.0);
+    inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 8.0);
 
     inline PID TURN_PID = PID(0.9, 0.0, 6.0);
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
-    constexpr Angle LIFT_IDLE_POSITION = 8_deg;
-    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 20_deg;
+    constexpr Angle LIFT_IDLE_POSITION = 6_deg;
+    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 24_deg;
     constexpr Angle WALL_STAKE_PRIME_HEIGHT = 70_deg;
     constexpr Angle WALL_STAKE_SCORE_HEIGHT = 128_deg;
     constexpr Angle DESCORE_HEIGHT = 140_deg;
@@ -63,6 +63,6 @@ namespace CONFIG {
     inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.53, 0.040};
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.08, 0.0175};
 
-    constexpr QLength START_STRING_LENGTH = 4.5_in;
+    constexpr QLength START_STRING_LENGTH = 0.0;
     constexpr QLength WINCH_RADIUS = 0.303_in / 2.0;
 } // namespace CONFIG

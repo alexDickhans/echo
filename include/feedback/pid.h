@@ -6,146 +6,153 @@
 
 class PID final : public FeedbackController {
 private:
-		double kP;
-		double kI;
-		double kD;
+    double kP;
+    double kI;
+    double kD;
 
-		double error;
-		double totalError = 0.0;
-		double prevInput = 0.0;
-		double derivitive;
+    double error;
+    double totalError = 0.0;
+    double prevInput = 0.0;
+    double derivitive;
 
-		double integralBound = 3000.0;
-		double maxIntegral = 30.0;
+    double integralBound = 3000.0;
+    double maxIntegral = 30.0;
 
-		double power;
+    double power;
 
-		bool turnPid = false;
+    bool turnPid = false;
 
-	protected:
-		double calculatePidValues(double input) {
+protected:
+    double calculatePidValues(double input) {
+        this->error = target - input;
 
-			this->error = target - input;
+        if (turnPid) {
+            this->error = angleDifference(target, input).getValue();
+        }
 
-			if (turnPid) {
-				this->error = angleDifference(target, input).getValue();
-			}
+        this->derivitive = -(input - this->prevInput);
 
-			this->derivitive = - (input - this->prevInput);
+        if (abs(error) < integralBound) {
+            totalError += error;
+        } else {
+            totalError = 0;
+        }
 
-			if (abs(error) < integralBound) {
-				totalError += error;
-			}
-			else {
-				totalError = 0;
-			}
+        totalError = abs(totalError) > maxIntegral ? copysign(1.0, totalError) * maxIntegral : totalError;
 
-			totalError = abs(totalError) > maxIntegral ? copysign(1.0, totalError) * maxIntegral : totalError;
+        this->power = (error * kP) + (derivitive * kD) + (totalError * kI);
 
-			this->power = (error * kP) + (derivitive * kD) + (totalError * kI);
+        this->prevInput = input;
 
-			this->prevInput = input;
-
-			return this->power;
-		}
+        return this->power;
+    }
 
 public:
-	PID() {
-		this->kP = 0.0;
-		this->kI = 0.0;
-		this->kD = 0.0;
-		this->target = 0.0;
-	}
+    PID() {
+        this->kP = 0.0;
+        this->kI = 0.0;
+        this->kD = 0.0;
+        this->target = 0.0;
+    }
 
-	PID(const double kP, const double kI, const double kD, const double target = 0, const bool turnPid = false) {
-		this->kP = kP;
-		this->kI = kI;
-		this->kD = kD;
-		this->target = target;
-		this->turnPid = turnPid;
-	}
+    PID(const double kP, const double kI, const double kD, const double target = 0, const bool turnPid = false) {
+        this->kP = kP;
+        this->kI = kI;
+        this->kD = kD;
+        this->target = target;
+        this->turnPid = turnPid;
+    }
 
-	double update(double input) {
-		return calculatePidValues(input);
-	}
+    PID(const double k_p, const double k_i, const double k_d, const double integral_bound,
+        const double max_integral)
+        : kP(k_p),
+          kI(k_i),
+          kD(k_d), error(0), derivitive(0),
+          integralBound(integral_bound),
+          maxIntegral(max_integral), power(0) {
+    }
 
-	void operator=(PID pid) {
-		this->kP = pid.getKP();
-		this->kI = pid.getKI();
-		this->kD = pid.getKD();
-		this->integralBound = pid.getIntegralBound();
-		this->maxIntegral = pid.getMaxIntegral();
-	}
+    double update(double input) {
+        return calculatePidValues(input);
+    }
 
-	void operator=(PID* pid) {
-		this->kP = pid->getKP();
-		this->kI = pid->getKI();
-		this->kD = pid->getKD();
-		this->integralBound = pid->getIntegralBound();
-		this->maxIntegral = pid->getMaxIntegral();
-	}
+    void operator=(PID pid) {
+        this->kP = pid.getKP();
+        this->kI = pid.getKI();
+        this->kD = pid.getKD();
+        this->integralBound = pid.getIntegralBound();
+        this->maxIntegral = pid.getMaxIntegral();
+    }
 
-	double getDerivitive() {
-		return derivitive;
-	}
+    void operator=(PID *pid) {
+        this->kP = pid->getKP();
+        this->kI = pid->getKI();
+        this->kD = pid->getKD();
+        this->integralBound = pid->getIntegralBound();
+        this->maxIntegral = pid->getMaxIntegral();
+    }
 
-	double getError() {
-		return error;
-	}
+    double getDerivitive() {
+        return derivitive;
+    }
 
-	double getKP() {
-		return kP;
-	}
+    double getError() {
+        return error;
+    }
 
-	void setKP(double kP) {
-		this->kP = kP;
-	}
+    double getKP() {
+        return kP;
+    }
 
-	double getKI() {
-		return kI;
-	}
+    void setKP(double kP) {
+        this->kP = kP;
+    }
 
-	void setKI(double kI) {
-		this->kI = kI;
-	}
+    double getKI() {
+        return kI;
+    }
 
-	double getKD() {
-		return kD;
-	}
+    void setKI(double kI) {
+        this->kI = kI;
+    }
 
-	void setKD(double kD) {
-		this->kD = kD;
-	}
+    double getKD() {
+        return kD;
+    }
 
-	double getIntegralBound() {
-		return this->integralBound;
-	}
+    void setKD(double kD) {
+        this->kD = kD;
+    }
 
-	void setIntegralBound(double integralBound) {
-		this->integralBound = integralBound;
-	}
+    double getIntegralBound() {
+        return this->integralBound;
+    }
 
-	double getMaxIntegral() {
-		return this->maxIntegral;
-	}
+    void setIntegralBound(double integralBound) {
+        this->integralBound = integralBound;
+    }
 
-	void setMaxIntegral(double maxIntegral) {
-		this->maxIntegral = maxIntegral;
-	}
+    double getMaxIntegral() {
+        return this->maxIntegral;
+    }
 
-	void reset() {
-		this->prevInput = 0;
-		this->error = 0;
-		this->derivitive = 0;
-	}
+    void setMaxIntegral(double maxIntegral) {
+        this->maxIntegral = maxIntegral;
+    }
 
-	[[nodiscard]] bool getTurnPid() const {
-		return turnPid;
-	}
+    void reset() {
+        this->prevInput = 0;
+        this->error = 0;
+        this->derivitive = 0;
+    }
 
-	void setTurnPid(const bool turn_pid) {
-		turnPid = turn_pid;
-	}
+    [[nodiscard]] bool getTurnPid() const {
+        return turnPid;
+    }
 
-	~PID() override = default;
+    void setTurnPid(const bool turn_pid) {
+        turnPid = turn_pid;
+    }
+
+    ~PID() override = default;
 };

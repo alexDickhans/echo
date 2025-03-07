@@ -31,6 +31,8 @@ public:
         vision(vision) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         intakeMotor.set_gearing(pros::MotorGears::blue);
+        vision.enable_detection_types(pros::AivisionModeType::colors);
+        vision.enable_detection_types(pros::AivisionModeType::color_merge);
         vision.set_color(RED_COLOR_DESC);
         vision.set_color(BLUE_COLOR_DESC);
     }

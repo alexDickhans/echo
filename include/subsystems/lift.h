@@ -31,7 +31,7 @@ public:
         }
 
         // No-op
-        if (abs(motor.get_current_draw()) < 600) {
+        if (abs(motor.get_current_draw()) < 2000) {
             lastFree = pros::millis() * millisecond;
         }
     }
@@ -89,10 +89,12 @@ public:
         return pros::millis() * 1_ms - lastFree > duration;
     }
 
-    FunctionalCommand *zero() {
-        return new FunctionalCommand([this]() { this->setVoltage(1.0); }, []() {
-                                     }, [](bool _) {
-                                     }, [this]() { return this->stalled(300_ms); }, {this});
+    Command *zero() {
+        return (new FunctionalCommand([this]() { this->setVoltage(-0.3); }, []() {
+                                      }, [this](bool _) {
+                                      }, [this]() { return this->stalled(300_ms); }, {this}))->andThen(
+            this->pctCommand(0.0)->withTimeout(200_ms))->andThen(
+            new InstantCommand([this]() { this->motor.tare_position(); }, {this}));
     }
 
     ~LiftSubsystem() override = default;
