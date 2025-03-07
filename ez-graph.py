@@ -9,10 +9,10 @@ def read_terminal_output(file_path, name):
         for line in file:
             if name in line:
                 parts = line.split(':')
-                if len(parts) == 3:
+                if len(parts) == 2:
                     try:
-                        x = float(parts[1].split(" ")[-1])
-                        y = float(parts[2].split(" ")[1])
+                        x = float(parts[0].split(" ")[-1])
+                        y = float(parts[1].split(" ")[1])
                         x_values.append(x)
                         y_values.append(y)
                     except ValueError:
