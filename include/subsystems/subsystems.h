@@ -132,6 +132,14 @@ inline void initializeCommands() {
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
         }),
         new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(70_ms)
+        }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(90_ms)
+        }),
+        new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(400_ms)
         }),

@@ -30,10 +30,10 @@ public:
             new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT, 0.0)),
             new Ramsete(drivetrainSubsystem, &skills_1),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
-                liftSubsystem->pctCommand(1.0)->withTimeout(400_ms)->asProxy()),
+                liftSubsystem->pctCommand(1.0)->withTimeout(500_ms)->asProxy()),
             drivetrainSubsystem->pct(0.1, 0.1)->race(loadLB->withTimeout(1200_ms)->asProxy()),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
-                liftSubsystem->pctCommand(1.0)->withTimeout(400_ms)->asProxy()),
+                liftSubsystem->pctCommand(1.0)->withTimeout(500_ms)->asProxy()),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
                 liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
             new Ramsete(drivetrainSubsystem, &skills_2),
@@ -41,7 +41,7 @@ public:
             new Ramsete(drivetrainSubsystem, &skills_3),
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(0.2_s),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
-                liftSubsystem->pctCommand(1.0)->withTimeout(400_ms)->asProxy()),
+                liftSubsystem->pctCommand(1.0)->withTimeout(500_ms)->asProxy()),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
                 liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
             new Ramsete(drivetrainSubsystem, &skills_4),
