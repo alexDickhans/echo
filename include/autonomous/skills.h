@@ -26,10 +26,7 @@ public:
             drivetrainSubsystem->setNorm(Eigen::Vector2f((6_in).getValue(), (55.5_in).getValue()),
                                          Eigen::Matrix2f::Identity() * 0.04,
                                          129_deg, false),
-            (new TrapLiftPosition(liftSubsystem, 2.0_deg,
-                                  TrapProfile({(50_deg / second).getValue(), (50_deg / second / second).getValue()}),
-                                  TrapProfile::State(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT.getValue(), 0.0)))->
-            withTimeout(650_ms)->asProxy(),
+            SharedCommands::scoreAlliance()->asProxy(),
             new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT, 0.0)),
             new Ramsete(drivetrainSubsystem, &skills_1),
             drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(0.2_s),
@@ -41,10 +38,7 @@ public:
             drivetrainSubsystem->pct(0.1, 0.1)->race(
                 liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
             new Ramsete(drivetrainSubsystem, &skills_2),
-            drivetrainSubsystem->pct(0.0, 0.0)->race(
-                liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT)->withTimeout(500_ms)->asProxy()),
-            drivetrainSubsystem->pct(0.1, 0.1)->race(
-                liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
+            drivetrainSubsystem->pct(0.0, 0.0)->race(SharedCommands::scoreAlliance()->asProxy()),
             new Ramsete(drivetrainSubsystem, &skills_3),
             drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(0.2_s),
             drivetrainSubsystem->pct(0.1, 0.1)->race(

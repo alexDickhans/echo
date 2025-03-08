@@ -13,18 +13,9 @@ public:
      * @return Command that scores on alliance
      */
     static Command *scoreAlliance() {
-        return new Command();
-    }
-
-
-    /**
-     * Build command to score on alliance stakes, but throw the ring
-     * slightly less
-     *
-     * @return Command that scores on alliance
-     */
-    static Command *scoreAlliance2() {
-        return new Command();
+        return liftSubsystem->positionCommand(110_deg, 20_deg)->andThen((new TrapLiftPosition(liftSubsystem, 2.0_deg,
+                                  TrapProfile({350.0, 1500.0}),
+                                  TrapProfile::State(180.0, 0.0)))->withTimeout(400_ms));
     }
 
     /**

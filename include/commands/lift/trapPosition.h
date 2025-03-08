@@ -17,19 +17,17 @@ private:
 
 public:
     TrapLiftPosition(LiftSubsystem *lift, const Angle tolerance, const TrapProfile &profile,
-                     TrapProfile::State setpoint) :
+                     const TrapProfile::State &setpoint) :
         lift(lift), tolerance(tolerance), setpoint(setpoint), profile(profile) {}
 
     void initialize() override {}
 
     void execute() override {
         auto angle =
-                profile.calculate(70_ms,
+                profile.calculate(100_ms,
                                   {lift->getPosition().Convert(degree), lift->getVelocity().Convert(degree / second)},
                                   setpoint);
         lift->setTarget(angle.position * 1_deg);
-
-        std::cout << angle.velocity << ", " << angle.position << ", " << lift->getPosition().Convert(degree) << std::endl;
     }
 
     bool isFinished() override {
