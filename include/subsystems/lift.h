@@ -16,6 +16,9 @@ private:
 
     std::optional<double> voltage;
 
+    Angle lastPosition;
+    QAngularVelocity velocity;
+
     QTime lastFree = 0.0;
 
 public:
@@ -25,8 +28,9 @@ public:
     }
 
     void periodic() override {
+        auto position = this->getPosition();
         if (!voltage.has_value()) {
-            const auto command = pid.update(this->getPosition().Convert(radian));
+            const auto command = pid.update(position.Convert(radian));
             motor.move_voltage(command * 12000.0);
         }
 
@@ -34,6 +38,10 @@ public:
         if (abs(motor.get_current_draw()) < 2000) {
             lastFree = pros::millis() * millisecond;
         }
+
+        velocity = (position - lastPosition)/10_ms;
+
+        lastPosition = position;
     }
 
     void setTarget(Angle angle) {
@@ -96,6 +104,8 @@ public:
             this->pctCommand(0.0)->withTimeout(200_ms))->andThen(
             new InstantCommand([this]() { this->motor.tare_position(); }, {this}));
     }
+
+    QAngularVelocity getVelocity() const { return velocity; }
 
     ~LiftSubsystem() override = default;
 };

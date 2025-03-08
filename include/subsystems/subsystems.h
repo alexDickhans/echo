@@ -24,6 +24,7 @@
 #include "motionProfiling/pathCommands.h"
 #include "pros/adi.hpp"
 #include "topIntake.h"
+#include "commands/lift/trapPosition.h"
 
 #include <queue>
 #include <algorithm>

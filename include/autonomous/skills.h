@@ -23,9 +23,13 @@ public:
      */
     static Command *skills() {
         return new Sequence({
-            drivetrainSubsystem->setNorm(Eigen::Vector2f((6_in).getValue(), (55.5_in).getValue()), Eigen::Matrix2f::Identity() * 0.04,
+            drivetrainSubsystem->setNorm(Eigen::Vector2f((6_in).getValue(), (55.5_in).getValue()),
+                                         Eigen::Matrix2f::Identity() * 0.04,
                                          129_deg, false),
-            liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT)->withTimeout(650_ms)->asProxy(),
+            (new TrapLiftPosition(liftSubsystem, 2.0_deg,
+                                  TrapProfile({(50_deg / second).getValue(), (50_deg / second / second).getValue()}),
+                                  TrapProfile::State(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT.getValue(), 0.0)))->
+            withTimeout(650_ms)->asProxy(),
             new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT, 0.0)),
             new Ramsete(drivetrainSubsystem, &skills_1),
             drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(0.2_s),
@@ -33,9 +37,9 @@ public:
                 liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)->withTimeout(700_ms)->asProxy()),
             drivetrainSubsystem->pct(0.1, 0.1)->race(basicLoadLB->withTimeout(800_ms)->asProxy()),
             drivetrainSubsystem->pct(0.1, 0.1)->race(
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)->withTimeout(400_ms)->asProxy()),
-        drivetrainSubsystem->pct(0.1, 0.1)->race(
-            liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
+                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)->withTimeout(400_ms)->asProxy()),
+            drivetrainSubsystem->pct(0.1, 0.1)->race(
+                liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
             new Ramsete(drivetrainSubsystem, &skills_2),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
                 liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT)->withTimeout(500_ms)->asProxy()),
