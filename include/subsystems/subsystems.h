@@ -93,6 +93,7 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("stopIntake3",
                                   TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.8, 0.0));
     PathCommands::registerCommand("hangRelease", hangRelease);
+    PathCommands::registerCommand("resetLB", liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
 }
 
 inline void initializeCommands() {
@@ -138,7 +139,7 @@ inline void initializeCommands() {
         hangSubsystem->levelCommand(false),
         liftSubsystem->positionCommand(70_deg, 0.0)
     }))->andThen(new ParallelRaceGroup({
-        drivetrainSubsystem->hangOut(1.0, 7.0_in),
+        drivetrainSubsystem->hangOut(1.0, 6.0_in),
         hangSubsystem->levelCommand(false)->with(liftSubsystem->positionCommand(15_deg, 0.0))->until([]() {
             return drivetrainSubsystem->getStringDistance() > 3.0_in;
         })->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg, 0.0))),

@@ -23,26 +23,32 @@ public:
      */
     static Command *skills() {
         return new Sequence({
-            drivetrainSubsystem->setNorm(Eigen::Vector2f(0.0, (60_in).getValue()), Eigen::Matrix2f::Identity() * 0.04,
-                                         -90_deg, false),
-            new ScheduleCommand(intakeWithEject->withTimeout(300_ms)),
-            new WaitCommand(200_ms),
+            drivetrainSubsystem->setNorm(Eigen::Vector2f((6_in).getValue(), (55.5_in).getValue()), Eigen::Matrix2f::Identity() * 0.04,
+                                         129_deg, false),
+            liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT)->withTimeout(650_ms)->asProxy(),
+            new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT, 0.0)),
             new Ramsete(drivetrainSubsystem, &skills_1),
             drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(0.2_s),
             drivetrainSubsystem->pct(0.1, 0.1)->race(
-                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)->withTimeout(700_ms)),
-            drivetrainSubsystem->pct(0.1, 0.1)->race(basicLoadLB),
+                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)->withTimeout(700_ms)->asProxy()),
+            drivetrainSubsystem->pct(0.1, 0.1)->race(basicLoadLB->withTimeout(800_ms)->asProxy()),
             drivetrainSubsystem->pct(0.1, 0.1)->race(
-                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)->withTimeout(400_ms)),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)->withTimeout(400_ms)->asProxy()),
+        drivetrainSubsystem->pct(0.1, 0.1)->race(
+            liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
             new Ramsete(drivetrainSubsystem, &skills_2),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
-                liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT)->withTimeout(500_ms)),
+                liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT)->withTimeout(500_ms)->asProxy()),
+            drivetrainSubsystem->pct(0.1, 0.1)->race(
+                liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
             new Ramsete(drivetrainSubsystem, &skills_3),
             drivetrainSubsystem->pct(0.1, 0.1)->withTimeout(0.2_s),
             drivetrainSubsystem->pct(0.1, 0.1)->race(
-                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)->withTimeout(700_ms)),
+                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_SCORE_HEIGHT)->withTimeout(700_ms)->asProxy()),
+            drivetrainSubsystem->pct(0.1, 0.1)->race(
+                liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
             new Ramsete(drivetrainSubsystem, &skills_4),
-            new ScheduleCommand(hang),
+            // new ScheduleCommand(hang),
         });
     }
 };
