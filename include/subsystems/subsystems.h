@@ -95,7 +95,13 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("stopIntake3",
                                   TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.8, 0.0));
     PathCommands::registerCommand("hangRelease", hangRelease);
-    PathCommands::registerCommand("resetLB", liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
+    PathCommands::registerCommand(
+        "resetLB", liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
+    PathCommands::registerCommand("liftZero", liftSubsystem->positionCommand(0_deg));
+    PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(110_deg, 20_deg)->andThen(
+                                      (new TrapLiftPosition(liftSubsystem, 2.0_deg,
+                                                            TrapProfile({350.0, 1500.0}),
+                                                            TrapProfile::State(180.0, 0.0)))->withTimeout(400_ms)));
 }
 
 inline void initializeCommands() {

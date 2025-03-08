@@ -25,7 +25,7 @@ namespace CONFIG {
 
     constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
 
-    constexpr QVelocity MAX_SPEED = 68_in / second;
+    constexpr QVelocity MAX_SPEED = 63_in / second;
 
     inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 8.0);
 
