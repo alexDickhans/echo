@@ -90,7 +90,7 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("bottomIntakeOffTopOn",
                                   topIntakeSubsystem->pctCommand(1.0)->with(bottomIntakeSubsystem->pctCommand(0.0)));
     PathCommands::registerCommand("stopIntake",
-                                  bottomIntakeSubsystem->pctCommand(0.0)->with(topIntakeSubsystem->pctCommand(0.0)));
+                                  bottomIntakeSubsystem->pctCommand(0.0)->with(topIntakeSubsystem->pctCommand(0.0))->withTimeout(10_ms));
     PathCommands::registerCommand("stopIntake3",
                                   TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.9, 0.0));
     PathCommands::registerCommand("hangRelease", hangRelease);
