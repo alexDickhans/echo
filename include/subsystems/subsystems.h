@@ -52,7 +52,7 @@ inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
 inline void initializeController() {
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
-    primary.getTrigger(DIGITAL_A)->whileTrue(hang);
+    primary.getTrigger(DIGITAL_A)->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));
 
     primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->onTrue(hangRelease);
 
@@ -62,7 +62,6 @@ inline void initializeController() {
 
     primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeWithEject);
     primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1)->negate())->toggleOnTrue(loadLB);
-    // loading position
 
     primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
     primary.getTrigger(DIGITAL_UP)->whileTrue(drivetrainSubsystem->characterizeLinear());
@@ -101,7 +100,8 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(110_deg, 20_deg)->andThen(
                                       (new TrapLiftPosition(liftSubsystem, 2.0_deg,
                                                             TrapProfile({350.0, 1500.0}),
-                                                            TrapProfile::State(180.0, 0.0)))->withTimeout(400_ms)));
+                                                            TrapProfile::State(180.0, 0.0)))->withTimeout(400_ms))->
+                                  andThen(liftSubsystem->positionCommand(180.0_deg, 0.0)));
 }
 
 inline void initializeCommands() {

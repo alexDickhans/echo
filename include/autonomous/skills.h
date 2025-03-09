@@ -27,10 +27,10 @@ public:
                                          Eigen::Matrix2f::Identity() * 0.04,
                                          129_deg, false),
             SharedCommands::scoreAlliance()->asProxy(),
-            new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::ALLIANCE_STAKE_SCORE_HEIGHT, 0.0)),
+            new ScheduleCommand(liftSubsystem->positionCommand(180_deg, 0.0)),
             new Ramsete(drivetrainSubsystem, &skills_1),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
-                liftSubsystem->pctCommand(1.0)->withTimeout(500_ms)->asProxy()),
+                liftSubsystem->pctCommand(1.0)->withTimeout(550_ms)->asProxy()),
             drivetrainSubsystem->pct(0.1, 0.1)->race(loadLB->withTimeout(1200_ms)->asProxy()),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
                 liftSubsystem->pctCommand(1.0)->withTimeout(500_ms)->asProxy()),
@@ -41,9 +41,9 @@ public:
             new Ramsete(drivetrainSubsystem, &skills_3),
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(0.2_s),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
-                liftSubsystem->pctCommand(1.0)->withTimeout(500_ms)->asProxy()),
-            drivetrainSubsystem->pct(0.0, 0.0)->race(
-                liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
+                liftSubsystem->pctCommand(1.0)->withTimeout(500_ms)->asProxy())->andThen(
+                new ScheduleCommand(liftSubsystem->positionCommand(90_deg, 0.0))),
+            drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(100_ms),
             new Ramsete(drivetrainSubsystem, &skills_4),
             // new ScheduleCommand(hang),
         });
