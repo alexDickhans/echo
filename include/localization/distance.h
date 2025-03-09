@@ -37,7 +37,7 @@ public:
 
 		measured = tuningConstant * measuredMM * millimetre;
 
-		std = 0.5 * measured / sqrt(distance.get_confidence() / 64.0);
+		std = 0.2 * measured / sqrt(distance.get_confidence() / 64.0);
 	}
 
 	[[nodiscard]] std::optional<double> p(const Eigen::Vector3f& X) override {

@@ -13,18 +13,7 @@ public:
      * @return Command that scores on alliance
      */
     static Command *scoreAlliance() {
-        return new Command();
-    }
-
-
-    /**
-     * Build command to score on alliance stakes, but throw the ring
-     * slightly less
-     *
-     * @return Command that scores on alliance
-     */
-    static Command *scoreAlliance2() {
-        return new Command();
+        return liftSubsystem->positionCommand(180_deg, 20_deg)->withTimeout(600_ms);
     }
 
     /**

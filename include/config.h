@@ -25,7 +25,7 @@ namespace CONFIG {
 
     constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
 
-    constexpr QVelocity MAX_SPEED = 68_in / second;
+    constexpr QVelocity MAX_SPEED = 63_in / second;
 
     inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 8.0);
 
@@ -35,9 +35,9 @@ namespace CONFIG {
     constexpr Angle LIFT_IDLE_POSITION = 6_deg;
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 24_deg;
     constexpr Angle WALL_STAKE_PRIME_HEIGHT = 70_deg;
-    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 128_deg;
+    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 131_deg;
     constexpr Angle DESCORE_HEIGHT = 140_deg;
-    constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 160_deg;
+    constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 185_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
         return (velocity).getValue() * 0.67 + (accel).getValue() * 0.037 + copysign(0.02, velocity.getValue());
