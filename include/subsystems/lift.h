@@ -51,7 +51,7 @@ public:
 
     void setVoltage(double voltage) {
         this->voltage = voltage;
-        motor.move_voltage(voltage * 12000.0);
+        motor.move_voltage(voltage * 8000.0);
     }
 
     Angle getPosition() const {

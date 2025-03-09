@@ -203,7 +203,7 @@ inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
     topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(16));
-    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
+    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(2));
     liftSubsystem = new LiftSubsystem({-1}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
@@ -231,7 +231,7 @@ inline void subsystemInit() {
     });
 
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2388.0 / 2445.0,
-                                                            pros::Distance(5)));
+                                                            pros::Distance(4)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2388.0 / 2428.0,
                                                             pros::Distance(6)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2388.0 / 2415.0,

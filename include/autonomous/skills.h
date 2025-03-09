@@ -25,7 +25,7 @@ public:
         return new Sequence({
             drivetrainSubsystem->setNorm(Eigen::Vector2f((6_in).getValue(), (55.5_in).getValue()),
                                          Eigen::Matrix2f::Identity() * 0.04,
-                                         129_deg, false),
+                                         128_deg, false),
             SharedCommands::scoreAlliance()->asProxy(),
             new ScheduleCommand(liftSubsystem->positionCommand(180_deg, 0.0)),
             new Ramsete(drivetrainSubsystem, &skills_1),
