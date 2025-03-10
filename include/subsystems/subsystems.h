@@ -65,15 +65,23 @@ inline void initializeController() {
 
     negatedHang = (new Trigger(hangRelease))->negate();
 
-    primary.getTrigger(DIGITAL_L1)->andOther(primary.getTrigger(DIGITAL_L2)->negate())->andOther(negatedHang)->
+    primary.getTrigger(DIGITAL_L1)->andOther(primary.getTrigger(DIGITAL_L2)->negate())->
+            andOther(primary.getTrigger(DIGITAL_R1)->negate())->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
+            andOther(negatedHang)->
             whileTrue(
                 liftSubsystem->positionCommand(200_deg, 0.0));
-    primary.getTrigger(DIGITAL_L2)->andOther(primary.getTrigger(DIGITAL_L1)->negate())->andOther(negatedHang)->
+    primary.getTrigger(DIGITAL_L2)->andOther(primary.getTrigger(DIGITAL_L1)->negate())->
+            andOther(primary.getTrigger(DIGITAL_R1)->negate())->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
+            andOther(negatedHang)->
             whileTrue(liftSubsystem->positionCommand(240_deg, 0.0));
 
-    primary.getTrigger(DIGITAL_R2)->andOther(primary.getTrigger(DIGITAL_R1)->negate())->andOther(negatedHang)->
+    primary.getTrigger(DIGITAL_R2)->andOther(primary.getTrigger(DIGITAL_R1)->negate())->
+            andOther(primary.getTrigger(DIGITAL_L1)->negate())->andOther(primary.getTrigger(DIGITAL_L2)->negate())->
+            andOther(negatedHang)->
             toggleOnTrue(intakeWithEject);
-    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_R2)->negate())->andOther(negatedHang)->
+    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
+            andOther(primary.getTrigger(DIGITAL_L1)->negate())->andOther(primary.getTrigger(DIGITAL_L2)->negate())->
+            andOther(negatedHang)->
             toggleOnTrue(loadLB);
 
     primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
