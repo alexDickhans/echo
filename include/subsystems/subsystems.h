@@ -44,6 +44,7 @@ inline Command *barToBarHang;
 inline Command *gripBar;
 inline Command *letOutString;
 inline Command *basicLoadLB;
+inline Command *fastLoadLB;
 inline Command *intakeNoEject;
 inline Command *hangRelease;
 
@@ -98,6 +99,8 @@ inline void initializePathCommands() {
         "resetLB", liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
     PathCommands::registerCommand("liftZero", liftSubsystem->positionCommand(6_deg));
     PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(190_deg, 0.0));
+    PathCommands::registerCommand("outtakeBottom", bottomIntakeSubsystem->pctCommand(-1.0));
+    PathCommands::registerCommand("fastLoadLB", fastLoadLB);
 }
 
 inline void initializeCommands() {
@@ -122,6 +125,26 @@ inline void initializeCommands() {
             liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0),
             new WaitUntilCommand([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE; })
         }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0),
+            topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+        }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(80_ms)
+        }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(120_ms)
+        }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(400_ms)
+        }),
+    });
+
+    fastLoadLB = new Sequence({
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0),
             topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
