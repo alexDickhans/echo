@@ -32,8 +32,8 @@ namespace CONFIG {
     inline PID TURN_PID = PID(0.9, 0.0, 6.0);
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
-    constexpr Angle LIFT_IDLE_POSITION = 6_deg;
-    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 24_deg;
+    constexpr Angle LIFT_IDLE_POSITION = 3_deg;
+    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 22_deg;
     constexpr Angle WALL_STAKE_PRIME_HEIGHT = 40_deg;
     constexpr Angle WALL_STAKE_SCORE_HEIGHT = 131_deg;
     constexpr Angle DESCORE_HEIGHT = 140_deg;
@@ -58,10 +58,10 @@ namespace CONFIG {
 
     inline double K_s = 0.12;
 
-    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.62, 0.015};
-    inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.0915, 0.0150};
-    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.63, 0.0135};
-    inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.07, 0.013};
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.53, 0.015};
+    inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.104, 0.015};
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.515, 0.0115};
+    inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.075, 0.013};
 
     constexpr QLength START_STRING_LENGTH = 0.0;
     constexpr QLength WINCH_RADIUS = 0.303_in / 2.0;

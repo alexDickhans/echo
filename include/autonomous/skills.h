@@ -31,17 +31,17 @@ public:
             new Ramsete(drivetrainSubsystem, &skills_1),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
                 liftSubsystem->pctCommand(1.0)->withTimeout(550_ms)->asProxy()),
-            drivetrainSubsystem->pct(0.1, 0.1)->race(loadLB->withTimeout(1200_ms)->asProxy()),
+            drivetrainSubsystem->pct(0.1, 0.1)->race(loadLB->withTimeout(1500_ms)->asProxy()),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
                 liftSubsystem->pctCommand(1.0)->withTimeout(500_ms)->asProxy()),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
                 liftSubsystem->positionCommand(0.0)->withTimeout(100_ms)->asProxy()),
             new Ramsete(drivetrainSubsystem, &skills_2),
-            drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(300_ms),
+            (new Rotate(drivetrainSubsystem, -90_deg, false))->withTimeout(300_ms),
             new Ramsete(drivetrainSubsystem, &skills_3),
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(0.2_s),
             drivetrainSubsystem->pct(0.0, 0.0)->race(
-                liftSubsystem->pctCommand(1.0)->withTimeout(500_ms)->asProxy())->andThen(
+                liftSubsystem->pctCommand(1.0)->withTimeout(550_ms)->asProxy())->andThen(
                 new ScheduleCommand(liftSubsystem->positionCommand(90_deg, 0.0))),
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(100_ms),
             new Ramsete(drivetrainSubsystem, &skills_4),
