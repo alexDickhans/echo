@@ -35,6 +35,7 @@ inline MotorSubsystem *bottomIntakeSubsystem;
 inline LiftSubsystem *liftSubsystem;
 inline SolenoidSubsystem *goalClampSubsystem;
 inline SolenoidSubsystem *hangSubsystem;
+inline SolenoidSubsystem *doinker;
 
 inline Command *loadLB;
 inline Command *intakeWithEject;
@@ -48,30 +49,53 @@ inline Command *fastLoadLB;
 inline Command *intakeNoEject;
 inline Command *hangRelease;
 
+inline Command *doinkerDown;
+
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
+
+inline Trigger *negatedHang;
+
+bool hangReleased = false;
 
 inline void initializeController() {
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));
 
-    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->onTrue(hangRelease);
+    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
+            andOther(primary.getTrigger(DIGITAL_L2))->onTrue(
+                (new InstantCommand([]() { hangReleased = true; }, {}))->andThen(hangRelease));
 
-    primary.getTrigger(DIGITAL_L1)->andOther(primary.getTrigger(DIGITAL_R1)->negate())->whileTrue(
-        liftSubsystem->positionCommand(200_deg, 0.0)); // LB up
-    primary.getTrigger(DIGITAL_L2)->whileTrue(liftSubsystem->positionCommand(240_deg, 0.0)); // LB down
+    negatedHang = (new Trigger(hangRelease))->negate();
 
-    primary.getTrigger(DIGITAL_R2)->toggleOnTrue(intakeWithEject);
-    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1)->negate())->toggleOnTrue(loadLB);
+    primary.getTrigger(DIGITAL_L1)->andOther(primary.getTrigger(DIGITAL_L2)->negate())->
+            andOther(primary.getTrigger(DIGITAL_R1)->negate())->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
+            andOther(negatedHang)->
+            whileTrue(
+                liftSubsystem->positionCommand(200_deg, 0.0));
+    primary.getTrigger(DIGITAL_L2)->andOther(primary.getTrigger(DIGITAL_L1)->negate())->
+            andOther(primary.getTrigger(DIGITAL_R1)->negate())->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
+            andOther(negatedHang)->
+            whileTrue(liftSubsystem->positionCommand(240_deg, 0.0));
 
-    primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
-    primary.getTrigger(DIGITAL_UP)->whileTrue(drivetrainSubsystem->characterizeLinear());
-    primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
+    primary.getTrigger(DIGITAL_R2)->andOther(primary.getTrigger(DIGITAL_R1)->negate())->
+            andOther(primary.getTrigger(DIGITAL_L1)->negate())->andOther(primary.getTrigger(DIGITAL_L2)->negate())->
+            andOther(negatedHang)->
+            toggleOnTrue(intakeWithEject);
+    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
+            andOther(primary.getTrigger(DIGITAL_L1)->negate())->andOther(primary.getTrigger(DIGITAL_L2)->negate())->
+            andOther(negatedHang)->
+            toggleOnTrue(loadLB);
+
+    // primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
+    primary.getTrigger(DIGITAL_UP)->toggleOnTrue(doinkerDown);
+    // primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
-    primary.getTrigger(DIGITAL_Y)
-            ->whileTrue(new ConditionalCommand(hang, liftSubsystem->positionCommand(140_deg, 0.0),
-                                               []() { return hangSubsystem->getLastValue(); }));
+    primary.getTrigger(DIGITAL_Y)->andOther(new Trigger([]() { return !hangReleased; }))
+            ->whileTrue(liftSubsystem->positionCommand(140_deg, 0.0));
+    primary.getTrigger(DIGITAL_Y)->andOther(new Trigger([]() { return hangReleased; }))
+            ->whileTrue(hang);
 
     primary.getTrigger(DIGITAL_B)->onTrue(
         liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
@@ -91,7 +115,8 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("bottomIntakeOffTopOn",
                                   topIntakeSubsystem->pctCommand(1.0)->with(bottomIntakeSubsystem->pctCommand(0.0)));
     PathCommands::registerCommand("stopIntake",
-                                  bottomIntakeSubsystem->pctCommand(0.0)->with(topIntakeSubsystem->pctCommand(0.0))->withTimeout(10_ms));
+                                  bottomIntakeSubsystem->pctCommand(0.0)->with(topIntakeSubsystem->pctCommand(0.0))->
+                                  withTimeout(10_ms));
     PathCommands::registerCommand("stopIntake3",
                                   TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.9, 0.0));
     PathCommands::registerCommand("hangRelease", hangRelease);
@@ -182,12 +207,12 @@ inline void initializeCommands() {
 
     gripBar = new Sequence({
         new ParallelRaceGroup({
-            drivetrainSubsystem->hangIn(1.0, -7.5_in),
+            drivetrainSubsystem->hangIn(1.0, -7.8_in),
             hangSubsystem->levelCommand(true),
             liftSubsystem->positionCommand(70_deg, 0.0)
         }),
         new ParallelRaceGroup({
-            drivetrainSubsystem->hangPctCommand(-0.1),
+            drivetrainSubsystem->hangPctCommand(0.03),
             hangSubsystem->levelCommand(false),
             liftSubsystem->positionCommand(70_deg, 0.0),
             new WaitCommand(200_ms),
@@ -220,6 +245,8 @@ inline void initializeCommands() {
                 topIntakeSubsystem->pctCommand(0.0),
                 bottomIntakeSubsystem->pctCommand(0.0)
             });
+
+    doinkerDown = doinker->levelCommand(false);
 }
 
 inline void subsystemInit() {
@@ -231,6 +258,7 @@ inline void subsystemInit() {
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
+    doinker = new SolenoidSubsystem(pros::adi::DigitalOut('e'));
     drivetrainSubsystem = new DrivetrainSubsystem({-11, 13, -14}, {17, -19, 18}, pros::Imu(9),
                                                   pros::adi::DigitalOut('a'), pros::Rotation(-8), []() {
                                                       return goalClampSubsystem->getLastValue();
@@ -272,6 +300,7 @@ inline void subsystemInit() {
     CommandScheduler::registerSubsystem(liftSubsystem, liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0));
     CommandScheduler::registerSubsystem(goalClampSubsystem, goalClampSubsystem->levelCommand(false));
     CommandScheduler::registerSubsystem(hangSubsystem, hangSubsystem->levelCommand(false));
+    CommandScheduler::registerSubsystem(doinker, doinker->levelCommand(true));
 
     initializeCommands();
     initializeController();

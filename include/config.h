@@ -35,8 +35,7 @@ namespace CONFIG {
     constexpr Angle LIFT_IDLE_POSITION = 3_deg;
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 21_deg;
     constexpr Angle WALL_STAKE_PRIME_HEIGHT = 40_deg;
-    constexpr Angle WALL_STAKE_SCORE_HEIGHT = 131_deg;
-    constexpr Angle DESCORE_HEIGHT = 140_deg;
+    constexpr Angle DESCORE_HEIGHT = 145_deg;
     constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 185_deg;
 
     inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {

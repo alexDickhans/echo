@@ -30,6 +30,10 @@ public:
 		eventLoop = CommandScheduler::getEventLoop();
 	}
 
+	explicit Trigger(Command* command) : Trigger([command] () {return command->scheduled(); }) {
+
+	}
+
 	/**
 	 * @brief Binds a function to the \refitem EventLoop checks the condition to see if it has changed. Upon change the
 	 * \refitem Command is scheduled
