@@ -35,6 +35,7 @@ inline MotorSubsystem *bottomIntakeSubsystem;
 inline LiftSubsystem *liftSubsystem;
 inline SolenoidSubsystem *goalClampSubsystem;
 inline SolenoidSubsystem *hangSubsystem;
+inline SolenoidSubsystem *doinker;
 
 inline Command *loadLB;
 inline Command *intakeWithEject;
@@ -47,6 +48,8 @@ inline Command *basicLoadLB;
 inline Command *fastLoadLB;
 inline Command *intakeNoEject;
 inline Command *hangRelease;
+
+inline Command *doinkerDown;
 
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
@@ -84,9 +87,9 @@ inline void initializeController() {
             andOther(negatedHang)->
             toggleOnTrue(loadLB);
 
-    primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
-    primary.getTrigger(DIGITAL_UP)->whileTrue(drivetrainSubsystem->characterizeLinear());
-    primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
+    // primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
+    primary.getTrigger(DIGITAL_UP)->toggleOnTrue(doinkerDown);
+    // primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)->andOther(new Trigger([]() { return !hangReleased; }))
@@ -242,6 +245,8 @@ inline void initializeCommands() {
                 topIntakeSubsystem->pctCommand(0.0),
                 bottomIntakeSubsystem->pctCommand(0.0)
             });
+
+    doinkerDown = doinker->levelCommand(false);
 }
 
 inline void subsystemInit() {
@@ -253,6 +258,7 @@ inline void subsystemInit() {
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
+    doinker = new SolenoidSubsystem(pros::adi::DigitalOut('e'));
     drivetrainSubsystem = new DrivetrainSubsystem({-11, 13, -14}, {17, -19, 18}, pros::Imu(9),
                                                   pros::adi::DigitalOut('a'), pros::Rotation(-8), []() {
                                                       return goalClampSubsystem->getLastValue();
@@ -294,6 +300,7 @@ inline void subsystemInit() {
     CommandScheduler::registerSubsystem(liftSubsystem, liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0));
     CommandScheduler::registerSubsystem(goalClampSubsystem, goalClampSubsystem->levelCommand(false));
     CommandScheduler::registerSubsystem(hangSubsystem, hangSubsystem->levelCommand(false));
+    CommandScheduler::registerSubsystem(doinker, doinker->levelCommand(true));
 
     initializeCommands();
     initializeController();
