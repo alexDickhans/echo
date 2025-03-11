@@ -16,6 +16,10 @@ public:
         return liftSubsystem->positionCommand(180_deg, 20_deg)->withTimeout(600_ms);
     }
 
+    static Command *scoreWallStakes() {
+        return liftSubsystem->pctCommand(1.0)->until([] () { return liftSubsystem->getPosition() > 150_deg; })->withTimeout(550_ms);
+    }
+
     /**
      * Command to get rings out of the corner
      *

@@ -44,6 +44,7 @@ inline Command *barToBarHang;
 inline Command *gripBar;
 inline Command *letOutString;
 inline Command *basicLoadLB;
+inline Command *fastLoadLB;
 inline Command *intakeNoEject;
 inline Command *hangRelease;
 
@@ -97,7 +98,9 @@ inline void initializePathCommands() {
     PathCommands::registerCommand(
         "resetLB", liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
     PathCommands::registerCommand("liftZero", liftSubsystem->positionCommand(6_deg));
-    PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(180_deg, 10_deg));
+    PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(190_deg, 0.0));
+    PathCommands::registerCommand("outtakeBottom", bottomIntakeSubsystem->pctCommand(-1.0));
+    PathCommands::registerCommand("fastLoadLB", fastLoadLB);
 }
 
 inline void initializeCommands() {
@@ -129,11 +132,31 @@ inline void initializeCommands() {
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(70_ms)
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(90_ms)
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(160_ms)
+        }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(400_ms)
+        }),
+    });
+
+    fastLoadLB = new Sequence({
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0),
+            topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+        }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(90_ms)
+        }),
+        new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(160_ms)
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
@@ -203,7 +226,7 @@ inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
     topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(16));
-    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
+    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(2));
     liftSubsystem = new LiftSubsystem({-1}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
@@ -231,7 +254,7 @@ inline void subsystemInit() {
     });
 
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2388.0 / 2445.0,
-                                                            pros::Distance(5)));
+                                                            pros::Distance(4)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2388.0 / 2428.0,
                                                             pros::Distance(6)));
     drivetrainSubsystem->addLocalizationSensor(new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2388.0 / 2415.0,

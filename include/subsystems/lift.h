@@ -51,7 +51,7 @@ public:
 
     void setVoltage(double voltage) {
         this->voltage = voltage;
-        motor.move_voltage(voltage * 12000.0);
+        motor.move_voltage(voltage * 8000.0);
     }
 
     Angle getPosition() const {
@@ -100,7 +100,7 @@ public:
     Command *zero() {
         return (new FunctionalCommand([this]() { this->setVoltage(-0.3); }, []() {
                                       }, [this](bool _) {
-                                      }, [this]() { return this->stalled(300_ms); }, {this}))->andThen(
+                                      }, [this]() { return this->stalled(300_ms); }, {this}))->withTimeout(2000_ms)->andThen(
             this->pctCommand(0.0)->withTimeout(200_ms))->andThen(
             new InstantCommand([this]() { this->motor.tare_position(); }, {this}));
     }
