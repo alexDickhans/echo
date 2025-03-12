@@ -16,7 +16,7 @@ namespace CONFIG {
     constexpr QLength DRIVE_RADIUS = 2.75_in / 2.0;
     constexpr float DRIVE_RATIO = 48.0 / 36.0;
     constexpr float STRING_RATIO = 1.0;
-    constexpr double LIFT_RATIO = 18.0/6.0;
+    constexpr double LIFT_RATIO = 18.0 / 6.0;
     constexpr QLength TRACK_WIDTH = 11_in;
     constexpr size_t NUM_PARTICLES = 250;
     constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
@@ -38,10 +38,6 @@ namespace CONFIG {
     constexpr Angle DESCORE_HEIGHT = 145_deg;
     constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 185_deg;
 
-    inline double DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel) {
-        return (velocity).getValue() * 0.67 + (accel).getValue() * 0.037 + copysign(0.02, velocity.getValue());
-    }
-
     const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-0.5_in).getValue(), (10.5_in).getValue(), (90_deg).getValue());
     const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-0.5_in).getValue(), (-10.5_in).getValue(), (-90_deg).getValue());
     const Eigen::Vector3f DISTANCE_FRONT_OFFSET((3.75_in).getValue(), (-0.75_in).getValue(), (0_deg).getValue());
@@ -61,6 +57,17 @@ namespace CONFIG {
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.104, 0.015};
     inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.515, 0.0115};
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.075, 0.013};
+
+    inline std::pair<double, double> DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel,
+                                                            const QAngularVelocity angularVelocity,
+                                                            const QAngularAcceleration angularAcceleration) {
+        const double uLinear = DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL * Eigen::Vector2d(
+                                   velocity.getValue(), accel.getValue());
+        const double uAngular = DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL * Eigen::Vector2d(
+                                    angularVelocity.getValue(), angularAcceleration.getValue());
+
+        return {uLinear, uAngular};
+    }
 
     constexpr QLength START_STRING_LENGTH = 0.0;
     constexpr QLength WINCH_RADIUS = 0.303_in / 2.0;

@@ -89,9 +89,9 @@ inline void initializeController() {
             andOther(negatedHang)->
             toggleOnTrue(loadLB);
 
-    // primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
+    primary.getTrigger(DIGITAL_DOWN)->whileTrue(new Rotate(drivetrainSubsystem, 0.0, false));
     primary.getTrigger(DIGITAL_UP)->toggleOnTrue(doinkerDown);
-    // primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
+    primary.getTrigger(DIGITAL_LEFT)->onTrue(new Rotate(drivetrainSubsystem, 180.0_deg, false));
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)->andOther(negatedLBLoad)->andOther(new Trigger([]() { return !hangReleased; }))
@@ -128,6 +128,8 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(190_deg, 0.0));
     PathCommands::registerCommand("outtakeBottom", bottomIntakeSubsystem->pctCommand(-1.0));
     PathCommands::registerCommand("fastLoadLB", fastLoadLB);
+    PathCommands::registerCommand("doinkerDown", doinkerDown);
+    PathCommands::registerCommand("doinkerUp", doinker->levelCommand(true));
 }
 
 inline void initializeCommands() {
@@ -259,7 +261,7 @@ inline void initializeCommands() {
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
-    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(16));
+    topIntakeSubsystem = new TopIntakeSubsystem({-3}, pros::AIVision(16));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(2));
     liftSubsystem = new LiftSubsystem({-1}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));

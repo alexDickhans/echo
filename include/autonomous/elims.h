@@ -19,7 +19,7 @@ public:
      * @return Command for auton
      */
     static Command *pos_elim() {
-        Eigen::Vector3f startPose{(-12_in).getValue(), (60_in).getValue(), (0_deg).getValue()};
+        Eigen::Vector3f startPose{(-10.0_in).getValue(), (55.6_in).getValue(), (90_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
@@ -37,7 +37,7 @@ public:
     }
 
     static Command *pos_elim_no_alliance() {
-        Eigen::Vector3f startPose{(-12_in).getValue(), (60_in).getValue(), (0_deg).getValue()};
+        Eigen::Vector3f startPose{(-10.0_in).getValue(), (55.6_in).getValue(), (90_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
@@ -58,15 +58,15 @@ public:
      * @return Command for auton
      */
     static Command *neg_elim() {
-        Eigen::Vector3f startPose{(12_in).getValue(), (60_in).getValue(), (180_deg).getValue()};
+        Eigen::Vector3f startPose{(10.0_in).getValue(), (55.6_in).getValue(), (90_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
 
         return new Sequence({
             drivetrainSubsystem->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
-            new ScheduleCommand(liftSubsystem->positionCommand(50_deg)->withTimeout(500_ms)),
-            new TankMotionProfiling(drivetrainSubsystem, {60_in / second, 100_in / second / second}, 12_in, flip, 180_deg),
+            new ScheduleCommand(liftSubsystem->positionCommand(180_deg, 0.0)),
+            SharedCommands::arcOntoAlliance(flip, false),
             new Ramsete(drivetrainSubsystem, flip ? &negative_1_blue : &negative_1_red),
             SharedCommands::descoreCorner(),
             new Ramsete(drivetrainSubsystem, flip ? &negative_2_blue : &negative_2_red),

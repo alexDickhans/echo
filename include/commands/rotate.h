@@ -10,37 +10,48 @@
  */
 class Rotate : public Command {
 private:
-	DrivetrainSubsystem *drivetrain;
-	PID pid{CONFIG::TURN_PID};
-	double static_voltage;
-	bool finish{true};
+    DrivetrainSubsystem *drivetrain;
+    PID pid{CONFIG::TURN_PID};
+    double static_voltage;
+    bool finish{true};
+
+    std::function<Angle()> updateAngle;
 
 public:
-	Rotate(DrivetrainSubsystem *drivetrain, const Angle angle, const bool flip, const double static_voltage = 0.0,
+    Rotate(DrivetrainSubsystem *drivetrain, const Angle angle, const bool flip, const double static_voltage = 0.0,
            const bool finish = true)
-		: drivetrain(drivetrain),
-		  static_voltage(static_voltage),
-		  finish(finish) {
-		this->pid.setTarget((flip ? -1.0f : 1.0f) * angle.getValue());
-	}
+        : drivetrain(drivetrain),
+          static_voltage(static_voltage),
+          finish(finish), updateAngle([flip, angle]() { return (flip ? -1.0f : 1.0f) * angle.getValue(); }) {
+    }
 
-	void initialize() override {
-		pid.reset();
-		this->pid.setTurnPid(true);
-	}
+    Rotate(DrivetrainSubsystem *drivetrain, const std::function<Angle()> &updateAngle, const bool flip,
+           const double static_voltage = 0.0,
+           const bool finish = true)
+        : drivetrain(drivetrain),
+          static_voltage(static_voltage),
+          finish(finish), updateAngle(updateAngle) {
+    }
 
-	void execute() override {
-		const auto output = std::ranges::clamp(pid.update(drivetrain->getAngle().getValue()), -1.0, 1.0);
-		drivetrain->setPct(static_voltage - output, static_voltage + output);
-	}
+    void initialize() override {
+        pid.reset();
+        pid.setTarget(updateAngle().getValue());
+        this->pid.setTurnPid(true);
+    }
 
-	bool isFinished() override {
-		return finish && Qabs(angleDifference(this->drivetrain->getAngle(), pid.getTarget() * radian)) < CONFIG::ANGLE_FINISH_THRESHOLD; // && abs(pid.getDerivitive()) < CONFIG::ANGLE_DA_FINISH_THRESHOLD;
-	}
+    void execute() override {
+        const auto output = std::ranges::clamp(pid.update(drivetrain->getAngle().getValue()), -1.0, 1.0);
+        drivetrain->setPct(static_voltage - output, static_voltage + output);
+    }
 
-	std::vector<Subsystem *> getRequirements() override {
-		return {drivetrain};
-	}
+    bool isFinished() override {
+        return finish && Qabs(angleDifference(this->drivetrain->getAngle(), pid.getTarget() * radian)) <
+               CONFIG::ANGLE_FINISH_THRESHOLD; // && abs(pid.getDerivitive()) < CONFIG::ANGLE_DA_FINISH_THRESHOLD;
+    }
 
-	~Rotate() override = default;
+    std::vector<Subsystem *> getRequirements() override {
+        return {drivetrain};
+    }
+
+    ~Rotate() override = default;
 };
