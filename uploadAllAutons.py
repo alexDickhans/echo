@@ -6,7 +6,6 @@ import argparse
 
 # Autonomous modes
 AUTONS = [
-    "AWP_PUSH",
     "SAWP",
     "POS_ELIM",
     "POS_ELIM_NO_ALLIANCE",

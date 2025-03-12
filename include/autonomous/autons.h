@@ -4,7 +4,6 @@
  * Elim to define different auton routines
  */
 enum Auton_ {
-  AWP_PUSH,
   SAWP,
   POS_ELIM,
   POS_ELIM_NO_ALLIANCE,

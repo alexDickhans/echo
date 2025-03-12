@@ -55,6 +55,7 @@ inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
 inline Trigger *negatedHang;
+inline Trigger *negatedLBLoad;
 
 bool hangReleased = false;
 
@@ -67,15 +68,16 @@ inline void initializeController() {
                 (new InstantCommand([]() { hangReleased = true; }, {}))->andThen(hangRelease));
 
     negatedHang = (new Trigger(hangRelease))->negate();
+    negatedLBLoad = (new Trigger(loadLB))->negate();
 
     primary.getTrigger(DIGITAL_L1)->andOther(primary.getTrigger(DIGITAL_L2)->negate())->
             andOther(primary.getTrigger(DIGITAL_R1)->negate())->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
-            andOther(negatedHang)->
+            andOther(negatedHang)->andOther(negatedLBLoad)->
             whileTrue(
                 liftSubsystem->positionCommand(200_deg, 0.0));
     primary.getTrigger(DIGITAL_L2)->andOther(primary.getTrigger(DIGITAL_L1)->negate())->
             andOther(primary.getTrigger(DIGITAL_R1)->negate())->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
-            andOther(negatedHang)->
+            andOther(negatedHang)->andOther(negatedLBLoad)->
             whileTrue(liftSubsystem->positionCommand(240_deg, 0.0));
 
     primary.getTrigger(DIGITAL_R2)->andOther(primary.getTrigger(DIGITAL_R1)->negate())->
@@ -92,7 +94,7 @@ inline void initializeController() {
     // primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
-    primary.getTrigger(DIGITAL_Y)->andOther(new Trigger([]() { return !hangReleased; }))
+    primary.getTrigger(DIGITAL_Y)->andOther(negatedLBLoad)->andOther(new Trigger([]() { return !hangReleased; }))
             ->whileTrue(liftSubsystem->positionCommand(140_deg, 0.0));
     primary.getTrigger(DIGITAL_Y)->andOther(new Trigger([]() { return hangReleased; }))
             ->whileTrue(hang);
@@ -146,6 +148,11 @@ inline void initializeCommands() {
 
     basicLoadLB = new Sequence({
         new ParallelRaceGroup({
+            bottomIntakeSubsystem->pctCommand(1.0),
+            topIntakeSubsystem->pctCommand(0.0),
+            liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
+        }),
+        new ParallelRaceGroup({
             intakeWithEject,
             liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0),
             new WaitUntilCommand([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE; })
@@ -165,7 +172,7 @@ inline void initializeCommands() {
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(400_ms)
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0), new WaitCommand(300_ms)
         }),
     });
 
