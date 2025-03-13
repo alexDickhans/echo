@@ -17,8 +17,15 @@ public:
     }
 
     static Command *scoreWallStakes() {
-        return liftSubsystem->pctCommand(1.0)->until([] () { return liftSubsystem->getPosition() > 150_deg; })->withTimeout(550_ms);
+        return liftSubsystem->pctCommand(1.0)->until([]() { return liftSubsystem->getPosition() > 150_deg; })->
+                withTimeout(550_ms);
     }
+
+    static Command *arcOntoAlliance(bool flip, bool pos) {
+        return new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 70_in / second / second}, 2_in, flip,
+                                        90_deg, (pos ? -1.0 : 1.0) * 74_deg / 2_in);
+    }
+
 
     /**
      * Command to get rings out of the corner
@@ -27,17 +34,10 @@ public:
      */
     static Command *descoreCorner() {
         return new Sequence({
-            drivetrainSubsystem->pct(0.15, 0.15)->withTimeout(150_ms),
-            new TankMotionProfiling(drivetrainSubsystem, {15_in / second, 70_in / second / second}, -7_in,
-                                    false, -90_deg, 0.0, false),
-            new TankMotionProfiling(drivetrainSubsystem, {40_in / second, 140_in / second / second}, 7.0_in,
-                                    false, -90_deg, 0.0, false),
-            drivetrainSubsystem->pct(0.15, 0.15)->withTimeout(150_ms),
-            new TankMotionProfiling(drivetrainSubsystem, {15_in / second, 80_in / second / second}, -7_in,
-                                    false, -90_deg, 0.0, false),
-            new TankMotionProfiling(drivetrainSubsystem, {40_in / second, 140_in / second / second}, 7.0_in, false,
-                                    -90_deg, 0.0, false),
-            drivetrainSubsystem->pct(0.15, 0.15)->withTimeout(150_ms),
+            new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, -16_in, false, 0.0, 0.0, false),
+            new ScheduleCommand(doinker->levelCommand(true)),
+            (new Rotate(drivetrainSubsystem, [] () { return drivetrainSubsystem->getAngle() + 22_deg; }, false))->withTimeout(400_ms),
+            new TankMotionProfiling(drivetrainSubsystem, {18_in/second, 50_in/second/second}, 19_in, false, 0.0, 0.0, false),
         });
     }
 };

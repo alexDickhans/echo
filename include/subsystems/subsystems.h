@@ -60,7 +60,7 @@ inline Trigger *negatedLBLoad;
 bool hangReleased = false;
 
 inline void initializeController() {
-    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
+    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcade(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));
 
     primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
@@ -89,9 +89,8 @@ inline void initializeController() {
             andOther(negatedHang)->
             toggleOnTrue(loadLB);
 
-    // primary.getTrigger(DIGITAL_DOWN)->whileTrue(drivetrainSubsystem->characterizeAngular());
     primary.getTrigger(DIGITAL_UP)->toggleOnTrue(doinkerDown);
-    // primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->retractPto());
+    primary.getTrigger(DIGITAL_DOWN)->onTrue(topIntakeSubsystem->pctCommand(-1.0));
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)->andOther(negatedLBLoad)->andOther(new Trigger([]() { return !hangReleased; }))
@@ -128,12 +127,15 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(190_deg, 0.0));
     PathCommands::registerCommand("outtakeBottom", bottomIntakeSubsystem->pctCommand(-1.0));
     PathCommands::registerCommand("fastLoadLB", fastLoadLB);
+    PathCommands::registerCommand("doinkerDown", doinkerDown);
+    PathCommands::registerCommand("doinkerUp", doinker->levelCommand(true));
 }
 
 inline void initializeCommands() {
     goalClampTrue = goalClampSubsystem->levelCommand(true);
 
     intakeNoEject = new ParallelCommandGroup({
+        new InstantCommand([] () { std::cout << "Starting intake command" << std::endl; }, {}),
         bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
     });
 
@@ -141,7 +143,7 @@ inline void initializeCommands() {
         intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
         intakeNoEject->until([]() {
             auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-            return position > 0.38 && position < 0.45; // tune these variables to make ejection work better
+            return position > 0.40 && position < 0.45; // tune these variables to make ejection work better
         }),
         bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.03_s))
     }))->repeatedly();
@@ -164,11 +166,11 @@ inline void initializeCommands() {
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(90_ms)
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(50_ms)
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(160_ms)
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(130_ms)
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
@@ -260,12 +262,12 @@ inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
     topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(16));
-    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(2));
+    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
     liftSubsystem = new LiftSubsystem({-1}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
-    doinker = new SolenoidSubsystem(pros::adi::DigitalOut('e'));
+    doinker = new SolenoidSubsystem(pros::adi::DigitalOut('e', true));
     drivetrainSubsystem = new DrivetrainSubsystem({-11, 13, -14}, {17, -19, 18}, pros::Imu(9),
                                                   pros::adi::DigitalOut('a'), pros::Rotation(-8), []() {
                                                       return goalClampSubsystem->getLastValue();
