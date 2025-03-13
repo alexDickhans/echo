@@ -32,7 +32,7 @@ public:
             new Ramsete(drivetrainSubsystem, flip ? &positive_1_blue : &positive_1_red),
             SharedCommands::descoreCorner(),
             new Ramsete(drivetrainSubsystem, flip ? &positive_2_blue : &positive_2_red),
-            drivetrainSubsystem->pct(0.30, 0.30)->withTimeout(4.0_s),
+            drivetrainSubsystem->pct(0.30, 0.30)->withTimeout(10.0_s),
         });
     }
 
@@ -48,7 +48,7 @@ public:
             new Ramsete(drivetrainSubsystem, flip ? &positive_1_no_alliance_blue : &positive_1_no_alliance_red),
             SharedCommands::descoreCorner(),
             new Ramsete(drivetrainSubsystem, flip ? &positive_2_blue : &positive_2_red),
-            drivetrainSubsystem->pct(0.30, 0.30)->withTimeout(4.0_s),
+            drivetrainSubsystem->pct(0.30, 0.30)->withTimeout(10.0_s),
         });
     }
 

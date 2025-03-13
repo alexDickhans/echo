@@ -23,7 +23,7 @@ public:
 
     static Command *arcOntoAlliance(bool flip, bool pos) {
         return new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 70_in / second / second}, 2_in, flip,
-                                        90_deg, (pos ? -1.0 : 1.0) * 72_deg / 2_in);
+                                        90_deg, (pos ? -1.0 : 1.0) * 74_deg / 2_in);
     }
 
 
@@ -36,8 +36,8 @@ public:
         return new Sequence({
             new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, -16_in, false, 0.0, 0.0, false),
             new ScheduleCommand(doinker->levelCommand(true)),
-            (new Rotate(drivetrainSubsystem, [] () { return drivetrainSubsystem->getAngle() + 28_deg; }, false))->withTimeout(400_ms),
-            new TankMotionProfiling(drivetrainSubsystem, {18_in/second, 50_in/second/second}, 18_in, false, 0.0, 0.0, false),
+            (new Rotate(drivetrainSubsystem, [] () { return drivetrainSubsystem->getAngle() + 22_deg; }, false))->withTimeout(400_ms),
+            new TankMotionProfiling(drivetrainSubsystem, {18_in/second, 50_in/second/second}, 19_in, false, 0.0, 0.0, false),
         });
     }
 };

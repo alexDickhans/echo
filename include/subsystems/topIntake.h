@@ -48,7 +48,10 @@ public:
 
     void setPosition(double position) const { this->intakeMotor.move_absolute(position * CONFIG::INTAKE_RATIO, 200); }
 
-    void setPct(double pct) const { this->intakeMotor.move_voltage(pct * 12000.0); }
+    void setPct(double pct) const {
+        this->intakeMotor.move_voltage(pct * 12000.0);
+        std::cout << pct << std::endl;
+    }
 
     double getPosition() {
         return this->intakeMotor.get_position(0) / CONFIG::INTAKE_RATIO + positionOffset;
@@ -69,7 +72,8 @@ public:
             size_t largestSize = 0;
 
             for (auto object: vision.get_all_objects()) {
-                if (size_t size = object.object.color.width * object.object.color.height; size > largestSize && object.object.color.width > 150) {
+                if (size_t size = object.object.color.width * object.object.color.height;
+                    size > largestSize && object.object.color.width > 150) {
                     largestSize = size;
                     largestObject = object.id;
                 }
@@ -80,8 +84,10 @@ public:
         return RingColor::None;
     }
 
-    RunCommand *pctCommand(double pct) {
-        return new RunCommand([this, pct]() { this->setPct(pct); }, {this});
+    FunctionalCommand *pctCommand(double pct) {
+        return new FunctionalCommand([this, pct]() { this->setPct(pct); },
+                                     [this]() {  }, [](bool _) {
+                                     }, []() { return false; }, {this});
     }
 
     RunCommand *controllerCommand(pros::Controller *controller) {
