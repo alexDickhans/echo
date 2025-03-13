@@ -89,9 +89,8 @@ inline void initializeController() {
             andOther(negatedHang)->
             toggleOnTrue(loadLB);
 
-    primary.getTrigger(DIGITAL_DOWN)->whileTrue(new Rotate(drivetrainSubsystem, 0.0, false));
     primary.getTrigger(DIGITAL_UP)->toggleOnTrue(doinkerDown);
-    primary.getTrigger(DIGITAL_LEFT)->onTrue(new Rotate(drivetrainSubsystem, 180.0_deg, false));
+    primary.getTrigger(DIGITAL_DOWN)->onTrue(topIntakeSubsystem->pctCommand(-1.0));
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)->andOther(negatedLBLoad)->andOther(new Trigger([]() { return !hangReleased; }))
@@ -267,7 +266,7 @@ inline void subsystemInit() {
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
     // 'd' left, 'b' right
-    doinker = new SolenoidSubsystem(pros::adi::DigitalOut('e'));
+    doinker = new SolenoidSubsystem(pros::adi::DigitalOut('e', true));
     drivetrainSubsystem = new DrivetrainSubsystem({-11, 13, -14}, {17, -19, 18}, pros::Imu(9),
                                                   pros::adi::DigitalOut('a'), pros::Rotation(-8), []() {
                                                       return goalClampSubsystem->getLastValue();

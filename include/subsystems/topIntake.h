@@ -14,8 +14,8 @@
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
-inline pros::aivision_color_s_t RED_COLOR_DESC(1, 240, 63, 76, 15, 0.35);
-inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 34, 187, 243, 15, 0.35);
+inline pros::aivision_color_s_t RED_COLOR_DESC(1, 240, 63, 76, 20, 0.40);
+inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 34, 187, 243, 20, 0.40);
 
 class TopIntakeSubsystem : public Subsystem {
     pros::Motor intakeMotor;

@@ -1,0 +1,154 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.234,
+          "y": 1.377
+        },
+        {
+          "x": 0.603,
+          "y": 0.791
+        },
+        {
+          "x": 0.558,
+          "y": 0.486
+        },
+        {
+          "x": 0.428,
+          "y": 0.563
+        }
+      ],
+      "constraints": {
+        "velocity": 0.9,
+        "accel": 1.237
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.428,
+          "y": 0.563
+        },
+        {
+          "x": 0.643,
+          "y": 0.436
+        },
+        {
+          "x": 0.84,
+          "y": 0.246
+        },
+        {
+          "x": 1.195,
+          "y": 0.244
+        }
+      ],
+      "constraints": {
+        "velocity": 0.55,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 1.195,
+          "y": 0.244
+        },
+        {
+          "x": 0.923,
+          "y": 0.246
+        },
+        {
+          "x": 0.781,
+          "y": 0.35
+        },
+        {
+          "x": 0.589,
+          "y": 0.419
+        }
+      ],
+      "constraints": {
+        "velocity": 0.925,
+        "accel": 3.048
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.589,
+          "y": 0.419
+        },
+        {
+          "x": 0.858,
+          "y": 0.322
+        },
+        {
+          "x": 1.243,
+          "y": 0.636
+        },
+        {
+          "x": 1.206,
+          "y": 0.943
+        }
+      ],
+      "constraints": {
+        "velocity": 0.825,
+        "accel": 1.943
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 1.206,
+          "y": 0.943
+        },
+        {
+          "x": 1.189,
+          "y": 1.083
+        },
+        {
+          "x": 1.198,
+          "y": 1.226
+        },
+        {
+          "x": 1.431,
+          "y": 1.381
+        }
+      ],
+      "constraints": {
+        "velocity": 0.625,
+        "accel": 1.288
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.12,
+      "name": "resetLB"
+    },
+    {
+      "t": 0.555,
+      "name": "clamp"
+    },
+    {
+      "t": 1.35,
+      "name": "intakeWithEject"
+    },
+    {
+      "t": 3.439,
+      "name": "doinkerDown"
+    }
+  ]
+}
