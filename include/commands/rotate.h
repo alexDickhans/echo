@@ -30,7 +30,7 @@ public:
            const bool finish = true)
         : drivetrain(drivetrain),
           static_voltage(static_voltage),
-          finish(finish), updateAngle(updateAngle) {
+          finish(finish), updateAngle([flip, updateAngle] () { return (flip ? -1.0f : 1.0f) * updateAngle().getValue(); }) {
     }
 
     void initialize() override {

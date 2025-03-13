@@ -34,13 +34,10 @@ public:
      */
     static Command *descoreCorner() {
         return new Sequence({
-            new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, -14_in, false, 0.0, 0.0, false),
+            new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, -16_in, false, 0.0, 0.0, false),
             new ScheduleCommand(doinker->levelCommand(true)),
-            (new Rotate(drivetrainSubsystem, drivetrainSubsystem->getAngle() - 8_deg, false))->withTimeout(400_ms),
-            new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, -3_in, false, 0.0, 0.0, false),
-            (new Rotate(drivetrainSubsystem, drivetrainSubsystem->getAngle() - 8_deg, false))->withTimeout(400_ms),
-            new TankMotionProfiling(drivetrainSubsystem, {25_in/second, 80_in/second/second}, 15_in, false, 0.0, -95_deg/15_in, false),
-            new ScheduleCommand(doinker->levelCommand(false)),
+            (new Rotate(drivetrainSubsystem, [] () { return drivetrainSubsystem->getAngle() + 28_deg; }, false))->withTimeout(400_ms),
+            new TankMotionProfiling(drivetrainSubsystem, {18_in/second, 50_in/second/second}, 17_in, false, 0.0, 0.0, false),
         });
     }
 };

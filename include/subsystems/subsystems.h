@@ -60,7 +60,7 @@ inline Trigger *negatedLBLoad;
 bool hangReleased = false;
 
 inline void initializeController() {
-    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcadeRecord(primary));
+    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcade(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));
 
     primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
@@ -143,7 +143,7 @@ inline void initializeCommands() {
         intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
         intakeNoEject->until([]() {
             auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-            return position > 0.38 && position < 0.45; // tune these variables to make ejection work better
+            return position > 0.40 && position < 0.45; // tune these variables to make ejection work better
         }),
         bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.03_s))
     }))->repeatedly();
@@ -261,8 +261,8 @@ inline void initializeCommands() {
 inline void subsystemInit() {
     TELEMETRY.setSerial(new pros::Serial(0, 921600));
 
-    topIntakeSubsystem = new TopIntakeSubsystem({-3}, pros::AIVision(16));
-    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(2));
+    topIntakeSubsystem = new TopIntakeSubsystem({3}, pros::AIVision(16));
+    bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-2));
     liftSubsystem = new LiftSubsystem({-1}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('c'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('d'), pros::adi::DigitalOut('b')});
