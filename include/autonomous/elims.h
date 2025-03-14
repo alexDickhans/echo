@@ -1,8 +1,10 @@
 #pragma once
 
 
-BEZIER_MIRRORED_MP_ASSET(positive_1);
-BEZIER_MIRRORED_MP_ASSET(positive_1_no_alliance);
+BEZIER_MP_ASSET(positive_1_red);
+BEZIER_MP_ASSET(positive_1_blue);
+BEZIER_MP_ASSET(positive_1_no_alliance_red);
+BEZIER_MP_ASSET(positive_1_no_alliance_blue);
 BEZIER_MIRRORED_MP_ASSET(positive_2);
 BEZIER_MP_ASSET(negative_1_red);
 BEZIER_MP_ASSET(negative_1_blue);
@@ -37,7 +39,7 @@ public:
     }
 
     static Command *pos_elim_no_alliance() {
-        Eigen::Vector3f startPose{(-10.0_in).getValue(), (55.6_in).getValue(), (90_deg).getValue()};
+        Eigen::Vector3f startPose{(-36.0_in).getValue(), (56_in).getValue(), (90_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
@@ -79,7 +81,7 @@ public:
      * @return Command for auton
      */
     static Command *neg_elim_pole_touch() {
-        Eigen::Vector3f startPose{(12_in).getValue(), (60_in).getValue(), (180_deg).getValue()};
+        Eigen::Vector3f startPose{(10.0_in).getValue(), (55.6_in).getValue(), (90_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;

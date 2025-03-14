@@ -4,7 +4,6 @@
 #include "auton.h"
 #include "command/includes.h"
 #include "skills.h"
-#include "awp.h"
 #include "elims.h"
 
 /**
@@ -16,8 +15,6 @@ public:
         switch (AUTON) {
             case SKILLS:
                 return Skills::skills();
-            case SAWP:
-                return AWP::sawp();
             case POS_ELIM:
                 return Elims::pos_elim();
             case POS_ELIM_NO_ALLIANCE:

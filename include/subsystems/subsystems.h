@@ -91,6 +91,14 @@ inline void initializeController() {
 
     primary.getTrigger(DIGITAL_UP)->toggleOnTrue(doinkerDown);
     primary.getTrigger(DIGITAL_DOWN)->onTrue(topIntakeSubsystem->pctCommand(-1.0));
+    primary.getTrigger(DIGITAL_LEFT)->whileTrue(
+        (new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in, false, 0.0,
+                                 0.0, false))->
+        race(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))->andThen(
+            drivetrainSubsystem->pct(0.0, 0.0)->
+            race(liftSubsystem->positionCommand(190_deg, 8_deg)->withTimeout(300_ms)))->andThen(
+            drivetrainSubsystem->pct(-0.4, -0.4)->with(liftSubsystem->positionCommand(190_deg, 0.0))->
+            withTimeout(500_ms)));
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)->andOther(negatedLBLoad)->andOther(new Trigger([]() { return !hangReleased; }))
@@ -116,9 +124,10 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("bottomIntakeOffTopOn",
                                   topIntakeSubsystem->pctCommand(1.0)->with(bottomIntakeSubsystem->pctCommand(0.0)));
     PathCommands::registerCommand("stopIntake",
-                                  bottomIntakeSubsystem->pctCommand(0.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.0)));
+                                  bottomIntakeSubsystem->pctCommand(0.0)->with(
+                                      TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.0)));
     PathCommands::registerCommand("stopIntake3",
-                                  TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 1.9, 0.0));
+                                  TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.20, 0.0));
     PathCommands::registerCommand("hangRelease", hangRelease);
     PathCommands::registerCommand(
         "resetLB", liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
@@ -128,14 +137,14 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("fastLoadLB", fastLoadLB);
     PathCommands::registerCommand("doinkerDown", doinkerDown);
     PathCommands::registerCommand("doinkerUp", doinker->levelCommand(true));
-    PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(120_deg, 0.0)->withTimeout(2_s));
+    PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(140_deg, 0.0));
 }
 
 inline void initializeCommands() {
     goalClampTrue = goalClampSubsystem->levelCommand(true);
 
     intakeNoEject = new ParallelCommandGroup({
-        new InstantCommand([] () { std::cout << "Starting intake command" << std::endl; }, {}),
+        new InstantCommand([]() { std::cout << "Starting intake command" << std::endl; }, {}),
         bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
     });
 
@@ -143,7 +152,7 @@ inline void initializeCommands() {
         intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
         intakeNoEject->until([]() {
             auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-            return position > 0.35 && position < 0.45; // tune these variables to make ejection work better
+            return position > 0.365 && position < 0.45; // tune these variables to make ejection work better
         }),
         bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.03_s))
     }))->repeatedly();
@@ -182,15 +191,15 @@ inline void initializeCommands() {
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0),
             topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT - 2_deg, 0.0),
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(90_ms)
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT - 2_deg, 0.0), new WaitCommand(90_ms)
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
-            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0), new WaitCommand(160_ms)
+            liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT - 2_deg, 0.0), new WaitCommand(160_ms)
         }),
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
@@ -208,7 +217,7 @@ inline void initializeCommands() {
         hangSubsystem->levelCommand(false),
         liftSubsystem->positionCommand(70_deg, 0.0)
     }))->andThen(new ParallelRaceGroup({
-        drivetrainSubsystem->hangOut(1.0, 6.0_in),
+        drivetrainSubsystem->hangOut(1.0, 6.3_in),
         hangSubsystem->levelCommand(false)->with(liftSubsystem->positionCommand(15_deg, 0.0))->until([]() {
             return drivetrainSubsystem->getStringDistance() > 3.0_in;
         })->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg, 0.0))),
@@ -243,6 +252,12 @@ inline void initializeCommands() {
             barToBarHang,
             barToBarHang,
             drivetrainSubsystem->pct(0.0, 0.0),
+            new ParallelRaceGroup({
+                drivetrainSubsystem->hangOut(1.0, -5.0_in),
+                hangSubsystem->levelCommand(false),
+                liftSubsystem->positionCommand(70_deg, 0.0),
+                new WaitCommand(200_ms)
+            }),
         }),
         topIntakeSubsystem->pctCommand(0.0), bottomIntakeSubsystem->pctCommand(0.0)
     });

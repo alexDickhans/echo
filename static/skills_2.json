@@ -240,7 +240,7 @@
   "commands": [
     {
       "t": 1.881,
-      "name": "basicLoadLB"
+      "name": "loadLB"
     },
     {
       "t": 5.94,
@@ -251,7 +251,7 @@
       "name": "clamp"
     },
     {
-      "t": 8.802,
+      "t": 8.82,
       "name": "scoreAllianceStake"
     }
   ]
