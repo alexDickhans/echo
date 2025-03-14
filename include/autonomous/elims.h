@@ -79,7 +79,7 @@ public:
      * @return Command for auton
      */
     static Command *neg_elim_pole_touch() {
-        Eigen::Vector3f startPose{(12_in).getValue(), (60_in).getValue(), (180_deg).getValue()};
+        Eigen::Vector3f startPose{(10.0_in).getValue(), (55.6_in).getValue(), (90_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
