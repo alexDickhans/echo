@@ -118,7 +118,7 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("stopIntake",
                                   bottomIntakeSubsystem->pctCommand(0.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.0)));
     PathCommands::registerCommand("stopIntake3",
-                                  TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 1.9, 0.0));
+                                  TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.20, 0.0));
     PathCommands::registerCommand("hangRelease", hangRelease);
     PathCommands::registerCommand(
         "resetLB", liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
@@ -128,7 +128,7 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("fastLoadLB", fastLoadLB);
     PathCommands::registerCommand("doinkerDown", doinkerDown);
     PathCommands::registerCommand("doinkerUp", doinker->levelCommand(true));
-    PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(120_deg, 0.0)->withTimeout(2_s));
+    PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(120_deg, 0.0));
 }
 
 inline void initializeCommands() {

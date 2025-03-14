@@ -45,7 +45,7 @@ public:
                 new ScheduleCommand(liftSubsystem->positionCommand(90_deg, 0.0))),
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(100_ms),
             new Ramsete(drivetrainSubsystem, &skills_4),
-            new ScheduleCommand(hang),
+            // new ScheduleCommand(hang),
         });
     }
 };
