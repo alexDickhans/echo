@@ -128,6 +128,7 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("fastLoadLB", fastLoadLB);
     PathCommands::registerCommand("doinkerDown", doinkerDown);
     PathCommands::registerCommand("doinkerUp", doinker->levelCommand(true));
+    PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(120_deg, 0.0)->withTimeout(2_s));
 }
 
 inline void initializeCommands() {

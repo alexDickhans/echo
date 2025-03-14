@@ -199,10 +199,6 @@
       "name": "intakeNoEject"
     },
     {
-      "t": 5.774,
-      "name": "bottomIntakeOffTopOn"
-    },
-    {
       "t": 5.782,
       "name": "declamp"
     },
