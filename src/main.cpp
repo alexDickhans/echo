@@ -18,14 +18,14 @@ Command* autonCommand;
     while (true) {
         auto start_time = pros::millis();
 
-        switch (ALLIANCE) {
-            case RED:
-                primary.set_text(1, 1, "RED");
-                break;
-            case BLUE:
-                primary.set_text(1, 1, "BLUE");
-                break;
-        }
+        // switch (ALLIANCE) {
+        //     case RED:
+        //         primary.set_text(1, 1, "RED");
+        //         break;
+        //     case BLUE:
+        //         primary.set_text(1, 1, "BLUE");
+        //         break;
+        // }
 
         pros::c::task_delay_until(&start_time, 50);
     }

@@ -255,6 +255,10 @@ public:
         //                                std::to_string(blueWeight));
         std::cout << (ALLIANCE == RED ? "RED " : "BLUE ") + std::to_string(redWeight) + ", " +
                 std::to_string(blueWeight) << std::endl;
+
+        auto controller = pros::Controller(CONTROLLER_MASTER);
+
+        controller.set_text(0, 0, (ALLIANCE == RED ? "RED" : "BLUE"));
     }
 
     void analyzeSysIdData() const {
