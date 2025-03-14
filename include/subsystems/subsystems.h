@@ -91,6 +91,11 @@ inline void initializeController() {
 
     primary.getTrigger(DIGITAL_UP)->toggleOnTrue(doinkerDown);
     primary.getTrigger(DIGITAL_DOWN)->onTrue(topIntakeSubsystem->pctCommand(-1.0));
+    primary.getTrigger(DIGITAL_LEFT)->whileTrue(
+        (new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in, false, 0.0,
+                                 0.0, false))->
+        race(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))->andThen(
+            drivetrainSubsystem->pct(0.0, 0.0)->race(liftSubsystem->positionCommand(190_deg, 8_deg)->withTimeout(300_ms)))->andThen(drivetrainSubsystem->pct(-0.4, -0.4)->with(liftSubsystem->positionCommand(190_deg, 0.0))->withTimeout(500_ms)));
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)->andOther(negatedLBLoad)->andOther(new Trigger([]() { return !hangReleased; }))
@@ -116,7 +121,8 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("bottomIntakeOffTopOn",
                                   topIntakeSubsystem->pctCommand(1.0)->with(bottomIntakeSubsystem->pctCommand(0.0)));
     PathCommands::registerCommand("stopIntake",
-                                  bottomIntakeSubsystem->pctCommand(0.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.0)));
+                                  bottomIntakeSubsystem->pctCommand(0.0)->with(
+                                      TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.0)));
     PathCommands::registerCommand("stopIntake3",
                                   TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.20, 0.0));
     PathCommands::registerCommand("hangRelease", hangRelease);
@@ -135,7 +141,7 @@ inline void initializeCommands() {
     goalClampTrue = goalClampSubsystem->levelCommand(true);
 
     intakeNoEject = new ParallelCommandGroup({
-        new InstantCommand([] () { std::cout << "Starting intake command" << std::endl; }, {}),
+        new InstantCommand([]() { std::cout << "Starting intake command" << std::endl; }, {}),
         bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
     });
 

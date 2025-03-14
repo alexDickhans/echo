@@ -1,0 +1,102 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.321,
+          "y": 1.421
+        },
+        {
+          "x": -0.457,
+          "y": 1.257
+        },
+        {
+          "x": -0.608,
+          "y": 0.729
+        },
+        {
+          "x": -0.595,
+          "y": 0.516
+        }
+      ],
+      "constraints": {
+        "velocity": 0.526,
+        "accel": 1.818
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.594,
+          "y": 0.514
+        },
+        {
+          "x": -0.603,
+          "y": 0.659
+        },
+        {
+          "x": -0.916,
+          "y": 0.609
+        },
+        {
+          "x": -1.046,
+          "y": 0.626
+        }
+      ],
+      "constraints": {
+        "velocity": 0.776,
+        "accel": 2.096
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.046,
+          "y": 0.626
+        },
+        {
+          "x": -1.266,
+          "y": 0.656
+        },
+        {
+          "x": -1.008,
+          "y": 0.975
+        },
+        {
+          "x": -1.287,
+          "y": 1.48
+        }
+      ],
+      "constraints": {
+        "velocity": 0.576,
+        "accel": 1.111
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.33,
+      "name": "resetLB"
+    },
+    {
+      "t": 0.945,
+      "name": "clamp"
+    },
+    {
+      "t": 1.191,
+      "name": "intakeWithEject"
+    },
+    {
+      "t": 2.001,
+      "name": "doinkerDown"
+    }
+  ]
+}
