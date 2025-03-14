@@ -223,12 +223,12 @@
           "y": 0.278
         },
         {
-          "x": -1.15,
-          "y": -0.029
+          "x": -1.16,
+          "y": 0.002
         },
         {
-          "x": -1.48,
-          "y": -0.029
+          "x": -1.49,
+          "y": 0.002
         }
       ],
       "constraints": {
@@ -247,16 +247,16 @@
       "name": "intakeWithEject"
     },
     {
-      "t": 1.791,
+      "t": 1.908,
       "name": "stopIntake"
     },
     {
-      "t": 1.935,
+      "t": 2.025,
       "name": "stopIntake3"
     },
     {
-      "t": 2.295,
-      "name": "intakeWithEject"
+      "t": 2.403,
+      "name": "intakeNoEject"
     },
     {
       "t": 4.446,
@@ -269,6 +269,10 @@
     {
       "t": 7.137,
       "name": "loadLB"
+    },
+    {
+      "t": 8.838,
+      "name": "intakeNoEject"
     }
   ]
 }
