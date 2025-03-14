@@ -116,19 +116,19 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("bottomIntakeOffTopOn",
                                   topIntakeSubsystem->pctCommand(1.0)->with(bottomIntakeSubsystem->pctCommand(0.0)));
     PathCommands::registerCommand("stopIntake",
-                                  bottomIntakeSubsystem->pctCommand(0.0)->with(topIntakeSubsystem->pctCommand(0.0))->
-                                  withTimeout(10_ms));
+                                  bottomIntakeSubsystem->pctCommand(0.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.0)));
     PathCommands::registerCommand("stopIntake3",
-                                  TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.9, 0.0));
+                                  TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 1.9, 0.0));
     PathCommands::registerCommand("hangRelease", hangRelease);
     PathCommands::registerCommand(
         "resetLB", liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
     PathCommands::registerCommand("liftZero", liftSubsystem->positionCommand(6_deg));
-    PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(190_deg, 0.0));
+    PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(185_deg, 0.0));
     PathCommands::registerCommand("outtakeBottom", bottomIntakeSubsystem->pctCommand(-1.0));
     PathCommands::registerCommand("fastLoadLB", fastLoadLB);
     PathCommands::registerCommand("doinkerDown", doinkerDown);
     PathCommands::registerCommand("doinkerUp", doinker->levelCommand(true));
+    PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(120_deg, 0.0)->withTimeout(2_s));
 }
 
 inline void initializeCommands() {
@@ -143,7 +143,7 @@ inline void initializeCommands() {
         intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
         intakeNoEject->until([]() {
             auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-            return position > 0.40 && position < 0.45; // tune these variables to make ejection work better
+            return position > 0.35 && position < 0.45; // tune these variables to make ejection work better
         }),
         bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.03_s))
     }))->repeatedly();
