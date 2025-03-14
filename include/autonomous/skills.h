@@ -43,7 +43,7 @@ public:
             drivetrainSubsystem->pct(0.0, 0.0)->race(
                 SharedCommands::scoreWallStakes()->asProxy())->andThen(
                 new ScheduleCommand(liftSubsystem->positionCommand(90_deg, 0.0))),
-            drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(100_ms),
+            drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(140_ms),
             new Ramsete(drivetrainSubsystem, &skills_4),
             // new ScheduleCommand(hang),
         });
