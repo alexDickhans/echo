@@ -143,7 +143,7 @@ inline void initializeCommands() {
         intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
         intakeNoEject->until([]() {
             auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-            return position > 0.35 && position < 0.45; // tune these variables to make ejection work better
+            return position > 0.365 && position < 0.45; // tune these variables to make ejection work better
         }),
         bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.03_s))
     }))->repeatedly();

@@ -40,4 +40,11 @@ public:
             new TankMotionProfiling(drivetrainSubsystem, {18_in/second, 50_in/second/second}, 19_in, false, 0.0, 0.0, false),
         });
     }
+
+    static Command *lastRingOutOfCorner() {
+        return new Sequence({
+            new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, -5_in, false, 0.0, 0.0, false),
+            new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, 5_in, false, 0.0, 0.0, false),
+        });
+    }
 };

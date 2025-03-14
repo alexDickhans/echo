@@ -37,7 +37,7 @@ public:
     }
 
     static Command *pos_elim_no_alliance() {
-        Eigen::Vector3f startPose{(-10.0_in).getValue(), (55.6_in).getValue(), (90_deg).getValue()};
+        Eigen::Vector3f startPose{(-36.0_in).getValue(), (56_in).getValue(), (90_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
         const bool flip = ALLIANCE != RED;
