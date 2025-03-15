@@ -1,4 +1,4 @@
 #pragma once
 #include "autonomous/autons.h"
-#define AUTON NEG_ELIM_POLE_TOUCH
+#define AUTON NEG_ELIM
 inline auto ALLIANCE=RED;
