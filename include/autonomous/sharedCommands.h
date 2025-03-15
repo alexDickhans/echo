@@ -22,8 +22,8 @@ public:
     }
 
     static Command *arcOntoAlliance(bool flip, bool pos) {
-        return new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 70_in / second / second}, 2_in, flip,
-                                        90_deg, (pos ? -1.0 : 1.0) * 78_deg / 2_in);
+        return new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 70_in / second / second}, 3_in, flip,
+                                        90_deg, (pos ? -1.0 : 1.0) * 78_deg / 3_in);
     }
 
 
