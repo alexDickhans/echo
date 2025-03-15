@@ -65,10 +65,13 @@ inline void initializeController() {
 
     primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
             andOther(primary.getTrigger(DIGITAL_L2))->onTrue(
-                (new InstantCommand([]() { hangReleased = true; }, {}))->andThen(hangRelease));
+                hangRelease);
+
 
     negatedHang = (new Trigger(hangRelease))->negate();
     negatedLBLoad = (new Trigger(loadLB))->negate();
+
+    negatedHang->negate()->onTrue((new InstantCommand([]() { hangReleased = true; }, {})));
 
     primary.getTrigger(DIGITAL_L1)->andOther(primary.getTrigger(DIGITAL_L2)->negate())->
             andOther(primary.getTrigger(DIGITAL_R1)->negate())->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
