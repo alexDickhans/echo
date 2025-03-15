@@ -60,7 +60,7 @@ inline Trigger *negatedLBLoad;
 bool hangReleased = false;
 
 inline void initializeController() {
-    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcade(primary));
+    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->tank(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));
 
     primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
@@ -217,9 +217,9 @@ inline void initializeCommands() {
         hangSubsystem->levelCommand(false),
         liftSubsystem->positionCommand(70_deg, 0.0)
     }))->andThen(new ParallelRaceGroup({
-        drivetrainSubsystem->hangOut(1.0, 6.3_in),
+        drivetrainSubsystem->hangOut(1.0, 7.5_in),
         hangSubsystem->levelCommand(false)->with(liftSubsystem->positionCommand(15_deg, 0.0))->until([]() {
-            return drivetrainSubsystem->getStringDistance() > 3.0_in;
+            return drivetrainSubsystem->getStringDistance() > 3.5_in;
         })->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg, 0.0))),
     }));
 

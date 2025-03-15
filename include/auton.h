@@ -1,4 +1,4 @@
 #pragma once
 #include "autonomous/autons.h"
-#define AUTON SKILLS
+#define AUTON NONE
 inline auto ALLIANCE=RED;
