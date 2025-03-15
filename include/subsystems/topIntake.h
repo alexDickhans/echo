@@ -37,6 +37,11 @@ public:
         vision.set_color(BLUE_COLOR_DESC);
     }
 
+
+    bool visionConnected() {
+        return this->vision.is_installed();
+    }
+
     void periodic() override {
         // No-op
         if (abs(intakeMotor.get_current_draw()) < 600) {
