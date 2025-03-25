@@ -48,6 +48,7 @@ inline Command *basicLoadLB;
 inline Command *fastLoadLB;
 inline Command *intakeNoEject;
 inline Command *hangRelease;
+inline Command *hangIdle;
 
 inline Command *doinkerDown;
 
@@ -65,10 +66,13 @@ inline void initializeController() {
 
     primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_L1))->andOther(primary.getTrigger(DIGITAL_R2))->
             andOther(primary.getTrigger(DIGITAL_L2))->onTrue(
-                (new InstantCommand([]() { hangReleased = true; }, {}))->andThen(hangRelease));
+                (new InstantCommand([]() { hangReleased = true; }, {}))->andThen(new ScheduleCommand(hangRelease)));
 
-    negatedHang = (new Trigger(hangRelease))->negate();
+    negatedHang = ((new Trigger(hangRelease))->orOther(new Trigger(hangIdle)))->negate();
     negatedLBLoad = (new Trigger(loadLB))->negate();
+
+    primary.getTrigger(DIGITAL_R1)->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
+            andOther(primary.getTrigger(DIGITAL_L1)->negate())->andOther(primary.getTrigger(DIGITAL_L2)->negate())->andOther(negatedHang->negate())->onTrue(hangIdle)->onFalse(hangRelease);
 
     primary.getTrigger(DIGITAL_L1)->andOther(primary.getTrigger(DIGITAL_L2)->negate())->
             andOther(primary.getTrigger(DIGITAL_R1)->negate())->andOther(primary.getTrigger(DIGITAL_R2)->negate())->
@@ -269,6 +273,13 @@ inline void initializeCommands() {
                 topIntakeSubsystem->pctCommand(0.0),
                 bottomIntakeSubsystem->pctCommand(0.0)
             });
+
+    hangIdle = new ParallelCommandGroup({
+                hangSubsystem->levelCommand(false),
+                liftSubsystem->positionCommand(30_deg, 0.0),
+                topIntakeSubsystem->pctCommand(0.0),
+                bottomIntakeSubsystem->pctCommand(0.0)
+    });
 
     doinkerDown = doinker->levelCommand(false);
 }
