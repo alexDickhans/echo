@@ -14,6 +14,7 @@ namespace CONFIG {
     constexpr Angle ANGLE_NOISE = 3_deg;
 
     constexpr QLength DRIVE_RADIUS = 2.75_in / 2.0;
+    constexpr QLength ODOM_RADIUS = 2_in / 2.0;
     constexpr float DRIVE_RATIO = 48.0 / 36.0;
     constexpr float STRING_RATIO = 1.0;
     constexpr double LIFT_RATIO = 18.0 / 6.0;
@@ -61,10 +62,10 @@ namespace CONFIG {
     inline std::pair<double, double> DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel,
                                                             const QAngularVelocity angularVelocity,
                                                             const QAngularAcceleration angularAcceleration) {
-        const double uLinear = DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL * Eigen::Vector2d(
-                                   velocity.getValue(), accel.getValue());
-        const double uAngular = DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL * Eigen::Vector2d(
-                                    angularVelocity.getValue(), angularAcceleration.getValue());
+        const double uLinear =
+            DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL * Eigen::Vector2d(velocity.getValue(), accel.getValue());
+        const double uAngular = DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL *
+                                Eigen::Vector2d(angularVelocity.getValue(), angularAcceleration.getValue());
 
         return {uLinear, uAngular};
     }

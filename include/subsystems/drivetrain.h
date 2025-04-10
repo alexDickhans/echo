@@ -54,16 +54,18 @@ private:
 
     Angle lastTheta = 0.0;
 
+    pros::Rotation odom;
+
 public:
     DrivetrainSubsystem(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                         pros::Imu imu, pros::adi::DigitalOut pto, pros::Rotation winchRotation,
-                        std::function<bool()> hasGoal) : left11W(left11_w), right11W(right11_w), imu(std::move(imu)),
+                        std::function<bool()> hasGoal, pros::Rotation odom) : left11W(left11_w), right11W(right11_w), imu(std::move(imu)),
                                                          pto(std::move(pto)), winchRotation(std::move(winchRotation)),
                                                          particleFilter([this, imu]() {
                                                              const Angle angle = -imu.get_rotation() * degree;
                                                              return isfinite(angle.getValue()) ? angle : 0.0;
                                                          }),
-                                                         hasGoal(std::move(hasGoal)) {
+                                                         hasGoal(std::move(hasGoal)), odom(std::move(odom)) {
         this->leftChange = 0.0;
         this->rightChange = 0.0;
 
@@ -191,6 +193,11 @@ public:
                CONFIG::START_STRING_LENGTH;
     }
 
+    QLength getOdomDistance() const {
+        return (this->odom.get_position() / 36000.0) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
+               M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+    }
+
     QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
 
     void initNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle, const bool flip) {
@@ -245,7 +252,7 @@ public:
             pros::delay(20);
         }
 
-        auto pot = pros::adi::AnalogIn('h');
+        auto pot = pros::adi::AnalogIn('b');
 
         if (pot.get_value() > 2000) {
             ALLIANCE = RED;
