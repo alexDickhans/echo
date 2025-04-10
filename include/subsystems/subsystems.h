@@ -309,12 +309,12 @@ inline void subsystemInit() {
     // 17 is front drive motor left
     // 18 middle drive motor left
 
-    topIntakeSubsystem = new TopIntakeSubsystem({-6}, pros::AIVision(16));
+    topIntakeSubsystem = new TopIntakeSubsystem({6}, pros::Optical(21));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-12));
-    liftSubsystem = new LiftSubsystem({15}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
+    liftSubsystem = new LiftSubsystem({-15}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('e'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('a'), pros::adi::DigitalOut('d')});
-    drivetrainSubsystem = new DrivetrainSubsystem({-16, 17, 18}, {-4, 7, 10}, pros::Imu(5),
+    drivetrainSubsystem = new DrivetrainSubsystem({16, -17, -18}, {-4, 7, 10}, pros::Imu(5),
                                                   pros::adi::DigitalOut('c'), pros::Rotation(-8), []() {
                                                       return goalClampSubsystem->getLastValue();
                                                   }, pros::Rotation(3)); // wheels listed back to front; 8 for rotation sensor on pto

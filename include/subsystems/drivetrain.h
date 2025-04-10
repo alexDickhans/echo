@@ -29,8 +29,8 @@ private:
     pros::Rotation winchRotation;
     bool ptoActive = false;
 
-    QLength leftChange, rightChange;
-    QLength lastLeft, lastRight;
+    QLength odomChange;
+    QLength lastOdom;
 
     ParticleFilter<CONFIG::NUM_PARTICLES> particleFilter;
 
@@ -66,8 +66,7 @@ public:
                                                              return isfinite(angle.getValue()) ? angle : 0.0;
                                                          }),
                                                          hasGoal(std::move(hasGoal)), odom(std::move(odom)) {
-        this->leftChange = 0.0;
-        this->rightChange = 0.0;
+        this->lastOdom = 0.0;
 
         left11W.set_gearing_all(pros::MotorGears::blue);
         right11W.set_gearing_all(pros::MotorGears::blue);
@@ -75,8 +74,7 @@ public:
         left11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         right11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
-        lastLeft = this->getLeftDistance();
-        lastRight = this->getRightDistance();
+        lastOdom = this->getOdomDistance();
 
         winchRotation.reset_position();
 
@@ -86,19 +84,14 @@ public:
     void addLocalizationSensor(Sensor *sensor) { particleFilter.addSensor(sensor); }
 
     void periodic() override {
-        const QLength leftLength = this->getLeftDistance();
-        const QLength rightLength = this->getRightDistance();
+        const QLength odomReading = this->getOdomDistance();
 
-        leftChange = leftLength - lastLeft;
-        rightChange = rightLength - lastRight;
+        odomChange = odomReading - lastOdom;
 
-        lastLeft = leftLength;
-        lastRight = rightLength;
+        lastOdom = odomReading;
 
-        auto avg = (leftChange + rightChange) / 2.0;
-
-        std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
-                                                       avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
+        std::uniform_real_distribution avgDistribution(odomReading.getValue() - CONFIG::DRIVE_NOISE * odomReading.getValue(),
+                                                       odomReading.getValue() + CONFIG::DRIVE_NOISE * odomReading.getValue());
         std::uniform_real_distribution angleDistribution(
             particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
             particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
@@ -106,7 +99,7 @@ public:
         // Exponential Pose Tracking
         const Angle dTheta = particleFilter.getAngle() - lastTheta;
 
-        const auto localMeasurement = Eigen::Vector2f({avg.getValue(), 0});
+        const auto localMeasurement = Eigen::Vector2f({odomReading.getValue(), 0});
         const auto displacementMatrix =
                 Eigen::Matrix2d({
                     {1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
@@ -135,7 +128,7 @@ public:
             uLinear.emplace_back(lastULinear);
             uAngular.emplace_back(lastUAngular);
 
-            auto currentXLinear = ((leftChange + rightChange) / (2.0 * 0.01)).getValue();
+            auto currentXLinear = (100.0 * odomReading).getValue();
             auto currentXAngular = (-imu.get_gyro_rate().z) * (degree / second).getValue();
 
             xLinear.emplace_back(currentXLinear);
