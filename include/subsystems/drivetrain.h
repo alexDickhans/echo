@@ -245,7 +245,9 @@ public:
             pros::delay(20);
         }
 
-        if (redWeight >= blueWeight) {
+        auto pot = pros::adi::AnalogIn('h');
+
+        if (pot.get_value() > 2000) {
             ALLIANCE = RED;
         } else {
             ALLIANCE = BLUE;
