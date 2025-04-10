@@ -46,8 +46,6 @@ public:
     void execute() override {
         pid.setTarget(profile.calculate(10_ms, {intake->getPosition(), intake->getVelocity()}, setpoint).position);
         intake->setPct(pid.update(intake->getPosition()));
-
-        std::cout << pid.getTarget() << std::endl;
     }
 
     bool isFinished() override {

@@ -51,7 +51,6 @@ public:
 
     void setPct(double pct) const {
         this->intakeMotor.move_voltage(pct * 12000.0);
-        std::cout << pct << std::endl;
     }
 
     double getPosition() {
@@ -68,7 +67,6 @@ public:
     }
 
     RingColor updateRingColor() {
-        std::cout << optical.get_proximity() << " " << optical.get_hue() << std::endl;
         if (optical.get_proximity() > 150) {
             return optical.get_hue() > 180 && optical.get_hue() < 270 ? RingColor::Blue : RingColor::Red;
         }

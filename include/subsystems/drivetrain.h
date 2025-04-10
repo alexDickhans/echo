@@ -187,8 +187,12 @@ public:
     }
 
     QLength getOdomDistance() const {
-        return (this->odom.get_position() / 36000.0) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
-               M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+        auto distance = (this->odom.get_position() / 36000.0) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 * M_PI *
+                        CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+
+        std::cout << "Drive distance: " << distance.Convert(inch) << std::endl;
+
+        return distance;
     }
 
     QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
