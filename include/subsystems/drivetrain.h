@@ -56,6 +56,8 @@ private:
 
     pros::Rotation odom;
 
+    QLength onPtoActivateStringPosition = 0.0;
+
 public:
     DrivetrainSubsystem(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                         pros::Imu imu, pros::adi::DigitalOut pto, pros::Rotation winchRotation,
@@ -171,31 +173,31 @@ public:
         this->setPct(left, right);
     }
 
-    QLength getLeftDistance() const {
-        return (this->left11W.get_position(0) + this->left11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
-               M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
-    }
-
-    QLength getRightDistance() const {
-        return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
-               M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
-    }
+    // QLength getLeftDistance() const {
+    //     return (this->left11W.get_position(0) + this->left11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
+    //            M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+    // }
+    //
+    // QLength getRightDistance() const {
+    //     return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
+    //            M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+    // }
 
     QLength getStringDistance() const {
-        return (winchRotation.get_position() * 0.01_deg).Convert(radian) * CONFIG::WINCH_RADIUS +
-               CONFIG::START_STRING_LENGTH;
+        return (this->right11W.get_position(0) + this->right11W.get_position(1) + this->left11W.get_position(0) + this->left11W.get_position(1)) * M_PI * 0.5 * CONFIG::WINCH_RADIUS +
+               CONFIG::START_STRING_LENGTH - this->onPtoActivateStringPosition;
     }
 
     QLength getOdomDistance() const {
         auto distance = (this->odom.get_position() / 36000.0) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 * M_PI *
                         CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
 
-        std::cout << "Drive distance: " << distance.Convert(inch) << std::endl;
+        std::cout << "distance: " << distance.Convert(inch) << std::endl;
 
         return distance;
     }
 
-    QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
+    QLength getDistance() const { return this->getOdomDistance(); }
 
     void initNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle, const bool flip) {
         imu.set_rotation(angle.Convert(degree) * (flip ? 1 : -1));
@@ -301,6 +303,7 @@ public:
         return new InstantCommand(
             [this]() {
                 this->pto.set_value(true);
+                this->onPtoActivateStringPosition = this->getStringDistance();
             },
             {});
     }

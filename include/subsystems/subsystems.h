@@ -48,8 +48,6 @@ inline Command *fastLoadLB;
 inline Command *intakeNoEject;
 inline Command *hangRelease;
 
-inline Command *doinkerDown;
-
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
@@ -59,7 +57,7 @@ inline Trigger *negatedLBLoad;
 bool hangReleased = false;
 
 inline void initializeController() {
-    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->tank(primary));
+    primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcade(primary));
     primary.getTrigger(DIGITAL_A)->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));
 
     primary.getTrigger(DIGITAL_R1)
@@ -102,17 +100,18 @@ inline void initializeController() {
         ->andOther(negatedHang)
         ->toggleOnTrue(loadLB);
 
-    primary.getTrigger(DIGITAL_UP)->toggleOnTrue(doinkerDown);
-    primary.getTrigger(DIGITAL_DOWN)->onTrue(topIntakeSubsystem->pctCommand(-1.0));
-    primary.getTrigger(DIGITAL_LEFT)
-        ->whileTrue((new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in,
-                                             false, 0.0, 0.0, false))
-                        ->race(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
-                        ->andThen(drivetrainSubsystem->pct(0.0, 0.0)->race(
-                            liftSubsystem->positionCommand(190_deg, 8_deg)->withTimeout(300_ms)))
-                        ->andThen(drivetrainSubsystem->pct(-0.4, -0.4)
-                                      ->with(liftSubsystem->positionCommand(190_deg, 0.0))
-                                      ->withTimeout(500_ms)));
+    primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
+    primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->activatePto());
+    primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->retractPto());
+    // primary.getTrigger(DIGITAL_LEFT)
+    //     ->whileTrue((new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in,
+    //                                          false, 0.0, 0.0, false))
+    //                     ->race(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
+    //                     ->andThen(drivetrainSubsystem->pct(0.0, 0.0)->race(
+    //                         liftSubsystem->positionCommand(190_deg, 8_deg)->withTimeout(300_ms)))
+    //                     ->andThen(drivetrainSubsystem->pct(-0.4, -0.4)
+    //                                   ->with(liftSubsystem->positionCommand(190_deg, 0.0))
+    //                                   ->withTimeout(500_ms)));
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)
@@ -150,7 +149,6 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(185_deg, 0.0));
     PathCommands::registerCommand("outtakeBottom", bottomIntakeSubsystem->pctCommand(-1.0));
     PathCommands::registerCommand("fastLoadLB", fastLoadLB);
-    PathCommands::registerCommand("doinkerDown", doinkerDown);
     PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(140_deg, 0.0));
 }
 
@@ -184,15 +182,9 @@ inline void initializeCommands() {
                                    })}),
             new ParallelRaceGroup({
                 bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
+                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(800_ms); }),
                 liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
             }),
-            new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
-                                   liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-                                   new WaitCommand(50_ms)}),
-            new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
-                                   liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-                                   new WaitCommand(130_ms)}),
             new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
                                    liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
                                    new WaitCommand(300_ms)}),
@@ -206,15 +198,9 @@ inline void initializeCommands() {
             }),
             new ParallelRaceGroup({
                 bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
+                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(800_ms); }),
                 liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
             }),
-            new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
-                                   liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-                                   new WaitCommand(50_ms)}),
-            new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
-                                   liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-                                   new WaitCommand(130_ms)}),
             new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
                                    liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
                                    new WaitCommand(300_ms)}),
@@ -225,16 +211,10 @@ inline void initializeCommands() {
     fastLoadLB = new Sequence({
         new ParallelRaceGroup({
             bottomIntakeSubsystem->pctCommand(1.0),
-            topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
+            topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(800_ms); }),
             liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT - 2_deg, 0.0),
         }),
-        new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
-                               liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT - 2_deg, 0.0),
-                               new WaitCommand(90_ms)}),
-        new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
-                               liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT - 2_deg, 0.0),
-                               new WaitCommand(160_ms)}),
-        new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+        new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.3),
                                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
                                new WaitCommand(400_ms)}),
     });
@@ -311,7 +291,7 @@ inline void subsystemInit() {
 
     topIntakeSubsystem = new TopIntakeSubsystem({6}, pros::Optical(21));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-12));
-    liftSubsystem = new LiftSubsystem({-15}, PID(2.3, 0.0, 9.8, 0.2, 1.0));
+    liftSubsystem = new LiftSubsystem({-15}, PID(1.2, 0.0, 3.7, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('e'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('a'), pros::adi::DigitalOut('d')});
     drivetrainSubsystem = new DrivetrainSubsystem({16, -17, -18}, {-4, 7, 10}, pros::Imu(5),
