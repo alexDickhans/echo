@@ -34,9 +34,9 @@ namespace CONFIG {
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
     constexpr Angle LIFT_IDLE_POSITION = 3_deg;
-    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 22_deg;
-    constexpr Angle WALL_STAKE_PRIME_HEIGHT = 34_deg;
-    constexpr Angle DESCORE_HEIGHT = 145_deg;
+    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 21_deg;
+    constexpr Angle WALL_STAKE_PRIME_HEIGHT = 80_deg;
+    constexpr Angle DESCORE_HEIGHT = 155_deg;
     constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 185_deg;
 
     const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-0.5_in).getValue(), (10.5_in).getValue(), (90_deg).getValue());

@@ -117,7 +117,7 @@ inline void initializeController() {
     primary.getTrigger(DIGITAL_Y)
         ->andOther(negatedLBLoad)
         ->andOther(new Trigger([]() { return !hangReleased; }))
-        ->whileTrue(liftSubsystem->positionCommand(140_deg, 0.0));
+        ->whileTrue(liftSubsystem->positionCommand(CONFIG::DESCORE_HEIGHT, 0.0));
     primary.getTrigger(DIGITAL_Y)->andOther(new Trigger([]() { return hangReleased; }))->whileTrue(hang);
 
     primary.getTrigger(DIGITAL_B)->onTrue(
@@ -172,38 +172,52 @@ inline void initializeCommands() {
     if (topIntakeSubsystem->visionConnected()) {
         basicLoadLB = new Sequence({
             new ParallelRaceGroup({
-                bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(0.0),
-                liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
-            }),
-            new ParallelRaceGroup({intakeWithEject, liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0),
-                                   new WaitUntilCommand([]() {
-                                       return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE;
-                                   })}),
-            new ParallelRaceGroup({
-                bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(800_ms); }),
-                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-            }),
-            new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
-                                   liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
-                                   new WaitCommand(300_ms)}),
+                        bottomIntakeSubsystem->pctCommand(1.0),
+                        topIntakeSubsystem->pctCommand(0.0),
+                        liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
+                }),
+                new ParallelRaceGroup({intakeWithEject, liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0),
+                                       new WaitUntilCommand([]() {
+                                           return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE;
+                                       })}),
+                new ParallelRaceGroup({
+                        bottomIntakeSubsystem->pctCommand(1.0),
+                        topIntakeSubsystem->pctCommand(1.0)->until(
+                                []() { return topIntakeSubsystem->stalled(800_ms); }),
+                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                }),
+                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
+                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                                       new WaitCommand(50_ms)}),
+                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.6),
+                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                                       new WaitCommand(80_ms)}),
+                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
+                                       new WaitCommand(300_ms)}),
         });
     } else {
         basicLoadLB = new Sequence({
-            new ParallelRaceGroup({
-                bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(0.0),
-                liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
-            }),
-            new ParallelRaceGroup({
-                bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(800_ms); }),
-                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-            }),
-            new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
-                                   liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
-                                   new WaitCommand(300_ms)}),
+                new ParallelRaceGroup({
+                        bottomIntakeSubsystem->pctCommand(1.0),
+                        topIntakeSubsystem->pctCommand(0.0),
+                        liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
+                }),
+                new ParallelRaceGroup({
+                        bottomIntakeSubsystem->pctCommand(1.0),
+                        topIntakeSubsystem->pctCommand(1.0)->until(
+                                []() { return topIntakeSubsystem->stalled(800_ms); }),
+                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                }),
+                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
+                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                                       new WaitCommand(50_ms)}),
+                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.6),
+                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                                       new WaitCommand(80_ms)}),
+                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
+                                       new WaitCommand(300_ms)}),
         });
     }
 
