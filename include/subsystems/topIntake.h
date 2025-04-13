@@ -6,20 +6,18 @@
 
 #include "command/command.h"
 #include "command/runCommand.h"
-#include "pros/ai_vision.hpp"
 
 #include "pros/distance.hpp"
 #include "pros/motor_group.hpp"
 
+#include "pros/optical.hpp"
+
 
 enum RingColor_ { Blue = 2, Red = 1, None = 0 } typedef RingColor;
 
-inline pros::aivision_color_s_t RED_COLOR_DESC(1, 240, 63, 76, 20, 0.40);
-inline pros::aivision_color_s_t BLUE_COLOR_DESC(2, 34, 187, 243, 20, 0.40);
-
 class TopIntakeSubsystem : public Subsystem {
     pros::Motor intakeMotor;
-    pros::AIVision vision;
+    pros::Optical optical;
 
     double positionOffset = 0.0;
 
@@ -27,19 +25,17 @@ class TopIntakeSubsystem : public Subsystem {
     RingColor ringColor = None;
 
 public:
-    explicit TopIntakeSubsystem(const pros::Motor &motors, pros::AIVision vision) : intakeMotor(motors),
-        vision(vision) {
+    explicit TopIntakeSubsystem(const pros::Motor &motors, pros::Optical optical) : intakeMotor(motors),
+        optical(optical) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         intakeMotor.set_gearing(pros::MotorGears::blue);
-        vision.enable_detection_types(pros::AivisionModeType::colors);
-        vision.enable_detection_types(pros::AivisionModeType::color_merge);
-        vision.set_color(RED_COLOR_DESC);
-        vision.set_color(BLUE_COLOR_DESC);
+        this->optical.set_integration_time(10);
+        this->optical.set_led_pwm(255);
     }
 
 
     bool visionConnected() {
-        return this->vision.is_installed();
+        return this->optical.is_installed();
     }
 
     void periodic() override {
@@ -55,7 +51,6 @@ public:
 
     void setPct(double pct) const {
         this->intakeMotor.move_voltage(pct * 12000.0);
-        std::cout << pct << std::endl;
     }
 
     double getPosition() {
@@ -72,19 +67,8 @@ public:
     }
 
     RingColor updateRingColor() {
-        if (vision.get_object_count() != 0) {
-            auto largestObject = 0;
-            size_t largestSize = 0;
-
-            for (auto object: vision.get_all_objects()) {
-                if (size_t size = object.object.color.width * object.object.color.height;
-                    size > largestSize && object.object.color.width > 150) {
-                    largestSize = size;
-                    largestObject = object.id;
-                }
-            }
-
-            return static_cast<RingColor>(largestObject);
+        if (optical.get_proximity() > 150) {
+            return optical.get_hue() > 180 && optical.get_hue() < 270 ? RingColor::Blue : RingColor::Red;
         }
         return RingColor::None;
     }

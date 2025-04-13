@@ -35,7 +35,6 @@ public:
     static Command *descoreCorner() {
         return new Sequence({
             new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, -16_in, false, 0.0, 0.0, false),
-            new ScheduleCommand(doinker->levelCommand(true)),
             (new Rotate(drivetrainSubsystem, [] () { return drivetrainSubsystem->getAngle() + 22_deg; }, false))->withTimeout(400_ms),
             new TankMotionProfiling(drivetrainSubsystem, {18_in/second, 50_in/second/second}, 17_in, false, 0.0, 0.0, false),
         });

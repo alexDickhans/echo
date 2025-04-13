@@ -9,11 +9,12 @@
 #include "autonomous/autons.h"
 
 namespace CONFIG {
-    constexpr double INTAKE_RATIO = 68.0 / (9.0 * 3.0); // 66 chain links
+    constexpr double INTAKE_RATIO = 67.0 / (10.0 * 3.0); // 66 chain links
     constexpr float DRIVE_NOISE = 0.05;
     constexpr Angle ANGLE_NOISE = 3_deg;
 
     constexpr QLength DRIVE_RADIUS = 2.75_in / 2.0;
+    constexpr QLength ODOM_RADIUS = 2_in / 2.0;
     constexpr float DRIVE_RATIO = 48.0 / 36.0;
     constexpr float STRING_RATIO = 1.0;
     constexpr double LIFT_RATIO = 18.0 / 6.0;
@@ -21,7 +22,7 @@ namespace CONFIG {
     constexpr size_t NUM_PARTICLES = 250;
     constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
-    constexpr double DRIVETRAIN_TUNING_SCALAR = 0.97;
+    constexpr double DRIVETRAIN_TUNING_SCALAR = 1.0;
 
     constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
 
@@ -33,8 +34,8 @@ namespace CONFIG {
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
     constexpr Angle LIFT_IDLE_POSITION = 3_deg;
-    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 21_deg;
-    constexpr Angle WALL_STAKE_PRIME_HEIGHT = 70_deg;
+    constexpr Angle WALL_STAKE_LOAD_HEIGHT = 22_deg;
+    constexpr Angle WALL_STAKE_PRIME_HEIGHT = 34_deg;
     constexpr Angle DESCORE_HEIGHT = 145_deg;
     constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 185_deg;
 
@@ -61,10 +62,10 @@ namespace CONFIG {
     inline std::pair<double, double> DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel,
                                                             const QAngularVelocity angularVelocity,
                                                             const QAngularAcceleration angularAcceleration) {
-        const double uLinear = DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL * Eigen::Vector2d(
-                                   velocity.getValue(), accel.getValue());
-        const double uAngular = DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL * Eigen::Vector2d(
-                                    angularVelocity.getValue(), angularAcceleration.getValue());
+        const double uLinear =
+            DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL * Eigen::Vector2d(velocity.getValue(), accel.getValue());
+        const double uAngular = DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL *
+                                Eigen::Vector2d(angularVelocity.getValue(), angularAcceleration.getValue());
 
         return {uLinear, uAngular};
     }

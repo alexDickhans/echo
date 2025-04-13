@@ -29,8 +29,8 @@ private:
     pros::Rotation winchRotation;
     bool ptoActive = false;
 
-    QLength leftChange, rightChange;
-    QLength lastLeft, lastRight;
+    QLength odomChange;
+    QLength lastOdom;
 
     ParticleFilter<CONFIG::NUM_PARTICLES> particleFilter;
 
@@ -54,18 +54,21 @@ private:
 
     Angle lastTheta = 0.0;
 
+    pros::Rotation odom;
+
+    QLength onPtoActivateStringPosition = 0.0;
+
 public:
     DrivetrainSubsystem(const std::initializer_list<int8_t> &left11_w, const std::initializer_list<int8_t> &right11_w,
                         pros::Imu imu, pros::adi::DigitalOut pto, pros::Rotation winchRotation,
-                        std::function<bool()> hasGoal) : left11W(left11_w), right11W(right11_w), imu(std::move(imu)),
+                        std::function<bool()> hasGoal, pros::Rotation odom) : left11W(left11_w), right11W(right11_w), imu(std::move(imu)),
                                                          pto(std::move(pto)), winchRotation(std::move(winchRotation)),
                                                          particleFilter([this, imu]() {
                                                              const Angle angle = -imu.get_rotation() * degree;
                                                              return isfinite(angle.getValue()) ? angle : 0.0;
                                                          }),
-                                                         hasGoal(std::move(hasGoal)) {
-        this->leftChange = 0.0;
-        this->rightChange = 0.0;
+                                                         hasGoal(std::move(hasGoal)), odom(std::move(odom)) {
+        this->lastOdom = 0.0;
 
         left11W.set_gearing_all(pros::MotorGears::blue);
         right11W.set_gearing_all(pros::MotorGears::blue);
@@ -73,8 +76,7 @@ public:
         left11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         right11W.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
 
-        lastLeft = this->getLeftDistance();
-        lastRight = this->getRightDistance();
+        lastOdom = this->getOdomDistance();
 
         winchRotation.reset_position();
 
@@ -84,19 +86,14 @@ public:
     void addLocalizationSensor(Sensor *sensor) { particleFilter.addSensor(sensor); }
 
     void periodic() override {
-        const QLength leftLength = this->getLeftDistance();
-        const QLength rightLength = this->getRightDistance();
+        const QLength odomReading = this->getOdomDistance();
 
-        leftChange = leftLength - lastLeft;
-        rightChange = rightLength - lastRight;
+        odomChange = odomReading - lastOdom;
 
-        lastLeft = leftLength;
-        lastRight = rightLength;
+        lastOdom = odomReading;
 
-        auto avg = (leftChange + rightChange) / 2.0;
-
-        std::uniform_real_distribution avgDistribution(avg.getValue() - CONFIG::DRIVE_NOISE * avg.getValue(),
-                                                       avg.getValue() + CONFIG::DRIVE_NOISE * avg.getValue());
+        std::uniform_real_distribution avgDistribution(odomReading.getValue() - CONFIG::DRIVE_NOISE * odomReading.getValue(),
+                                                       odomReading.getValue() + CONFIG::DRIVE_NOISE * odomReading.getValue());
         std::uniform_real_distribution angleDistribution(
             particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
             particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
@@ -104,7 +101,7 @@ public:
         // Exponential Pose Tracking
         const Angle dTheta = particleFilter.getAngle() - lastTheta;
 
-        const auto localMeasurement = Eigen::Vector2f({avg.getValue(), 0});
+        const auto localMeasurement = Eigen::Vector2f({odomReading.getValue(), 0});
         const auto displacementMatrix =
                 Eigen::Matrix2d({
                     {1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},
@@ -133,7 +130,7 @@ public:
             uLinear.emplace_back(lastULinear);
             uAngular.emplace_back(lastUAngular);
 
-            auto currentXLinear = ((leftChange + rightChange) / (2.0 * 0.01)).getValue();
+            auto currentXLinear = (100.0 * odomReading).getValue();
             auto currentXAngular = (-imu.get_gyro_rate().z) * (degree / second).getValue();
 
             xLinear.emplace_back(currentXLinear);
@@ -176,22 +173,31 @@ public:
         this->setPct(left, right);
     }
 
-    QLength getLeftDistance() const {
-        return (this->left11W.get_position(0) + this->left11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
-               M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
-    }
-
-    QLength getRightDistance() const {
-        return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
-               M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
-    }
+    // QLength getLeftDistance() const {
+    //     return (this->left11W.get_position(0) + this->left11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
+    //            M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+    // }
+    //
+    // QLength getRightDistance() const {
+    //     return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
+    //            M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+    // }
 
     QLength getStringDistance() const {
-        return (winchRotation.get_position() * 0.01_deg).Convert(radian) * CONFIG::WINCH_RADIUS +
-               CONFIG::START_STRING_LENGTH;
+        return (this->right11W.get_position(0) + this->right11W.get_position(1) + this->left11W.get_position(0) + this->left11W.get_position(1)) * M_PI * 0.5 * CONFIG::WINCH_RADIUS +
+               CONFIG::START_STRING_LENGTH - this->onPtoActivateStringPosition;
     }
 
-    QLength getDistance() const { return (this->getLeftDistance() + this->getRightDistance()) / 2.0; }
+    QLength getOdomDistance() const {
+        auto distance = (this->odom.get_position() / 36000.0) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 * M_PI *
+                        CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+
+        std::cout << "distance: " << distance.Convert(inch) << std::endl;
+
+        return distance;
+    }
+
+    QLength getDistance() const { return this->getOdomDistance(); }
 
     void initNorm(const Eigen::Vector2f &mean, const Eigen::Matrix2f &covariance, const Angle &angle, const bool flip) {
         imu.set_rotation(angle.Convert(degree) * (flip ? 1 : -1));
@@ -245,7 +251,7 @@ public:
             pros::delay(20);
         }
 
-        auto pot = pros::adi::AnalogIn('h');
+        auto pot = pros::adi::AnalogIn('b');
 
         if (pot.get_value() > 2000) {
             ALLIANCE = RED;
@@ -297,6 +303,7 @@ public:
         return new InstantCommand(
             [this]() {
                 this->pto.set_value(true);
+                this->onPtoActivateStringPosition = this->getStringDistance();
             },
             {});
     }
