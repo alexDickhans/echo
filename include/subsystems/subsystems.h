@@ -194,7 +194,7 @@ inline void initializeCommands() {
                                    })}),
             new ParallelRaceGroup({
                 bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(200_ms); }),
+                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(250_ms); }),
                 liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
             }),
             // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
@@ -216,7 +216,7 @@ inline void initializeCommands() {
             }),
             new ParallelRaceGroup({
                 bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(200_ms); }),
+                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(250_ms); }),
                 liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
             }),
             // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
