@@ -14,16 +14,20 @@ public:
 
     void characterize(const std::vector<double>& x, const std::vector<double>& u) {
 
+        size_t offset = 1;
+
         // Allocate large enough matrices for linear regression
-        Eigen::MatrixXd A = Eigen::MatrixXd::Zero(x.size() - 1, 3);
-        Eigen::VectorXd c = Eigen::VectorXd::Zero(x.size() - 1);
+        Eigen::MatrixXd A = Eigen::MatrixXd::Zero(x.size() - offset, 3);
+        Eigen::VectorXd c = Eigen::VectorXd::Zero(x.size() - offset);
 
         // Fill the matrix with recorded inputs and states
-        for (int i = 1; i < x.size(); i++) {
-            A(i-1, 0) = x[i];
-            A(i-1, 1) = (x[i] - x[i-1]) * 100.0;
-            A(i-1, 2) = 0.0;
-            c(i-1) = u[i - 1];
+        for (int i = offset; i < x.size(); i++) {
+            A(i-offset, 0) = x[i];
+            A(i-offset, 1) = (x[i] - x[i-1]) * 100.0;
+            A(i-offset, 2) = signnum_c(x[i]);
+            if (i-1 < x.size()- offset) {
+                c(i-1) = u[i - offset];
+            }
         }
 
         // Compute the least-squares solution with SVD, which provides the most stability and accuracy of the solutions

@@ -130,7 +130,7 @@ public:
             uLinear.emplace_back(lastULinear);
             uAngular.emplace_back(lastUAngular);
 
-            auto currentXLinear = (100.0 * odomReading).getValue();
+            auto currentXLinear = (100.0 * odomChange).getValue();
             auto currentXAngular = (-imu.get_gyro_rate().z) * (degree / second).getValue();
 
             xLinear.emplace_back(currentXLinear);
@@ -173,15 +173,15 @@ public:
         this->setPct(left, right);
     }
 
-    // QLength getLeftDistance() const {
-    //     return (this->left11W.get_position(0) + this->left11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
-    //            M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
-    // }
-    //
-    // QLength getRightDistance() const {
-    //     return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
-    //            M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
-    // }
+    QLength getLeftDistance() const {
+        return (this->left11W.get_position(0) + this->left11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
+               M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+    }
+
+    QLength getRightDistance() const {
+        return (this->right11W.get_position(0) + this->right11W.get_position(1)) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 *
+               M_PI * CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
+    }
 
     QLength getStringDistance() const {
         auto stringDistance = (this->right11W.get_position(0) + this->right11W.get_position(1) +
@@ -189,16 +189,12 @@ public:
                             M_PI * 0.5 * CONFIG::WINCH_RADIUS +
                         CONFIG::START_STRING_LENGTH - this->onPtoActivateStringPosition;
 
-        std::cout << "string: " << stringDistance.Convert(inch) << std::endl;
-
         return stringDistance;
     }
 
     QLength getOdomDistance() const {
         auto distance = (this->odom.get_position() / 36000.0) / CONFIG::DRIVE_RATIO * 2.0 * M_PI *
                         CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
-
-        std::cout << "distance: " << distance.Convert(inch) << std::endl;
 
         return distance;
     }
@@ -421,11 +417,14 @@ public:
                 {}),
             this->pct(0.5, 0.5)->withTimeout(500_ms),
             this->pct(0.7, 0.7)->withTimeout(600_ms),
+            this->pct(0.2, 0.2)->withTimeout(600_ms),
             this->pct(0.0, 0.0)->withTimeout(300_ms),
             this->pct(-0.7, -0.7)->withTimeout(800_ms),
             this->pct(-0.2, -0.2)->withTimeout(800_ms),
+            this->pct(0.0, 0.0)->withTimeout(300_ms),
             this->pct(0.5, 0.5)->withTimeout(500_ms),
             this->pct(0.7, 0.7)->withTimeout(600_ms),
+            this->pct(0.2, 0.2)->withTimeout(600_ms),
             this->pct(0.0, 0.0)->withTimeout(300_ms),
             this->pct(-0.7, -0.7)->withTimeout(800_ms),
             this->pct(-0.2, -0.2)->withTimeout(800_ms),

@@ -100,18 +100,23 @@ inline void initializeController() {
         ->andOther(negatedHang)
         ->toggleOnTrue(loadLB);
 
-    primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
-    primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->activatePto());
-    primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->retractPto());
-    // primary.getTrigger(DIGITAL_LEFT)
-    //     ->whileTrue((new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in,
-    //                                          false, 0.0, 0.0, false))
-    //                     ->race(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
-    //                     ->andThen(drivetrainSubsystem->pct(0.0, 0.0)->race(
-    //                         liftSubsystem->positionCommand(190_deg, 8_deg)->withTimeout(300_ms)))
-    //                     ->andThen(drivetrainSubsystem->pct(-0.4, -0.4)
-    //                                   ->with(liftSubsystem->positionCommand(190_deg, 0.0))
-    //                                   ->withTimeout(500_ms)));
+    // primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
+    // primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->activatePto());
+    // primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->retractPto());
+    primary.getTrigger(DIGITAL_LEFT)
+        ->whileTrue((new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in,
+                                             false, 0.0, 0.0, false))
+                        ->race(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
+                        ->andThen(drivetrainSubsystem->pct(0.0, 0.0)->race(
+                            liftSubsystem->positionCommand(190_deg, 8_deg)->withTimeout(300_ms)))
+                        ->andThen(drivetrainSubsystem->pct(-0.4, -0.4)
+                                      ->with(liftSubsystem->positionCommand(190_deg, 0.0))
+                                      ->withTimeout(500_ms)));
+
+    auto* compTrigger = new Trigger([] () { return pros::c::competition_is_field(); });
+
+    primary.getTrigger(DIGITAL_UP)->andOther(compTrigger->negate())->whileTrue(drivetrainSubsystem->characterizeAngular());
+    primary.getTrigger(DIGITAL_DOWN)->andOther(compTrigger->negate())->whileTrue(drivetrainSubsystem->characterizeLinear());
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)
