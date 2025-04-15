@@ -243,7 +243,7 @@ inline void initializeCommands() {
                 drivetrainSubsystem->hangOut(1.0, 7.5_in),
                 hangSubsystem->levelCommand(false)
                     ->with(liftSubsystem->positionCommand(15_deg, 0.0))
-                    ->until([]() { return drivetrainSubsystem->getStringDistance() > 3.5_in; })
+                    ->until([]() { return drivetrainSubsystem->getStringDistance() > 5.0_in; })
                     ->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg, 0.0))),
             }));
 

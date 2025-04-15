@@ -22,7 +22,7 @@ namespace CONFIG {
     constexpr size_t NUM_PARTICLES = 250;
     constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
-    constexpr double DRIVETRAIN_TUNING_SCALAR = 1.0;
+    constexpr double DRIVETRAIN_TUNING_SCALAR = 0.955;
 
     constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
 

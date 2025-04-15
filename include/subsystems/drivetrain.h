@@ -136,8 +136,6 @@ public:
             xLinear.emplace_back(currentXLinear);
             xAngular.emplace_back(currentXAngular);
         }
-
-        this->getStringDistance();
     }
 
     Angle getAngle() const { return -imu.get_rotation() * degree; }
@@ -197,7 +195,7 @@ public:
     }
 
     QLength getOdomDistance() const {
-        auto distance = (this->odom.get_position() / 36000.0) / 2.0 / CONFIG::DRIVE_RATIO * 2.0 * M_PI *
+        auto distance = (this->odom.get_position() / 36000.0) / CONFIG::DRIVE_RATIO * 2.0 * M_PI *
                         CONFIG::DRIVETRAIN_TUNING_SCALAR * CONFIG::DRIVE_RADIUS;
 
         std::cout << "distance: " << distance.Convert(inch) << std::endl;
