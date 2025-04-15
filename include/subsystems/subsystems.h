@@ -337,13 +337,13 @@ inline void subsystemInit() {
     });
 
     drivetrainSubsystem->addLocalizationSensor(
-        new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2388.0 / 2445.0, pros::Distance(19)));
+        new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 0.987, pros::Distance(19)));
     drivetrainSubsystem->addLocalizationSensor(
-        new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2388.0 / 2428.0, pros::Distance(20)));
+        new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 0.986, pros::Distance(20)));
     drivetrainSubsystem->addLocalizationSensor(
-        new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2388.0 / 2415.0, pros::Distance(2)));
+        new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 0.980, pros::Distance(2)));
     drivetrainSubsystem->addLocalizationSensor(
-        new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2388.0 / 2443.0, pros::Distance(9)));
+        new Distance(CONFIG::DISTANCE_BACK_OFFSET, 0.979, pros::Distance(9)));
 
     drivetrainSubsystem->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
