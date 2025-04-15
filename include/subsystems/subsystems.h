@@ -161,10 +161,10 @@ inline void initializeCommands() {
 
     intakeWithEject =
         (new Sequence(
-             {intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
+             {intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS && std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.74; }),
               intakeNoEject->until([]() {
                   auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-                  return position > 0.365 && position < 0.45; // tune these variables to make ejection work better
+                  return position > 0.69 && position < 0.74; // tune these variables to make ejection work better
               }),
               bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.03_s))}))
             ->repeatedly();
@@ -183,15 +183,15 @@ inline void initializeCommands() {
                 new ParallelRaceGroup({
                         bottomIntakeSubsystem->pctCommand(1.0),
                         topIntakeSubsystem->pctCommand(1.0)->until(
-                                []() { return topIntakeSubsystem->stalled(800_ms); }),
+                                []() { return topIntakeSubsystem->stalled(600_ms); }),
                         liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
                 }),
-                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
-                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-                                       new WaitCommand(50_ms)}),
-                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.6),
-                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-                                       new WaitCommand(80_ms)}),
+                // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+                //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                //                        new WaitCommand(50_ms)}),
+                // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
+                //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                //                        new WaitCommand(80_ms)}),
                 new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
                                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
                                        new WaitCommand(300_ms)}),
@@ -206,15 +206,15 @@ inline void initializeCommands() {
                 new ParallelRaceGroup({
                         bottomIntakeSubsystem->pctCommand(1.0),
                         topIntakeSubsystem->pctCommand(1.0)->until(
-                                []() { return topIntakeSubsystem->stalled(800_ms); }),
+                                []() { return topIntakeSubsystem->stalled(600_ms); }),
                         liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
                 }),
-                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(-1.0),
-                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-                                       new WaitCommand(50_ms)}),
-                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.6),
-                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-                                       new WaitCommand(80_ms)}),
+                // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+                //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                //                        new WaitCommand(50_ms)}),
+                // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
+                //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                //                        new WaitCommand(80_ms)}),
                 new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
                                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
                                        new WaitCommand(300_ms)}),
@@ -248,10 +248,10 @@ inline void initializeCommands() {
             }));
 
     gripBar = new Sequence(
-        {new ParallelRaceGroup({drivetrainSubsystem->hangIn(1.0, -7.8_in), hangSubsystem->levelCommand(true),
+        {new ParallelRaceGroup({drivetrainSubsystem->hangIn(1.0, -7.0_in), hangSubsystem->levelCommand(true),
                                 liftSubsystem->positionCommand(70_deg, 0.0)}),
          new ParallelRaceGroup({
-             drivetrainSubsystem->hangPctCommand(0.03),
+             drivetrainSubsystem->hangPctCommand(1.0),
              hangSubsystem->levelCommand(false),
              liftSubsystem->positionCommand(70_deg, 0.0),
              new WaitCommand(200_ms),
@@ -305,7 +305,7 @@ inline void subsystemInit() {
 
     topIntakeSubsystem = new TopIntakeSubsystem({6}, pros::Optical(21));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-12));
-    liftSubsystem = new LiftSubsystem({-15}, PID(1.2, 0.0, 3.7, 0.2, 1.0));
+    liftSubsystem = new LiftSubsystem({-15}, PID(1.2, 0.0, 3.0, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('e'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('a'), pros::adi::DigitalOut('d')});
     drivetrainSubsystem = new DrivetrainSubsystem({16, -17, -18}, {-4, 7, 10}, pros::Imu(5),

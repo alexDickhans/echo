@@ -136,6 +136,8 @@ public:
             xLinear.emplace_back(currentXLinear);
             xAngular.emplace_back(currentXAngular);
         }
+
+        this->getStringDistance();
     }
 
     Angle getAngle() const { return -imu.get_rotation() * degree; }
@@ -184,8 +186,14 @@ public:
     // }
 
     QLength getStringDistance() const {
-        return (this->right11W.get_position(0) + this->right11W.get_position(1) + this->left11W.get_position(0) + this->left11W.get_position(1)) * M_PI * 0.5 * CONFIG::WINCH_RADIUS +
-               CONFIG::START_STRING_LENGTH - this->onPtoActivateStringPosition;
+        auto stringDistance = (this->right11W.get_position(0) + this->right11W.get_position(1) +
+                         this->left11W.get_position(0) + this->left11W.get_position(1)) *
+                            M_PI * 0.5 * CONFIG::WINCH_RADIUS +
+                        CONFIG::START_STRING_LENGTH - this->onPtoActivateStringPosition;
+
+        std::cout << "string: " << stringDistance.Convert(inch) << std::endl;
+
+        return stringDistance;
     }
 
     QLength getOdomDistance() const {

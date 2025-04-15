@@ -29,7 +29,7 @@ public:
         optical(optical) {
         intakeMotor.set_encoder_units_all(pros::MotorEncoderUnits::rotations);
         intakeMotor.set_gearing(pros::MotorGears::blue);
-        this->optical.set_integration_time(5);
+        this->optical.set_integration_time(10);
         this->optical.set_led_pwm(255);
     }
 
@@ -40,7 +40,7 @@ public:
 
     void periodic() override {
         // No-op
-        if (abs(intakeMotor.get_current_draw()) < 800) {
+        if (abs(intakeMotor.get_current_draw()) < 900) {
             lastFree = pros::millis() * millisecond;
         }
 
