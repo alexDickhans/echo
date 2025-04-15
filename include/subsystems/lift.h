@@ -35,7 +35,7 @@ public:
         }
 
         // No-op
-        if (abs(motor.get_current_draw()) < 2000) {
+        if (abs(motor.get_current_draw()) < 1500) {
             lastFree = pros::millis() * millisecond;
         }
 
@@ -59,7 +59,8 @@ public:
     }
 
     FunctionalCommand *positionCommand(Angle angle, Angle threshold = 8_deg) {
-        return new FunctionalCommand([]() {
+        return new FunctionalCommand(
+            [this, angle]() { this->setTarget(angle);
                                      }, [this, angle]() { this->setTarget(angle); }, [](bool _) {
                                      }, [this, threshold, angle]() {
                                          return Qabs(this->getPosition() - angle) < threshold;
@@ -98,10 +99,10 @@ public:
     }
 
     Command *zero() {
-        return (new FunctionalCommand([this]() { this->setVoltage(-0.3); }, []() {
+        return (new FunctionalCommand([this]() { this->setVoltage(-0.1); }, []() {
                                       }, [this](bool _) {
                                       }, [this]() { return this->stalled(300_ms); }, {this}))->withTimeout(2000_ms)->andThen(
-            this->pctCommand(0.0)->withTimeout(200_ms))->andThen(
+            this->pctCommand(0.0)->withTimeout(400_ms))->andThen(
             new InstantCommand([this]() { this->motor.tare_position(); }, {this}));
     }
 

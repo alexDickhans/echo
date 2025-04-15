@@ -22,7 +22,7 @@ namespace CONFIG {
     constexpr size_t NUM_PARTICLES = 250;
     constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
-    constexpr double DRIVETRAIN_TUNING_SCALAR = 1.0;
+    constexpr double DRIVETRAIN_TUNING_SCALAR = 0.955;
 
     constexpr double TOP_INTAKE_DEFAULT_TOLERANCE = 0.005;
 
@@ -35,14 +35,14 @@ namespace CONFIG {
 
     constexpr Angle LIFT_IDLE_POSITION = 3_deg;
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 22_deg;
-    constexpr Angle WALL_STAKE_PRIME_HEIGHT = 34_deg;
-    constexpr Angle DESCORE_HEIGHT = 145_deg;
+    constexpr Angle WALL_STAKE_PRIME_HEIGHT = 80_deg;
+    constexpr Angle DESCORE_HEIGHT = 155_deg;
     constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 185_deg;
 
-    const Eigen::Vector3f DISTANCE_LEFT_OFFSET((-0.5_in).getValue(), (10.5_in).getValue(), (90_deg).getValue());
-    const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((-0.5_in).getValue(), (-10.5_in).getValue(), (-90_deg).getValue());
-    const Eigen::Vector3f DISTANCE_FRONT_OFFSET((3.75_in).getValue(), (-0.75_in).getValue(), (0_deg).getValue());
-    const Eigen::Vector3f DISTANCE_BACK_OFFSET((-7.75_in).getValue(), (-4.5_in).getValue(), (180_deg).getValue());
+    const Eigen::Vector3f DISTANCE_LEFT_OFFSET((4.2_in).getValue(), (5.0_in).getValue(), (90_deg).getValue());
+    const Eigen::Vector3f DISTANCE_RIGHT_OFFSET((4.2_in).getValue(), (-5.0_in).getValue(), (-90_deg).getValue());
+    const Eigen::Vector3f DISTANCE_FRONT_OFFSET((3.9_in).getValue(), (3.3_in).getValue(), (0_deg).getValue());
+    const Eigen::Vector3f DISTANCE_BACK_OFFSET((-5.9_in).getValue(), (-5.2_in).getValue(), (180_deg).getValue());
 
     constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 

@@ -100,24 +100,29 @@ inline void initializeController() {
         ->andOther(negatedHang)
         ->toggleOnTrue(loadLB);
 
-    primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
-    primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->activatePto());
-    primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->retractPto());
-    // primary.getTrigger(DIGITAL_LEFT)
-    //     ->whileTrue((new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in,
-    //                                          false, 0.0, 0.0, false))
-    //                     ->race(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
-    //                     ->andThen(drivetrainSubsystem->pct(0.0, 0.0)->race(
-    //                         liftSubsystem->positionCommand(190_deg, 8_deg)->withTimeout(300_ms)))
-    //                     ->andThen(drivetrainSubsystem->pct(-0.4, -0.4)
-    //                                   ->with(liftSubsystem->positionCommand(190_deg, 0.0))
-    //                                   ->withTimeout(500_ms)));
+    // primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
+    // primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->activatePto());
+    // primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->retractPto());
+    primary.getTrigger(DIGITAL_LEFT)
+        ->whileTrue((new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in,
+                                             false, 0.0, 0.0, false))
+                        ->race(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
+                        ->andThen(drivetrainSubsystem->pct(0.0, 0.0)->race(
+                            liftSubsystem->positionCommand(190_deg, 8_deg)->withTimeout(300_ms)))
+                        ->andThen(drivetrainSubsystem->pct(-0.4, -0.4)
+                                      ->with(liftSubsystem->positionCommand(190_deg, 0.0))
+                                      ->withTimeout(500_ms)));
+
+    auto* compTrigger = new Trigger([] () { return pros::c::competition_is_field(); });
+
+    primary.getTrigger(DIGITAL_UP)->andOther(compTrigger->negate())->whileTrue(drivetrainSubsystem->characterizeAngular());
+    primary.getTrigger(DIGITAL_DOWN)->andOther(compTrigger->negate())->whileTrue(drivetrainSubsystem->characterizeLinear());
 
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
     primary.getTrigger(DIGITAL_Y)
         ->andOther(negatedLBLoad)
         ->andOther(new Trigger([]() { return !hangReleased; }))
-        ->whileTrue(liftSubsystem->positionCommand(140_deg, 0.0));
+        ->whileTrue(liftSubsystem->positionCommand(CONFIG::DESCORE_HEIGHT, 0.0));
     primary.getTrigger(DIGITAL_Y)->andOther(new Trigger([]() { return hangReleased; }))->whileTrue(hang);
 
     primary.getTrigger(DIGITAL_B)->onTrue(
@@ -161,49 +166,63 @@ inline void initializeCommands() {
 
     intakeWithEject =
         (new Sequence(
-             {intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS; }),
+             {intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS && std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.74; }),
               intakeNoEject->until([]() {
                   auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-                  return position > 0.365 && position < 0.45; // tune these variables to make ejection work better
+                  return position > 0.71 && position < 0.75; // tune these variables to make ejection work better
               }),
-              bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.03_s))}))
+              bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s))}))
             ->repeatedly();
 
     if (topIntakeSubsystem->visionConnected()) {
         basicLoadLB = new Sequence({
             new ParallelRaceGroup({
-                bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(0.0),
-                liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
-            }),
-            new ParallelRaceGroup({intakeWithEject, liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0),
-                                   new WaitUntilCommand([]() {
-                                       return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE;
-                                   })}),
-            new ParallelRaceGroup({
-                bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(800_ms); }),
-                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-            }),
-            new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
-                                   liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
-                                   new WaitCommand(300_ms)}),
+                        bottomIntakeSubsystem->pctCommand(1.0),
+                        topIntakeSubsystem->pctCommand(0.0),
+                        liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
+                }),
+                new ParallelRaceGroup({intakeWithEject, liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0),
+                                       new WaitUntilCommand([]() {
+                                           return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE;
+                                       })}),
+                new ParallelRaceGroup({
+                        bottomIntakeSubsystem->pctCommand(1.0),
+                        topIntakeSubsystem->pctCommand(1.0)->until(
+                                []() { return topIntakeSubsystem->stalled(200_ms); }),
+                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                }),
+                // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+                //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                //                        new WaitCommand(50_ms)}),
+                // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
+                //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                //                        new WaitCommand(80_ms)}),
+                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
+                                       new WaitCommand(150_ms)}),
         });
     } else {
         basicLoadLB = new Sequence({
-            new ParallelRaceGroup({
-                bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(0.0),
-                liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
-            }),
-            new ParallelRaceGroup({
-                bottomIntakeSubsystem->pctCommand(1.0),
-                topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(800_ms); }),
-                liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-            }),
-            new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
-                                   liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
-                                   new WaitCommand(300_ms)}),
+                new ParallelRaceGroup({
+                        bottomIntakeSubsystem->pctCommand(1.0),
+                        topIntakeSubsystem->pctCommand(0.0),
+                        liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
+                }),
+                new ParallelRaceGroup({
+                        bottomIntakeSubsystem->pctCommand(1.0),
+                        topIntakeSubsystem->pctCommand(1.0)->until(
+                                []() { return topIntakeSubsystem->stalled(200_ms); }),
+                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                }),
+                // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+                //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                //                        new WaitCommand(50_ms)}),
+                // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
+                //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
+                //                        new WaitCommand(80_ms)}),
+                new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+                                       liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
+                                       new WaitCommand(150_ms)}),
         });
     }
 
@@ -229,15 +248,15 @@ inline void initializeCommands() {
                 drivetrainSubsystem->hangOut(1.0, 7.5_in),
                 hangSubsystem->levelCommand(false)
                     ->with(liftSubsystem->positionCommand(15_deg, 0.0))
-                    ->until([]() { return drivetrainSubsystem->getStringDistance() > 3.5_in; })
+                    ->until([]() { return drivetrainSubsystem->getStringDistance() > 4.2_in; })
                     ->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg, 0.0))),
             }));
 
     gripBar = new Sequence(
-        {new ParallelRaceGroup({drivetrainSubsystem->hangIn(1.0, -7.8_in), hangSubsystem->levelCommand(true),
+        {new ParallelRaceGroup({drivetrainSubsystem->hangIn(1.0, -7.0_in), hangSubsystem->levelCommand(true),
                                 liftSubsystem->positionCommand(70_deg, 0.0)}),
          new ParallelRaceGroup({
-             drivetrainSubsystem->hangPctCommand(0.03),
+             drivetrainSubsystem->hangPctCommand(1.0),
              hangSubsystem->levelCommand(false),
              liftSubsystem->positionCommand(70_deg, 0.0),
              new WaitCommand(200_ms),
@@ -291,7 +310,7 @@ inline void subsystemInit() {
 
     topIntakeSubsystem = new TopIntakeSubsystem({6}, pros::Optical(21));
     bottomIntakeSubsystem = new MotorSubsystem(pros::Motor(-12));
-    liftSubsystem = new LiftSubsystem({-15}, PID(1.2, 0.0, 3.7, 0.2, 1.0));
+    liftSubsystem = new LiftSubsystem({-15}, PID(1.2, 0.0, 3.0, 0.2, 1.0));
     goalClampSubsystem = new SolenoidSubsystem(pros::adi::DigitalOut('e'));
     hangSubsystem = new SolenoidSubsystem({pros::adi::DigitalOut('a'), pros::adi::DigitalOut('d')});
     drivetrainSubsystem = new DrivetrainSubsystem({16, -17, -18}, {-4, 7, 10}, pros::Imu(5),
@@ -318,13 +337,13 @@ inline void subsystemInit() {
     });
 
     drivetrainSubsystem->addLocalizationSensor(
-        new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 2388.0 / 2445.0, pros::Distance(19)));
+        new Distance(CONFIG::DISTANCE_LEFT_OFFSET, 0.987, pros::Distance(19)));
     drivetrainSubsystem->addLocalizationSensor(
-        new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 2388.0 / 2428.0, pros::Distance(20)));
+        new Distance(CONFIG::DISTANCE_FRONT_OFFSET, 0.986, pros::Distance(20)));
     drivetrainSubsystem->addLocalizationSensor(
-        new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 2388.0 / 2415.0, pros::Distance(2)));
+        new Distance(CONFIG::DISTANCE_RIGHT_OFFSET, 0.980, pros::Distance(2)));
     drivetrainSubsystem->addLocalizationSensor(
-        new Distance(CONFIG::DISTANCE_BACK_OFFSET, 2388.0 / 2443.0, pros::Distance(9)));
+        new Distance(CONFIG::DISTANCE_BACK_OFFSET, 0.979, pros::Distance(9)));
 
     drivetrainSubsystem->initUniform(-70_in, -70_in, 70_in, 70_in, 0_deg, false);
 
