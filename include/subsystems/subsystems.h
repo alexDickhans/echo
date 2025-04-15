@@ -265,7 +265,7 @@ inline void initializeCommands() {
 
     barToBarHang = new Sequence({letOutString, gripBar});
 
-    hang = new ParallelCommandGroup(
+    hang = new ParallelRaceGroup(
         {new Sequence({
              drivetrainSubsystem->activatePto(),
              drivetrainSubsystem->pct(-0.1, -0.1)->withTimeout(70_ms),
