@@ -40,7 +40,7 @@ public:
 
     void periodic() override {
         // No-op
-        if (abs(intakeMotor.get_current_draw()) < 900) {
+        if (abs(intakeMotor.get_current_draw()) < 1700) {
             lastFree = pros::millis() * millisecond;
         }
 

@@ -188,7 +188,7 @@ inline void initializeCommands() {
                 new ParallelRaceGroup({
                         bottomIntakeSubsystem->pctCommand(1.0),
                         topIntakeSubsystem->pctCommand(1.0)->until(
-                                []() { return topIntakeSubsystem->stalled(600_ms); }),
+                                []() { return topIntakeSubsystem->stalled(200_ms); }),
                         liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
                 }),
                 // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
@@ -199,7 +199,7 @@ inline void initializeCommands() {
                 //                        new WaitCommand(80_ms)}),
                 new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
                                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
-                                       new WaitCommand(300_ms)}),
+                                       new WaitCommand(150_ms)}),
         });
     } else {
         basicLoadLB = new Sequence({
@@ -211,7 +211,7 @@ inline void initializeCommands() {
                 new ParallelRaceGroup({
                         bottomIntakeSubsystem->pctCommand(1.0),
                         topIntakeSubsystem->pctCommand(1.0)->until(
-                                []() { return topIntakeSubsystem->stalled(600_ms); }),
+                                []() { return topIntakeSubsystem->stalled(200_ms); }),
                         liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
                 }),
                 // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
@@ -222,7 +222,7 @@ inline void initializeCommands() {
                 //                        new WaitCommand(80_ms)}),
                 new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
                                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
-                                       new WaitCommand(300_ms)}),
+                                       new WaitCommand(150_ms)}),
         });
     }
 
@@ -248,7 +248,7 @@ inline void initializeCommands() {
                 drivetrainSubsystem->hangOut(1.0, 7.5_in),
                 hangSubsystem->levelCommand(false)
                     ->with(liftSubsystem->positionCommand(15_deg, 0.0))
-                    ->until([]() { return drivetrainSubsystem->getStringDistance() > 5.0_in; })
+                    ->until([]() { return drivetrainSubsystem->getStringDistance() > 4.2_in; })
                     ->andThen(hangSubsystem->levelCommand(true)->with(liftSubsystem->positionCommand(70_deg, 0.0))),
             }));
 
