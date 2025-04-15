@@ -169,9 +169,9 @@ inline void initializeCommands() {
              {intakeNoEject->until([]() { return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS && std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.74; }),
               intakeNoEject->until([]() {
                   auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-                  return position > 0.69 && position < 0.74; // tune these variables to make ejection work better
+                  return position > 0.71 && position < 0.75; // tune these variables to make ejection work better
               }),
-              bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.03_s))}))
+              bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s))}))
             ->repeatedly();
 
     if (topIntakeSubsystem->visionConnected()) {

@@ -44,6 +44,8 @@ public:
             lastFree = pros::millis() * millisecond;
         }
 
+        std::cout << "Current draw: " << intakeMotor.get_current_draw() << std::endl;
+
         ringColor = updateRingColor();
     }
 
