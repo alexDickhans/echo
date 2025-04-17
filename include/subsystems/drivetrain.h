@@ -92,8 +92,8 @@ public:
 
         lastOdom = odomReading;
 
-        std::uniform_real_distribution avgDistribution(odomReading.getValue() - CONFIG::DRIVE_NOISE * odomReading.getValue(),
-                                                       odomReading.getValue() + CONFIG::DRIVE_NOISE * odomReading.getValue());
+        std::uniform_real_distribution avgDistribution(odomChange.getValue() - CONFIG::DRIVE_NOISE * odomChange.getValue(),
+                                                       odomChange.getValue() + CONFIG::DRIVE_NOISE * odomChange.getValue());
         std::uniform_real_distribution angleDistribution(
             particleFilter.getAngle().getValue() - CONFIG::ANGLE_NOISE.getValue(),
             particleFilter.getAngle().getValue() + CONFIG::ANGLE_NOISE.getValue());
@@ -101,7 +101,7 @@ public:
         // Exponential Pose Tracking
         const Angle dTheta = particleFilter.getAngle() - lastTheta;
 
-        const auto localMeasurement = Eigen::Vector2f({odomReading.getValue(), 0});
+        const auto localMeasurement = Eigen::Vector2f({odomChange.getValue(), 0});
         const auto displacementMatrix =
                 Eigen::Matrix2d({
                     {1.0 - pow(dTheta.getValue(), 2), -dTheta.getValue() / 2.0},

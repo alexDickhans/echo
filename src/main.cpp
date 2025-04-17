@@ -27,12 +27,6 @@ Command* autonCommand;
         //         break;
         // }
 
-        auto particles = drivetrainSubsystem->getParticles();
-
-        for (auto particle: particles) {
-
-        }
-
         pros::c::task_delay_until(&start_time, 10);
     }
 }
