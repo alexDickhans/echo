@@ -138,6 +138,10 @@ public:
         }
     }
 
+    bool odomConnected() {
+        return odom.is_installed();
+    }
+
     Angle getAngle() const { return -imu.get_rotation() * degree; }
 
     Eigen::Rotation2Dd getRotation() const { return Eigen::Rotation2Dd(this->getAngle().getValue()); }

@@ -309,6 +309,11 @@ inline void subsystemInit() {
             pros::delay(2000);
         }
 
+        if (!drivetrainSubsystem->odomConnected()) {
+            primary.rumble("-- --");
+            pros::delay(2000);
+        }
+
         if (pros::battery::get_capacity() < 50.0) {
             primary.rumble("..-");
             pros::delay(2000);
