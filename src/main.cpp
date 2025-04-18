@@ -27,7 +27,7 @@ Command* autonCommand;
         //         break;
         // }
 
-        pros::c::task_delay_until(&start_time, 50);
+        pros::c::task_delay_until(&start_time, 10);
     }
 }
 
@@ -44,7 +44,7 @@ void initialize() {
     subsystemInit();
 
     pros::Task commandScheduler(update_loop, "Command Scheduler");
-    // pros::Task screenUpdate(screen_update_loop, "Screen Updater");
+    pros::Task screenUpdate(screen_update_loop, "Screen Updater");
 
     autonCommand = AutonomousCommands::getAuton();
 }
