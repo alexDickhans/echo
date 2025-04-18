@@ -38,12 +38,11 @@ public:
                 liftSubsystem->positionCommand(0.0)->withTimeout(150_ms)->asProxy()),
             new ScheduleCommand(loadLB),
             new Ramsete(drivetrainSubsystem, &skills_2),
-            (new Rotate(drivetrainSubsystem, -90_deg, false))->withTimeout(150_ms),
             new Ramsete(drivetrainSubsystem, &skills_3),
             drivetrainSubsystem->pct(0.4, 0.4)->withTimeout(0.2_s),
             drivetrainSubsystem->pct(0.4, 0.4)->race(
                 SharedCommands::scoreWallStakes()->asProxy())->andThen(
-                new ScheduleCommand(liftSubsystem->positionCommand(90_deg, 0.0))),
+                new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::DESCORE_HEIGHT, 0.0))),
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(140_ms),
             new Ramsete(drivetrainSubsystem, &skills_4),
             // new ScheduleCommand(hang),

@@ -149,7 +149,7 @@ inline void initializePathCommands() {
                                   bottomIntakeSubsystem->pctCommand(0.0)->with(
                                       TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.0)));
     PathCommands::registerCommand("stopIntake3",
-                                  TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 2.20, 0.0));
+                                  TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 3.1, 0.0));
     PathCommands::registerCommand("hangRelease", hangRelease);
     PathCommands::registerCommand(
         "resetLB", liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
