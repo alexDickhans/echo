@@ -53,6 +53,7 @@ inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
 inline Trigger* negatedHang;
 inline Trigger* negatedLBLoad;
+inline Trigger* liftLow;
 
 bool hangReleased = false;
 
@@ -70,6 +71,8 @@ inline void initializeController()
 
     negatedHang = ((new Trigger(hangRelease))->orOther(new Trigger(hangIdle)))->negate();
     negatedLBLoad = (new Trigger(loadLB))->negate();
+
+    liftLow = new Trigger([] () { return liftSubsystem->getPosition() < 50_deg; });
 
     negatedHang->negate()->onTrue((new InstantCommand([]() { hangReleased = true; }, {})));
 
@@ -127,12 +130,20 @@ inline void initializeController()
     primary.getTrigger(DIGITAL_DOWN)
            ->andOther(compTrigger->negate())
            ->whileTrue(drivetrainSubsystem->characterizeLinear());
-
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
+
     primary.getTrigger(DIGITAL_Y)
            ->andOther(negatedLBLoad)
+            ->andOther(liftLow)
+           ->andOther(new Trigger([]() { return !hangReleased; }))
+           ->whileTrue(liftSubsystem->positionCommand(CONFIG::DESCORE_HEIGHT, 0.0)->race(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, -0.4, 0.0)));
+
+    primary.getTrigger(DIGITAL_Y)
+           ->andOther(negatedLBLoad)
+            ->andOther(liftLow->negate())
            ->andOther(new Trigger([]() { return !hangReleased; }))
            ->whileTrue(liftSubsystem->positionCommand(CONFIG::DESCORE_HEIGHT, 0.0));
+
     primary.getTrigger(DIGITAL_Y)->andOther(new Trigger([]() { return hangReleased; }))->whileTrue(hang);
 
     primary.getTrigger(DIGITAL_B)->onTrue(
@@ -204,13 +215,13 @@ inline void initializeCommands()
                 topIntakeSubsystem->pctCommand(0.0),
                 liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 35.0_deg),
             }),
-            new ParallelRaceGroup({
+            (new ParallelRaceGroup({
                 intakeWithEject, liftSubsystem->positionCommand(CONFIG::LIFT_IDLE_POSITION, 0.0),
                 new WaitUntilCommand([]()
                 {
                     return static_cast<Alliance>(topIntakeSubsystem->getRing()) == ALLIANCE;
                 })
-            }),
+            }))->until([]() { return topIntakeSubsystem->stalled(800_ms); }),
             new ParallelRaceGroup({
                 bottomIntakeSubsystem->pctCommand(1.0),
                 topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(200_ms); }),
