@@ -46,8 +46,8 @@ namespace CONFIG {
 
     constexpr auto AI_VISION_PIXELS_TO_DEGREES = 0.20443037974_deg;
 
-    constexpr float RAMSETE_ZETA = 0.6;
-    constexpr float RAMSETE_BETA = 40.0;
+    constexpr float RAMSETE_ZETA = 0.4;
+    constexpr float RAMSETE_BETA = 45.0;
 
     inline Eigen::Matrix3f DEFAULT_DT_COST_Q = Eigen::Matrix3f({{1.0, 0.0, 0.0}, {0.0, 5.0, 0.0}, {0.0, 0.0, 7.0}});
     inline Eigen::Matrix2f DEFAULT_DT_COST_R = Eigen::Matrix2f::Identity();

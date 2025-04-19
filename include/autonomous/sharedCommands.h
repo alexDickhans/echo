@@ -13,12 +13,12 @@ public:
      * @return Command that scores on alliance
      */
     static Command *scoreAlliance() {
-        return liftSubsystem->positionCommand(180_deg, 20_deg)->withTimeout(600_ms);
+        return liftSubsystem->positionCommand(180_deg, 20_deg)->withTimeout(400_ms);
     }
 
     static Command *scoreWallStakes() {
-        return liftSubsystem->pctCommand(1.0)->until([]() { return liftSubsystem->getPosition() > 150_deg; })->
-                withTimeout(550_ms);
+        return liftSubsystem->pctCommand(1.0)->until([]() { return liftSubsystem->getPosition() > 155_deg; })->
+                withTimeout(700_ms);
     }
 
     static Command *arcOntoAlliance(bool flip, bool pos) {
