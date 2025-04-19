@@ -53,7 +53,6 @@ inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
 
 inline Trigger* negatedHang;
 inline Trigger* negatedLBLoad;
-inline Trigger* hangReleaseTriggered;
 
 bool hangReleased = false;
 
@@ -106,8 +105,6 @@ inline void initializeController()
            ->andOther(primary.getTrigger(DIGITAL_L2)->negate())
            ->andOther(negatedHang)
            ->toggleOnTrue(loadLB);
-
-    primary.getTrigger(DIGITAL_R1)->andOther([]())
 
     // primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
     // primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->activatePto());
