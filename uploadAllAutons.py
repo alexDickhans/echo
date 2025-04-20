@@ -6,12 +6,14 @@ import argparse
 
 # Autonomous modes
 AUTONS = [
-    "POS_ELIM",
-    "POS_ELIM_NO_ALLIANCE",
-    "NEG_ELIM",
-    "NEG_ELIM_POLE_TOUCH",
-    "SKILLS",
-    # "NONE"
+    "N_1_6",
+    "N_1_5_POLE",
+    "N_6",
+    "P_4",
+    "P_1_3GOAL",
+    "P_1_3ALLIANCE",
+    "P_1_1_2",
+    "SKILLS"
 ]
 
 OFFSET = 1

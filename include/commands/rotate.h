@@ -34,6 +34,7 @@ public:
     }
 
     void initialize() override {
+        pid = drivetrain.
         pid.reset();
         pid.setTarget(updateAngle().getValue());
         this->pid.setTurnPid(true);

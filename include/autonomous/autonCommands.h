@@ -4,7 +4,8 @@
 #include "auton.h"
 #include "command/includes.h"
 #include "skills.h"
-#include "elims.h"
+#include "negative.h"
+#include "positive.h"
 
 /**
  * Allows easy selection of autonomous routines given a AUTON object, called on initialization to build states
@@ -15,14 +16,14 @@ public:
         switch (AUTON) {
             case SKILLS:
                 return Skills::skills();
-            case POS_ELIM:
-                return Elims::pos_elim();
-            case POS_ELIM_NO_ALLIANCE:
-                return Elims::pos_elim_no_alliance();
-            case NEG_ELIM:
-                return Elims::neg_elim();
-            case NEG_ELIM_POLE_TOUCH:
-                return Elims::neg_elim_pole_touch();
+            case N_1_6:
+                return Negative::n_1_6();
+            case N_6:
+            case N_1_5_POLE:
+            case P_1_1_2:
+            case P_1_3ALLIANCE:
+            case P_1_3GOAL:
+            case P_4:
             default:
                 return new InstantCommand([]() { std::cout << "No auton" << std::endl; }, {});
         }

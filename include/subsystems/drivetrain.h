@@ -155,11 +155,11 @@ public:
     }
 
     void setDriveSpeeds(DriveSpeeds lastSpeeds, DriveSpeeds nextDriveSpeeds = {0.0, 0.0}) {
-        QAngularAcceleration angularAcceleration =
-                (nextDriveSpeeds.angularVelocity - lastSpeeds.angularVelocity) / 10_ms;
-        QAcceleration linearAcceleration = (nextDriveSpeeds.linearVelocity - lastSpeeds.linearVelocity) / 10_ms;
+        const QAngularAcceleration angularAcceleration =
+            (nextDriveSpeeds.angularVelocity - lastSpeeds.angularVelocity) / 10_ms;
+        const QAcceleration linearAcceleration = (nextDriveSpeeds.linearVelocity - lastSpeeds.linearVelocity) / 10_ms;
 
-        bool goal = hasGoal();
+        const bool goal = robotHasGoal();
 
         const double uLinear =
                 (goal ? CONFIG::DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL : CONFIG::DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL) *
@@ -175,6 +175,10 @@ public:
         right += signnum_c(right) * CONFIG::K_s;
 
         this->setPct(left, right);
+    }
+
+    bool robotHasGoal() {
+        return hasGoal();
     }
 
     QLength getLeftDistance() const {
