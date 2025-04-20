@@ -3,7 +3,7 @@
   "end_speed": 11.5,
   "segments": [
     {
-      "inverted": false,
+      "inverted": true,
       "stop_end": false,
       "path": [
         {
@@ -24,10 +24,15 @@
         }
       ],
       "constraints": {
-        "velocity": 1.751,
+        "velocity": 1.75,
         "accel": 1.288
       }
     }
   ],
-  "commands": []
+  "commands": [
+    {
+      "t": 0.177,
+      "name": "resetLB"
+    }
+  ]
 }

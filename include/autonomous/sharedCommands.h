@@ -12,18 +12,17 @@ public:
      *
      * @return Command that scores on alliance
      */
-    static Command *scoreAlliance() {
-        return liftSubsystem->positionCommand(180_deg, 20_deg)->withTimeout(400_ms);
-    }
+    static Command *scoreAlliance() { return liftSubsystem->positionCommand(180_deg, 20_deg)->withTimeout(400_ms); }
 
     static Command *scoreWallStakes() {
-        return liftSubsystem->pctCommand(1.0)->until([]() { return liftSubsystem->getPosition() > 155_deg; })->
-                withTimeout(700_ms);
+        return liftSubsystem->pctCommand(1.0)
+            ->until([]() { return liftSubsystem->getPosition() > 155_deg; })
+            ->withTimeout(700_ms);
     }
 
     static Command *arcOntoAlliance(bool flip, bool pos) {
         return new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 70_in / second / second}, 3_in, flip,
-                                        90_deg, (pos ? -1.0 : 1.0) * 78_deg / 3_in);
+                                       90_deg, (pos ? -1.0 : 1.0) * 78_deg / 3_in);
     }
 
 
@@ -33,17 +32,18 @@ public:
      * @return Command that removes rings from the corner
      */
     static Command *descoreCorner() {
-        return new Sequence({
-            new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, -16_in, false, 0.0, 0.0, false),
-            (new Rotate(drivetrainSubsystem, [] () { return drivetrainSubsystem->getAngle() + 22_deg; }, false))->withTimeout(400_ms),
-            new TankMotionProfiling(drivetrainSubsystem, {18_in/second, 50_in/second/second}, 17_in, false, 0.0, 0.0, false),
-        });
+        auto getOneRingOut = oneRingOutOfCorner();
+
+        return new Sequence({getOneRingOut, getOneRingOut, getOneRingOut, getOneRingOut});
     }
 
-    static Command *lastRingOutOfCorner() {
+    static Command *oneRingOutOfCorner() {
         return new Sequence({
-            new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, -5_in, false, 0.0, 0.0, false),
-            new TankMotionProfiling(drivetrainSubsystem, {20_in/second, 50_in/second/second}, 5_in, false, 0.0, 0.0, false),
+            (new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 120_in / second / second}, -8_in, false, 0.0,
+                                    0.0, false))->with(intakeWithEject),
+            (new TankMotionProfiling(drivetrainSubsystem, {25_in / second, 120_in / second / second}, 9_in, false, 0.0,
+                                    0.0, false))->with(intakeWithEject),
+            drivetrainSubsystem->pct(0.2, 0.2)->with(bottomOuttakeWithEject),
         });
     }
 };

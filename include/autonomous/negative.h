@@ -1,5 +1,8 @@
 #pragma once
 
+BEZIER_MIRRORED_MP_ASSET(n_1_6_1);
+BEZIER_MIRRORED_MP_ASSET(n_1_6_2);
+
 /**
  * Define elim autons
  */
@@ -15,6 +18,10 @@ public:
             drivetrainSubsystem->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
             new ScheduleCommand(liftSubsystem->positionCommand(180_deg, 0.0)),
             SharedCommands::arcOntoAlliance(flip, false),
+            new Ramsete(drivetrainSubsystem, flip ? &n_1_6_1_blue : &n_1_6_1_red),
+            (new Rotate(drivetrainSubsystem, -50_deg, flip))->withTimeout(700_ms),
+            new Ramsete(drivetrainSubsystem, flip ? &n_1_6_2_blue : &n_1_6_2_red),
+
         });
     }
 };
