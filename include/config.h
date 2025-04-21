@@ -55,9 +55,9 @@ namespace CONFIG {
 
     inline double K_s = 0.008;
 
-    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.535, 0.010};
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.535, 0.003};
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.101, 0.0185};
-    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.55, 0.010};
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.55, 0.003};
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.0681, 0.0128};
 
     inline std::pair<double, double> DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel,

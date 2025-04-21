@@ -5,7 +5,6 @@
  */
 enum Auton_ {
   N_1_6,
-  N_1_5_POLE,
   N_6,
   P_4,
   P_1_3GOAL,

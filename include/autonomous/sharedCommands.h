@@ -21,7 +21,7 @@ public:
     }
 
     static Command *driveToAlliance() {
-        return new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, 6_in,
+        return new TankMotionProfiling(drivetrainSubsystem, {10_in / second, 60_in / second / second}, 2_in,
                                                 false, 0.0, 0.0, false);
     }
 
@@ -32,18 +32,17 @@ public:
      * @return Command that removes rings from the corner
      */
     static Command *descoreCorner() {
-        auto getOneRingOut = oneRingOutOfCorner();
-
-        return new Sequence({getOneRingOut, getOneRingOut, getOneRingOut, getOneRingOut});
+        return new Sequence({oneRingOutOfCorner(), oneRingOutOfCorner(), oneRingOutOfCorner(), oneRingOutOfCorner()});
     }
 
     static Command *oneRingOutOfCorner() {
         return new Sequence({
+            drivetrainSubsystem->pct(0.4, 0.4)->race(bottomOuttakeWithEject->asProxy())->withTimeout(300_ms),
+            drivetrainSubsystem->pct(0.4, 0.4)->race(intakeWithEject->asProxy())->withTimeout(300_ms),
             (new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 120_in / second / second}, -8_in, false, 0.0,
-                                    0.0, false))->with(intakeWithEject),
+                                    0.0, false))->race(intakeWithEject->asProxy()),
             (new TankMotionProfiling(drivetrainSubsystem, {25_in / second, 120_in / second / second}, 9_in, false, 0.0,
-                                    0.0, false))->with(intakeWithEject),
-            drivetrainSubsystem->pct(0.2, 0.2)->with(bottomOuttakeWithEject),
+                                    0.0, false))->race(intakeWithEject->asProxy()),
         });
     }
 };

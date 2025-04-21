@@ -19,7 +19,6 @@ public:
             case N_1_6:
                 return Negative::n_1_6();
             case N_6:
-            case N_1_5_POLE:
             case P_1_1_2:
             case P_1_3ALLIANCE:
             case P_1_3GOAL:
