@@ -1,0 +1,15 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [],
+  "commands": [
+    {
+      "t": 0.06,
+      "name": "intakeWithEject"
+    },
+    {
+      "t": 3.844,
+      "name": "bottomOuttake"
+    }
+  ]
+}

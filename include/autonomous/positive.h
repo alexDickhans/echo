@@ -1,5 +1,9 @@
 #pragma once
 
+BEZIER_MIRRORED_MP_ASSET(p_4_1);
+BEZIER_MIRRORED_MP_ASSET(p_4_2);
+BEZIER_MIRRORED_MP_ASSET(p_4_3);
+
 class Positive {
 public:
     static Command *p_4() {
@@ -10,6 +14,12 @@ public:
 
         return new Sequence({
             drivetrainSubsystem->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
+            new Ramsete(drivetrainSubsystem, flip ? &p_4_1_blue : &p_4_1_red),
+            (new Rotate(drivetrainSubsystem, 170_deg, flip))->withTimeout(500_ms),
+            new Ramsete(drivetrainSubsystem, flip ? &p_4_2_blue : &p_4_2_red),
+            SharedCommands::descoreCorner(),
+            new Ramsete(drivetrainSubsystem, flip ? &p_4_3_blue : &p_4_3_red),
+            new ScheduleCommand(liftSubsystem->pctCommand(-0.2)),
         });
     }
 
@@ -34,6 +44,12 @@ public:
             drivetrainSubsystem->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
             new ScheduleCommand(liftSubsystem->positionCommand(180_deg, 0.0)),
             SharedCommands::driveToAlliance(),
+            new Ramsete(drivetrainSubsystem, flip ? &p_4_1_blue : &p_4_1_red),
+            (new Rotate(drivetrainSubsystem, 170_deg, flip))->withTimeout(500_ms),
+            new Ramsete(drivetrainSubsystem, flip ? &p_4_2_blue : &p_4_2_red),
+            SharedCommands::descoreCorner(),
+            new Ramsete(drivetrainSubsystem, flip ? &p_4_3_blue : &p_4_3_red),
+            new ScheduleCommand(liftSubsystem->pctCommand(-0.2)),
         });
     }
 

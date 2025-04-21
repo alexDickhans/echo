@@ -1,0 +1,33 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.479,
+          "y": 1.463
+        },
+        {
+          "x": -1.257,
+          "y": 1.246
+        },
+        {
+          "x": -0.586,
+          "y": 0.57
+        },
+        {
+          "x": -0.361,
+          "y": 0.351
+        }
+      ],
+      "constraints": {
+        "velocity": 1.201,
+        "accel": 2.248
+      }
+    }
+  ],
+  "commands": []
+}
