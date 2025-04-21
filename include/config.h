@@ -20,7 +20,7 @@ namespace CONFIG {
     constexpr double LIFT_RATIO = 18.0 / 6.0;
     constexpr QLength TRACK_WIDTH = 11_in;
     constexpr size_t NUM_PARTICLES = 250;
-    constexpr Angle ANGLE_FINISH_THRESHOLD = 2.0_deg;
+    constexpr Angle ANGLE_FINISH_THRESHOLD = 0.0_deg;
     constexpr double ANGLE_DA_FINISH_THRESHOLD = 0.04;
     constexpr double DRIVETRAIN_TUNING_SCALAR = 0.955;
 
@@ -30,7 +30,8 @@ namespace CONFIG {
 
     inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 8.0);
 
-    inline PID TURN_PID = PID(0.9, 0.0, 6.0);
+    inline PID TURN_PID_NO_GOAL = PID(0.8, 0.0, 6.8);
+    inline PID TURN_PID_GOAL = PID(0.88, 0.0, 7.6);
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
     constexpr Angle LIFT_IDLE_POSITION = 3_deg;

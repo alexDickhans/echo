@@ -11,7 +11,7 @@
 class Rotate : public Command {
 private:
     DrivetrainSubsystem *drivetrain;
-    PID pid{CONFIG::TURN_PID};
+    PID pid{CONFIG::TURN_PID_NO_GOAL};
     double static_voltage;
     bool finish{true};
 
@@ -34,8 +34,9 @@ public:
     }
 
     void initialize() override {
-        pid.reset();
-        pid.setTarget(updateAngle().getValue());
+        this->pid = drivetrain->robotHasGoal() ? CONFIG::TURN_PID_GOAL : CONFIG::TURN_PID_NO_GOAL;
+        this->pid.reset();
+        this->pid.setTarget(updateAngle().getValue());
         this->pid.setTurnPid(true);
     }
 
@@ -46,7 +47,7 @@ public:
 
     bool isFinished() override {
         return finish && Qabs(angleDifference(this->drivetrain->getAngle(), pid.getTarget() * radian)) <
-               CONFIG::ANGLE_FINISH_THRESHOLD; // && abs(pid.getDerivitive()) < CONFIG::ANGLE_DA_FINISH_THRESHOLD;
+               CONFIG::ANGLE_FINISH_THRESHOLD;
     }
 
     std::vector<Subsystem *> getRequirements() override {

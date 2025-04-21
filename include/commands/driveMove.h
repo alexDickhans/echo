@@ -27,7 +27,7 @@ private:
     bool useTurnPID = true;
 
     PID distancePid = CONFIG::DISTANCE_PID;
-    PID anglePid = CONFIG::TURN_PID;
+    PID anglePid = CONFIG::TURN_PID_NO_GOAL;
 
     std::optional<std::function<Angle(QTime)> > angleFunction;
 
@@ -68,7 +68,10 @@ public:
 
         this->velocityProfile.calculate();
 
+        anglePid = drivetrain->robotHasGoal() ? CONFIG::TURN_PID_GOAL : CONFIG::TURN_PID_NO_GOAL;
+
         anglePid.setTarget(targetAngle.getValue());
+        anglePid.setTurnPid(true);
 
         anglePid.reset();
     }

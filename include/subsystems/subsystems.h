@@ -45,6 +45,8 @@ inline Command* gripBar;
 inline Command* letOutString;
 inline Command* basicLoadLB;
 inline Command* intakeNoEject;
+inline Command* bottomOuttakeWithEject;
+inline Command* bottomOuttakeNoEject;
 inline Command* hangRelease;
 inline Command* hangIdle;
 
@@ -109,9 +111,6 @@ inline void initializeController()
            ->andOther(negatedHang)
            ->toggleOnTrue(loadLB);
 
-    // primary.getTrigger(DIGITAL_DOWN)->toggleOnTrue(hangSubsystem->levelCommand(true));
-    // primary.getTrigger(DIGITAL_LEFT)->onTrue(drivetrainSubsystem->activatePto());
-    // primary.getTrigger(DIGITAL_UP)->onTrue(drivetrainSubsystem->retractPto());
     primary.getTrigger(DIGITAL_LEFT)
            ->whileTrue((new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in,
                                                 false, 0.0, 0.0, false))
@@ -126,10 +125,14 @@ inline void initializeController()
 
     primary.getTrigger(DIGITAL_UP)
            ->andOther(compTrigger->negate())
-           ->whileTrue(drivetrainSubsystem->characterizeAngular());
-    primary.getTrigger(DIGITAL_DOWN)
-           ->andOther(compTrigger->negate())
-           ->whileTrue(drivetrainSubsystem->characterizeLinear());
+           ->whileTrue((new Rotate(drivetrainSubsystem, 0.0, false))->withTimeout(1_s)->andThen((new Rotate(drivetrainSubsystem, 180_deg, false))->withTimeout(1_s))->repeatedly());
+    primary.getTrigger(DIGITAL_DOWN)->whileTrue((new Sequence({
+            drivetrainSubsystem->pct(0.4, 0.4)->race(intakeWithEject->asProxy())->withTimeout(100_ms),
+            drivetrainSubsystem->pct(0.2, 0.2)->race(bottomOuttakeWithEject->asProxy())->withTimeout(300_ms),
+            drivetrainSubsystem->pct(0.2, 0.2)->race(intakeWithEject->asProxy())->withTimeout(300_ms),
+            drivetrainSubsystem->pct(-0.2, -0.2)->race(intakeWithEject->asProxy())->withTimeout(400_ms),
+            drivetrainSubsystem->pct(0.0, 0.0)->race(intakeWithEject->asProxy())->withTimeout(300_ms),
+        }))->repeatedly());
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
 
     primary.getTrigger(DIGITAL_Y)
@@ -186,8 +189,12 @@ inline void initializeCommands()
 
     intakeNoEject =
         new ParallelCommandGroup({
-            new InstantCommand([]() { std::cout << "Starting intake command" << std::endl; }, {}),
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
+        });
+
+    bottomOuttakeNoEject =
+        new ParallelCommandGroup({
+            bottomIntakeSubsystem->pctCommand(-1.0), topIntakeSubsystem->pctCommand(1.0)
         });
 
     intakeWithEject =
@@ -204,6 +211,22 @@ inline void initializeCommands()
                     return position > 0.71 && position < 0.75; // tune these variables to make ejection work better
                 }),
                 bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s))
+            }))
+        ->repeatedly();
+
+    bottomOuttakeWithEject = (new Sequence(
+            {
+                bottomOuttakeNoEject->until([]()
+                {
+                    return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS &&
+                        std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.74;
+                }),
+                bottomOuttakeNoEject->until([]()
+                {
+                    auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
+                    return position > 0.71 && position < 0.75; // tune these variables to make ejection work better
+                }),
+                bottomIntakeSubsystem->pctCommand(-1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s))
             }))
         ->repeatedly();
 
