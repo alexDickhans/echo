@@ -2,6 +2,7 @@
 
 BEZIER_MIRRORED_MP_ASSET(n_1_6_1);
 BEZIER_MIRRORED_MP_ASSET(n_1_6_2);
+BEZIER_MIRRORED_MP_ASSET(n_1_6_3);
 
 /**
  * Define elim autons
@@ -14,6 +15,8 @@ private:
             (new Rotate(drivetrainSubsystem, -50_deg, flip))->withTimeout(500_ms),
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_2_blue : &n_1_6_2_red),
             SharedCommands::descoreCorner(),
+            new ScheduleCommand(intakeWithEject),
+            new Ramsete(drivetrainSubsystem, flip ? &n_1_6_3_blue : &n_1_6_3_red),
         });
     }
 public:

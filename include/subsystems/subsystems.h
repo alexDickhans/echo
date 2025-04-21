@@ -126,6 +126,13 @@ inline void initializeController()
     primary.getTrigger(DIGITAL_UP)
            ->andOther(compTrigger->negate())
            ->whileTrue((new Rotate(drivetrainSubsystem, 0.0, false))->withTimeout(1_s)->andThen((new Rotate(drivetrainSubsystem, 180_deg, false))->withTimeout(1_s))->repeatedly());
+    primary.getTrigger(DIGITAL_DOWN)->whileTrue((new Sequence({
+            drivetrainSubsystem->pct(0.4, 0.4)->race(intakeWithEject->asProxy())->withTimeout(100_ms),
+            drivetrainSubsystem->pct(0.2, 0.2)->race(bottomOuttakeWithEject->asProxy())->withTimeout(300_ms),
+            drivetrainSubsystem->pct(0.2, 0.2)->race(intakeWithEject->asProxy())->withTimeout(300_ms),
+            drivetrainSubsystem->pct(-0.2, -0.2)->race(intakeWithEject->asProxy())->withTimeout(400_ms),
+            drivetrainSubsystem->pct(0.0, 0.0)->race(intakeWithEject->asProxy())->withTimeout(300_ms),
+        }))->repeatedly());
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
 
     primary.getTrigger(DIGITAL_Y)
