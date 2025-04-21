@@ -33,7 +33,7 @@ public:
      */
     static Command *descoreCorner() {
         return new Sequence(
-            {drivetrainSubsystem->pct(0.4, 0.4)->race(bottomOuttakeWithEject->asProxy())->withTimeout(200_ms),
+            {drivetrainSubsystem->pct(0.4, 0.4)->race(new ScheduleCommand(bottomOuttakeWithEject))->withTimeout(200_ms),
              oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner()});
     }
 

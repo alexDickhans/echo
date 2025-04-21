@@ -50,15 +50,10 @@
         }
       ],
       "constraints": {
-        "velocity": 0.901,
-        "accel": 3.048
+        "velocity": 0.826,
+        "accel": 2.248
       }
     }
   ],
-  "commands": [
-    {
-      "t": 0.06,
-      "name": "intakeWithEject"
-    }
-  ]
+  "commands": []
 }
