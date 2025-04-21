@@ -1,6 +1,6 @@
 {
   "start_speed": 0.0,
-  "end_speed": 11.5,
+  "end_speed": 0.0,
   "segments": [
     {
       "inverted": true,
@@ -15,17 +15,17 @@
           "y": 1.272
         },
         {
-          "x": 0.436,
-          "y": 0.917
+          "x": 0.404,
+          "y": 0.978
         },
         {
-          "x": 0.584,
-          "y": 0.674
+          "x": 0.552,
+          "y": 0.735
         }
       ],
       "constraints": {
-        "velocity": 1.75,
-        "accel": 1.288
+        "velocity": 0.751,
+        "accel": 1.187
       }
     }
   ],
@@ -33,6 +33,10 @@
     {
       "t": 0.177,
       "name": "resetLB"
+    },
+    {
+      "t": 0.968,
+      "name": "clamp"
     }
   ]
 }

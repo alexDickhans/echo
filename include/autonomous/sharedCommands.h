@@ -20,9 +20,9 @@ public:
             ->withTimeout(700_ms);
     }
 
-    static Command *arcOntoAlliance(bool flip, bool pos) {
-        return new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 70_in / second / second}, 3_in, flip,
-                                       90_deg, (pos ? -1.0 : 1.0) * 78_deg / 3_in);
+    static Command *driveToAlliance() {
+        return new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, 6_in,
+                                                false, 0.0, 0.0, false);
     }
 
 

@@ -30,8 +30,8 @@ namespace CONFIG {
 
     inline PID TOP_INTAKE_PID = PID(6.0, 0.0, 8.0);
 
-    inline PID TURN_PID_NO_GOAL = PID(0.7, 0.0, 9.0);
-    inline PID TURN_PID_GOAL = PID(0.7, 0.0, 9.0);
+    inline PID TURN_PID_NO_GOAL = PID(0.8, 0.0, 6.8);
+    inline PID TURN_PID_GOAL = PID(0.88, 0.0, 7.6);
     inline PID DISTANCE_PID = PID(7.0, 0.00, 0.0);
 
     constexpr Angle LIFT_IDLE_POSITION = 3_deg;
@@ -55,9 +55,9 @@ namespace CONFIG {
 
     inline double K_s = 0.008;
 
-    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.535, 0.003};
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_GOAL{0.535, 0.010};
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_GOAL{0.101, 0.0185};
-    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.55, 0.003};
+    inline Eigen::RowVector2d DRIVETRAIN_LINEAR_VELOCITY_FF_NO_GOAL{0.55, 0.010};
     inline Eigen::RowVector2d DRIVETRAIN_ANGULAR_VELOCITY_FF_NO_GOAL{0.0681, 0.0128};
 
     inline std::pair<double, double> DRIVETRAIN_FEEDFORWARD(const QVelocity velocity, const QAcceleration accel,

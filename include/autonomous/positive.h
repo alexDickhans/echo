@@ -16,7 +16,7 @@ public:
         return new Sequence({
             drivetrainSubsystem->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
             new ScheduleCommand(liftSubsystem->positionCommand(180_deg, 0.0)),
-            SharedCommands::arcOntoAlliance(flip, true),
+            SharedCommands::driveToAlliance(),
         });
     }
 

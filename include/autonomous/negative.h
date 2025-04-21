@@ -17,11 +17,11 @@ public:
         return new Sequence({
             drivetrainSubsystem->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
             new ScheduleCommand(liftSubsystem->positionCommand(180_deg, 0.0)),
-            SharedCommands::arcOntoAlliance(flip, false),
+            SharedCommands::driveToAlliance(),
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_1_blue : &n_1_6_1_red),
-            (new Rotate(drivetrainSubsystem, -50_deg, flip))->withTimeout(700_ms),
+            (new Rotate(drivetrainSubsystem, -50_deg, flip))->withTimeout(500_ms),
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_2_blue : &n_1_6_2_red),
-
+            SharedCommands::descoreCorner(),
         });
     }
 };
