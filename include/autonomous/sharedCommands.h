@@ -37,6 +37,12 @@ public:
              oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner()});
     }
 
+    static Command *descoreCornerFull() {
+        return new Sequence(
+            {drivetrainSubsystem->pct(0.4, 0.4)->race(new ScheduleCommand(bottomOuttakeWithEject))->withTimeout(200_ms),
+             oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner()});
+    }
+
     static Command *cycleCorner() {
         return new Sequence({
             drivetrainSubsystem->pct(0.0, 0.0)->race(intakeWithEject->asProxy())->withTimeout(300_ms),

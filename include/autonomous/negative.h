@@ -48,7 +48,7 @@ public:
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_1_blue : &n_1_6_1_red),
             (new Rotate(drivetrainSubsystem, -50_deg, flip))->withTimeout(500_ms),
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_4_blue : &n_1_6_4_red),
-            SharedCommands::descoreCorner(),
+            SharedCommands::descoreCornerFull(),
             new ScheduleCommand(intakeWithEject),
         });
     }
