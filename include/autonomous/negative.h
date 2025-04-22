@@ -50,6 +50,8 @@ public:
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_4_blue : &n_1_6_4_red),
             SharedCommands::descoreCornerFull(),
             new ScheduleCommand(intakeWithEject),
+            drivetrainSubsystem->pct(-1.0, -1.0)->withTimeout(80_ms),
+            new Rotate(drivetrainSubsystem, -135_deg, true, 0),
         });
     }
 

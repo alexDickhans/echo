@@ -45,16 +45,15 @@ public:
 
     static Command *cycleCorner() {
         return new Sequence({
-            drivetrainSubsystem->pct(0.0, 0.0)->race(intakeWithEject->asProxy())->withTimeout(300_ms),
-            drivetrainSubsystem->pct(0.4, 0.4)->race(intakeWithEject->asProxy())->withTimeout(100_ms),
+            drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(300_ms),
+            drivetrainSubsystem->pct(0.4, 0.4)->withTimeout(100_ms),
         });
     }
 
     static Command *oneRingOutOfCorner() {
         return new Sequence({
-            drivetrainSubsystem->pct(0.2, 0.2)->race(bottomOuttakeWithEject->asProxy())->withTimeout(300_ms),
-            drivetrainSubsystem->pct(0.2, 0.2)->race(intakeWithEject->asProxy())->withTimeout(300_ms),
-            drivetrainSubsystem->pct(-0.2, -0.2)->race(intakeWithEject->asProxy())->withTimeout(400_ms),
+            drivetrainSubsystem->pct(0.2, 0.2)->with(new ScheduleCommand(cornerClearIntakeSequence))->withTimeout(600_ms),
+            drivetrainSubsystem->pct(-0.2, -0.2)->with(new ScheduleCommand(bottomIntakeSubsystem->pctCommand(1.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.95, 0.0))))->withTimeout(400_ms),
         });
     }
 };

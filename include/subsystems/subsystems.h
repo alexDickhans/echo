@@ -126,7 +126,7 @@ inline void initializeController()
 
     primary.getTrigger(DIGITAL_DOWN)->whileTrue((new Sequence({
             drivetrainSubsystem->pct(0.4, 0.4)->withTimeout(100_ms),
-            drivetrainSubsystem->pct(0.2, 0.2)->with(new ScheduleCommand(cornerClearIntakeSequence))->withTimeout(300_ms),
+            drivetrainSubsystem->pct(0.2, 0.2)->with(new ScheduleCommand(cornerClearIntakeSequence))->withTimeout(600_ms),
             drivetrainSubsystem->pct(0.2, 0.2)->withTimeout(300_ms),
             drivetrainSubsystem->pct(-0.2, -0.2)->with(new ScheduleCommand(bottomIntakeSubsystem->pctCommand(1.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.95, 0.0))))->withTimeout(400_ms),
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(300_ms),
@@ -201,7 +201,7 @@ inline void initializeCommands()
                 topIntakeSubsystem->pctCommand(1.0)->until([]()
                 {
                     auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-                    return position > 0.71 && position < 0.75; // tune these variables to make ejection work better
+                    return position > 0.65 && position < 0.75;
                 }),
                 topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s)
             }))
@@ -209,7 +209,7 @@ inline void initializeCommands()
 
     intakeWithEject = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0));
     bottomOuttakeWithEject = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(-1.0));
-    cornerClearIntakeSequence = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(-1.0)->withTimeout(300_ms)->andThen(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(300_ms)));
+    cornerClearIntakeSequence = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(100_ms)->andThen(bottomIntakeSubsystem->pctCommand(-1.0)->withTimeout(200_ms)->andThen(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(300_ms))));
 
     if (topIntakeSubsystem->visionConnected())
     {
