@@ -50,8 +50,8 @@
         }
       ],
       "constraints": {
-        "velocity": 0.951,
-        "accel": 2.121
+        "velocity": 0.651,
+        "accel": 1.515
       }
     }
   ],
