@@ -15,11 +15,12 @@ public:
         return new Sequence({
             drivetrainSubsystem->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
             new Ramsete(drivetrainSubsystem, flip ? &p_4_1_blue : &p_4_1_red),
-            (new Rotate(drivetrainSubsystem, 170_deg, flip))->withTimeout(500_ms),
+            (new Rotate(drivetrainSubsystem, 190_deg, flip))->withTimeout(700_ms),
             new Ramsete(drivetrainSubsystem, flip ? &p_4_2_blue : &p_4_2_red),
-            SharedCommands::descoreCorner(),
+            SharedCommands::descoreCornerFull(),
+            new ScheduleCommand(intakeWithEject),
             new Ramsete(drivetrainSubsystem, flip ? &p_4_3_blue : &p_4_3_red),
-            new ScheduleCommand(liftSubsystem->pctCommand(-0.2)),
+            drivetrainSubsystem->pct(0.07, 0.07),
         });
     }
 
@@ -39,7 +40,7 @@ public:
             SharedCommands::descoreCornerFull(),
             new ScheduleCommand(intakeWithEject),
             new Ramsete(drivetrainSubsystem, flip ? &p_4_3_blue : &p_4_3_red),
-            new ScheduleCommand(liftSubsystem->pctCommand(-0.2)),
+            drivetrainSubsystem->pct(0.07, 0.07),
         });
     }
 };

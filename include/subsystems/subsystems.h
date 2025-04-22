@@ -179,6 +179,7 @@ inline void initializePathCommands()
     PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(200_deg, 0.0));
     PathCommands::registerCommand("outtakeBottom", bottomIntakeSubsystem->pctCommand(-1.0));
     PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(140_deg, 0.0));
+    PathCommands::registerCommand("lbTouch", liftSubsystem->positionCommand(150_deg, 0.0));
 }
 
 inline void initializeCommands()
