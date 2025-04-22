@@ -196,12 +196,13 @@ inline void initializeCommands()
                 topIntakeSubsystem->pctCommand(1.0)->until([]()
                 {
                     return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS &&
-                        std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.74;
+                        std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.72;
                 }),
+                topIntakeSubsystem->pctCommand(1.0)->withTimeout(0.05_s),
                 topIntakeSubsystem->pctCommand(1.0)->until([]()
                 {
                     auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-                    return position > 0.65 && position < 0.75;
+                    return position > 0.70 && position < 0.75;
                 }),
                 topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s)
             }))
