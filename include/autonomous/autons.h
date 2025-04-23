@@ -5,11 +5,10 @@
  */
 enum Auton_ {
   N_1_6,
+  N_1_6P,
   N_6,
   P_4,
-  P_1_3GOAL,
-  P_1_3ALLIANCE,
-  P_1_1_2,
+  P_1_3,
   SKILLS,
   NONE
 } typedef Auton;

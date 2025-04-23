@@ -18,11 +18,14 @@ public:
                 return Skills::skills();
             case N_1_6:
                 return Negative::n_1_6();
+            case N_1_6P:
+                return Negative::n_1_6p();
             case N_6:
-            case P_1_1_2:
-            case P_1_3ALLIANCE:
-            case P_1_3GOAL:
+                return Negative::n_6();
+            case P_1_3:
+                return Positive::p_1_3();
             case P_4:
+                return Positive::p_4();
             default:
                 return new InstantCommand([]() { std::cout << "No auton" << std::endl; }, {});
         }

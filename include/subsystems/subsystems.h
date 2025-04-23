@@ -37,7 +37,6 @@ inline SolenoidSubsystem* goalClampSubsystem;
 inline SolenoidSubsystem* hangSubsystem;
 
 inline Command* loadLB;
-inline Command* intakeWithEject;
 inline Command* goalClampTrue;
 inline Command* hang;
 inline Command* barToBarHang;
@@ -45,10 +44,12 @@ inline Command* gripBar;
 inline Command* letOutString;
 inline Command* basicLoadLB;
 inline Command* intakeNoEject;
+inline Command* topIntakeWithEject;
+inline Command* intakeWithEject;
 inline Command* bottomOuttakeWithEject;
-inline Command* bottomOuttakeNoEject;
 inline Command* hangRelease;
 inline Command* hangIdle;
+inline Command* cornerClearIntakeSequence;
 
 inline CommandController primary(pros::controller_id_e_t::E_CONTROLLER_MASTER);
 inline CommandController partner(pros::controller_id_e_t::E_CONTROLLER_PARTNER);
@@ -123,15 +124,12 @@ inline void initializeController()
 
     auto* compTrigger = new Trigger([]() { return pros::c::competition_is_field(); });
 
-    primary.getTrigger(DIGITAL_UP)
-           ->andOther(compTrigger->negate())
-           ->whileTrue((new Rotate(drivetrainSubsystem, 0.0, false))->withTimeout(1_s)->andThen((new Rotate(drivetrainSubsystem, 180_deg, false))->withTimeout(1_s))->repeatedly());
     primary.getTrigger(DIGITAL_DOWN)->whileTrue((new Sequence({
-            drivetrainSubsystem->pct(0.4, 0.4)->race(intakeWithEject->asProxy())->withTimeout(100_ms),
-            drivetrainSubsystem->pct(0.2, 0.2)->race(bottomOuttakeWithEject->asProxy())->withTimeout(300_ms),
-            drivetrainSubsystem->pct(0.2, 0.2)->race(intakeWithEject->asProxy())->withTimeout(300_ms),
-            drivetrainSubsystem->pct(-0.2, -0.2)->race(intakeWithEject->asProxy())->withTimeout(400_ms),
-            drivetrainSubsystem->pct(0.0, 0.0)->race(intakeWithEject->asProxy())->withTimeout(300_ms),
+            drivetrainSubsystem->pct(0.4, 0.4)->withTimeout(100_ms),
+            drivetrainSubsystem->pct(0.2, 0.2)->with(new ScheduleCommand(cornerClearIntakeSequence))->withTimeout(600_ms),
+            drivetrainSubsystem->pct(0.2, 0.2)->withTimeout(300_ms),
+            drivetrainSubsystem->pct(-0.2, -0.2)->with(new ScheduleCommand(bottomIntakeSubsystem->pctCommand(1.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.95, 0.0))))->withTimeout(400_ms),
+            drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(300_ms),
         }))->repeatedly());
     primary.getTrigger(DIGITAL_RIGHT)->whileFalse(goalClampTrue);
 
@@ -181,6 +179,7 @@ inline void initializePathCommands()
     PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(200_deg, 0.0));
     PathCommands::registerCommand("outtakeBottom", bottomIntakeSubsystem->pctCommand(-1.0));
     PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(140_deg, 0.0));
+    PathCommands::registerCommand("lbTouch", liftSubsystem->positionCommand(150_deg, 0.0));
 }
 
 inline void initializeCommands()
@@ -192,43 +191,27 @@ inline void initializeCommands()
             bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0)
         });
 
-    bottomOuttakeNoEject =
-        new ParallelCommandGroup({
-            bottomIntakeSubsystem->pctCommand(-1.0), topIntakeSubsystem->pctCommand(1.0)
-        });
-
-    intakeWithEject =
+    topIntakeWithEject =
         (new Sequence(
             {
-                intakeNoEject->until([]()
+                topIntakeSubsystem->pctCommand(1.0)->until([]()
                 {
                     return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS &&
-                        std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.74;
+                        std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.72;
                 }),
-                intakeNoEject->until([]()
+                topIntakeSubsystem->pctCommand(1.0)->withTimeout(0.05_s),
+                topIntakeSubsystem->pctCommand(1.0)->until([]()
                 {
                     auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-                    return position > 0.71 && position < 0.75; // tune these variables to make ejection work better
+                    return position > 0.70 && position < 0.75;
                 }),
-                bottomIntakeSubsystem->pctCommand(1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s))
+                topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s)
             }))
         ->repeatedly();
 
-    bottomOuttakeWithEject = (new Sequence(
-            {
-                bottomOuttakeNoEject->until([]()
-                {
-                    return static_cast<Alliance>(topIntakeSubsystem->getRing()) == OPPONENTS &&
-                        std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0) > 0.74;
-                }),
-                bottomOuttakeNoEject->until([]()
-                {
-                    auto position = std::fmod(std::fmod(topIntakeSubsystem->getPosition(), 1.0) + 10.0, 1.0);
-                    return position > 0.71 && position < 0.75; // tune these variables to make ejection work better
-                }),
-                bottomIntakeSubsystem->pctCommand(-1.0)->race(topIntakeSubsystem->pctCommand(-1.0)->withTimeout(0.07_s))
-            }))
-        ->repeatedly();
+    intakeWithEject = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0));
+    bottomOuttakeWithEject = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(-1.0));
+    cornerClearIntakeSequence = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(100_ms)->andThen(bottomIntakeSubsystem->pctCommand(-1.0)->withTimeout(200_ms)->andThen(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(300_ms))));
 
     if (topIntakeSubsystem->visionConnected())
     {
