@@ -16,8 +16,14 @@ public:
 
     static Command *scoreWallStakes() {
         return liftSubsystem->pctCommand(1.0)
-            ->until([]() { return liftSubsystem->getPosition() > 155_deg; })
-            ->withTimeout(700_ms);
+            ->until([]() { return liftSubsystem->getPosition() > 165_deg; })
+            ->withTimeout(750_ms)->race(TopIntakePositionCommand::fromForwardPositionCommand(topIntakeSubsystem, 1.2, 0.0));
+    }
+
+    static Command *scoreWallStakesWithoutTopIntake() {
+        return liftSubsystem->pctCommand(1.0)
+            ->until([]() { return liftSubsystem->getPosition() > 165_deg; })
+            ->withTimeout(750_ms);
     }
 
     static Command *driveToAlliance() {
