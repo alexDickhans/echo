@@ -1,6 +1,11 @@
 import argparse
 import matplotlib.pyplot as plt
 
+'''
+Simple plotting tool to analyze log files as a graph quickly
+Helps with PID tuning, FF Constant Calibration, and data analysis for the notebook
+'''
+
 def read_terminal_output(file_path, names):
     data = {name: ([], []) for name in names}
 
@@ -14,8 +19,6 @@ def read_terminal_output(file_path, names):
                             x = float(parts[0].split(" ")[-1])
                             y = float(parts[1].split(" ")[1])
 
-                            x = x - 30 if name == "XAngular" else x
-                            y = y * 10 if name == "UAngular" else y
                             data[name][0].append(x)
                             data[name][1].append(y)
                         except ValueError:
