@@ -101,8 +101,8 @@ public:
     Command *zero() {
         return (new FunctionalCommand([this]() { this->setVoltage(-0.2); }, []() {
                                       }, [this](bool _) {
-                                      }, [this]() { return this->stalled(300_ms); }, {this}))->withTimeout(2000_ms)->andThen(
-            this->pctCommand(0.0)->withTimeout(400_ms))->andThen(
+                                      }, [this]() { return this->stalled(300_ms); }, {this}))->withTimeout(3_s)->andThen(
+            this->pctCommand(-0.1)->withTimeout(200_ms))->andThen(this->pctCommand(0.0)->withTimeout(200_ms))->andThen(
             new InstantCommand([this]() { this->motor.tare_position(); }, {this}));
     }
 

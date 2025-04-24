@@ -38,6 +38,7 @@ public:
                 liftSubsystem->positionCommand(0.0)->withTimeout(150_ms)->asProxy()),
             new ScheduleCommand(loadLB),
             new Ramsete(drivetrainSubsystem, &skills_2),
+            drivetrainSubsystem->pct(0.2, 0.2)->withTimeout(150_ms),
             new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0)->withTimeout(200_ms)->andThen(liftSubsystem->positionCommand(200_deg, 0.0))),
             new TankMotionProfiling(drivetrainSubsystem, {50_in/second, 140_in/second/second}, -5_in, false, 0.0, 0.0, false),
             new Ramsete(drivetrainSubsystem, &skills_3),
