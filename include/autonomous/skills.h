@@ -38,15 +38,16 @@ public:
                 liftSubsystem->positionCommand(0.0)->withTimeout(150_ms)->asProxy()),
             new ScheduleCommand(loadLB),
             new Ramsete(drivetrainSubsystem, &skills_2),
+            drivetrainSubsystem->pct(0.2, 0.2)->withTimeout(150_ms),
             new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0)->withTimeout(200_ms)->andThen(liftSubsystem->positionCommand(200_deg, 0.0))),
             new TankMotionProfiling(drivetrainSubsystem, {50_in/second, 140_in/second/second}, -5_in, false, 0.0, 0.0, false),
             new Ramsete(drivetrainSubsystem, &skills_3),
-            drivetrainSubsystem->pct(0.4, 0.4)->withTimeout(0.2_s),
+            drivetrainSubsystem->pct(0.3, 0.3)->withTimeout(0.1_s),
             drivetrainSubsystem->pct(0.2, 0.2)->race(
                 SharedCommands::scoreWallStakesWithoutTopIntake()->asProxy())->andThen(
                 new ScheduleCommand(liftSubsystem->positionCommand(155_deg, 0.0))),
             new Ramsete(drivetrainSubsystem, &skills_4),
-            // new ScheduleCommand(hang),
+            new ScheduleCommand(hang),
         });
     }
 };
