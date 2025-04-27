@@ -47,6 +47,7 @@ public:
                 SharedCommands::scoreWallStakesWithoutTopIntake()->asProxy())->andThen(
                 new ScheduleCommand(liftSubsystem->positionCommand(155_deg, 0.0))),
             new Ramsete(drivetrainSubsystem, &skills_4),
+            drivetrainSubsystem->pct(0.0, 0.7)->withTimeout(0.7)->withTimeout(0.3_s),
             new ScheduleCommand(hang),
         });
     }

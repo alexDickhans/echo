@@ -113,14 +113,9 @@ inline void initializeController()
            ->toggleOnTrue(loadLB);
 
     primary.getTrigger(DIGITAL_LEFT)
-           ->whileTrue((new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, -6_in,
-                                                false, 0.0, 0.0, false))
-                       ->race(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0))
-                       ->andThen(drivetrainSubsystem->pct(0.0, 0.0)->race(
-                           liftSubsystem->positionCommand(190_deg, 8_deg)->withTimeout(300_ms)))
-                       ->andThen(drivetrainSubsystem->pct(-0.4, -0.4)
-                                                    ->with(liftSubsystem->positionCommand(190_deg, 0.0))
-                                                    ->withTimeout(500_ms)));
+    ->whileTrue(drivetrainSubsystem->characterizeAngular());
+    primary.getTrigger(DIGITAL_UP)
+           ->whileTrue(drivetrainSubsystem->characterizeLinear());
 
     auto* compTrigger = new Trigger([]() { return pros::c::competition_is_field(); });
 
