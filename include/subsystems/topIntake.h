@@ -43,9 +43,6 @@ public:
         if (abs(intakeMotor.get_current_draw()) < 1700) {
             lastFree = pros::millis() * millisecond;
         }
-
-        std::cout << "Current draw: " << intakeMotor.get_current_draw() << std::endl;
-
         ringColor = updateRingColor();
     }
 
