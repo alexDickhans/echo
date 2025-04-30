@@ -33,7 +33,7 @@ def compile_auton(slot, auton):
     result = os.system(command)
     if result != 0:
         print(f"Error: Failed to compile {auton} into slot {slot}.")
-        sys.exit(2)
+        # sys.exit(2)
 
 def compile_all():
     """Compiles all available autons."""

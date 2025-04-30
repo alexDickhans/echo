@@ -33,7 +33,6 @@ public:
         this->optical.set_led_pwm(255);
     }
 
-
     bool visionConnected() {
         return this->optical.is_installed();
     }

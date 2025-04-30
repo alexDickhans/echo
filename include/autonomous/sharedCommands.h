@@ -27,7 +27,7 @@ public:
     }
 
     static Command *driveToAlliance() {
-        return new TankMotionProfiling(drivetrainSubsystem, {10_in / second, 60_in / second / second}, 2_in, false, 0.0,
+        return new TankMotionProfiling(drivetrainSubsystem, {10_in / second, 60_in / second / second}, 3_in, false, 0.0,
                                        0.0, false);
     }
 
