@@ -33,7 +33,6 @@ public:
         this->optical.set_led_pwm(255);
     }
 
-
     bool visionConnected() {
         return this->optical.is_installed();
     }
@@ -43,9 +42,6 @@ public:
         if (abs(intakeMotor.get_current_draw()) < 1700) {
             lastFree = pros::millis() * millisecond;
         }
-
-        std::cout << "Current draw: " << intakeMotor.get_current_draw() << std::endl;
-
         ringColor = updateRingColor();
     }
 
