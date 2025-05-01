@@ -1,16 +1,20 @@
 #pragma once
 
-BEZIER_MIRRORED_MP_ASSET(n_1_6_1);
-BEZIER_MIRRORED_MP_ASSET(n_1_6_2);
-BEZIER_MIRRORED_MP_ASSET(n_1_6_3);
-BEZIER_MIRRORED_MP_ASSET(n_1_6_4);
+BEZIER_MP_ASSET(n_1_6_1_red);
+BEZIER_MP_ASSET(n_1_6_1_blue);
+BEZIER_MP_ASSET(n_1_6_2_red);
+BEZIER_MP_ASSET(n_1_6_2_blue);
+BEZIER_MP_ASSET(n_1_6_3_red);
+BEZIER_MP_ASSET(n_1_6_3_blue);
+BEZIER_MP_ASSET(n_1_6_4_red);
+BEZIER_MP_ASSET(n_1_6_4_blue);
 
 /**
  * Define elim autons
  */
 class Negative {
 private:
-    static Command* n_6_ring_no_init(bool flip) {
+    static Command *n_6_ring_no_init(bool flip) {
         return new Sequence({
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_1_blue : &n_1_6_1_red),
             (new Rotate(drivetrainSubsystem, -50_deg, flip))->withTimeout(500_ms),
@@ -20,8 +24,9 @@ private:
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_3_blue : &n_1_6_3_red),
         });
     }
+
 public:
-    static Command* n_1_6() {
+    static Command *n_1_6() {
         Eigen::Vector3f startPose{(10.3_in).getValue(), (54.7_in).getValue(), (127_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
@@ -35,7 +40,7 @@ public:
         });
     }
 
-    static Command* n_1_6p() {
+    static Command *n_1_6p() {
         Eigen::Vector3f startPose{(10.3_in).getValue(), (54.7_in).getValue(), (127_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
@@ -55,7 +60,7 @@ public:
         });
     }
 
-    static Command* n_6() {
+    static Command *n_6() {
         Eigen::Vector3f startPose{(10.3_in).getValue(), (54.7_in).getValue(), (127_deg).getValue()};
 
         drivetrainSubsystem->updateAllianceColor(startPose);
