@@ -63,7 +63,6 @@ bool hangReleased = false;
 inline void initializeController()
 {
     primary.getTrigger(DIGITAL_X)->toggleOnTrue(drivetrainSubsystem->arcade(primary));
-    primary.getTrigger(DIGITAL_A)->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));
 
     primary.getTrigger(DIGITAL_R1)
            ->andOther(primary.getTrigger(DIGITAL_L1))
@@ -110,7 +109,7 @@ inline void initializeController()
            ->andOther(primary.getTrigger(DIGITAL_L1)->negate())
            ->andOther(primary.getTrigger(DIGITAL_L2)->negate())
            ->andOther(negatedHang)
-           ->toggleOnTrue(loadLB);
+           ->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));;
 
     primary.getTrigger(DIGITAL_LEFT)
     ->whileTrue(drivetrainSubsystem->characterizeAngular());
