@@ -17,11 +17,12 @@ private:
     static Command *n_6_ring_no_init(bool flip) {
         return new Sequence({
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_1_blue : &n_1_6_1_red),
-            (new Rotate(drivetrainSubsystem, -45_deg, flip))->withTimeout(500_ms),
+            (new Rotate(drivetrainSubsystem, -30_deg, flip))->withTimeout(500_ms),
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_2_blue : &n_1_6_2_red),
             SharedCommands::descoreCorner(),
             new ScheduleCommand(intakeWithEject),
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_3_blue : &n_1_6_3_red),
+            drivetrainSubsystem->pct(0.07, 0.07),
         });
     }
 
@@ -51,7 +52,7 @@ public:
             new ScheduleCommand(liftSubsystem->positionCommand(190_deg, 0.0)),
             SharedCommands::driveToAlliance(),
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_1_blue : &n_1_6_1_red),
-            (new Rotate(drivetrainSubsystem, -45_deg, flip))->withTimeout(500_ms),
+            (new Rotate(drivetrainSubsystem, -30_deg, flip))->withTimeout(500_ms),
             new Ramsete(drivetrainSubsystem, flip ? &n_1_6_4_blue : &n_1_6_4_red),
             SharedCommands::descoreCornerFull(),
             new ScheduleCommand(intakeWithEject),

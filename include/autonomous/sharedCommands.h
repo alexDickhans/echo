@@ -39,13 +39,14 @@ public:
      */
     static Command *descoreCorner() {
         return new Sequence(
-            {drivetrainSubsystem->pct(0.4, 0.4)->race(new ScheduleCommand(bottomOuttakeWithEject))->withTimeout(200_ms),
+
+            {drivetrainSubsystem->pct(0.3, 0.3)->with(new ScheduleCommand(bottomOuttakeWithEject))->withTimeout(300_ms), drivetrainSubsystem->pct(1.0, 1.0)->with(new ScheduleCommand(bottomOuttakeWithEject))->withTimeout(300_ms),
              oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner()});
     }
 
     static Command *descoreCornerFull() {
         return new Sequence(
-            {drivetrainSubsystem->pct(0.4, 0.4)->race(new ScheduleCommand(bottomOuttakeWithEject))->withTimeout(200_ms),
+            {drivetrainSubsystem->pct(0.6, 0.6)->race(new ScheduleCommand(bottomOuttakeWithEject))->withTimeout(300_ms),
              oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner()});
     }
 
