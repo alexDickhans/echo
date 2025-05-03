@@ -1,8 +1,11 @@
 #pragma once
 
-BEZIER_MIRRORED_MP_ASSET(p_4_1);
-BEZIER_MIRRORED_MP_ASSET(p_4_2);
-BEZIER_MIRRORED_MP_ASSET(p_4_3);
+BEZIER_MP_ASSET(p_4_1_red);
+BEZIER_MP_ASSET(p_4_1_blue);
+BEZIER_MP_ASSET(p_4_2_red);
+BEZIER_MP_ASSET(p_4_2_blue);
+BEZIER_MP_ASSET(p_4_3_red);
+BEZIER_MP_ASSET(p_4_3_blue);
 
 class Positive {
 public:

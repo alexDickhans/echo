@@ -19,12 +19,15 @@ AUTON_FILE_PATH = "./include/auton.h"
 
 def write_auton_file(auton, alliance="RED"):
     """Writes the auton selection to the header file."""
-    with open(AUTON_FILE_PATH, "w") as f:
-        f.write("#pragma once\n")
-        f.write("#include \"autonomous/autons.h\"\n")
-        f.write(f"#define AUTON {auton}\n")
-        f.write(f"inline auto ALLIANCE={alliance};\n")
-    print(f"Auton file updated with {auton} and default alliance {alliance}.")
+    if not os.path.exists(AUTON_FILE_PATH) or not (auton in open(AUTON_FILE_PATH).read()):
+        with open(AUTON_FILE_PATH, "w") as f:
+            f.write("#pragma once\n")
+            f.write("#include \"autonomous/autons.h\"\n")
+            f.write(f"#define AUTON {auton}\n")
+            f.write(f"inline auto ALLIANCE={alliance};\n")
+        print(f"Auton file updated with {auton} and default alliance {alliance}.")
+    else:
+        print(f"No changes made to {AUTON_FILE_PATH}.")
 
 def compile_auton(slot, auton):
     """Compiles the specified auton into the corresponding PROS slot."""

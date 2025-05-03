@@ -1,0 +1,42 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": true,
+      "stop_end": false,
+      "path": [
+        {
+          "x": 0.162,
+          "y": 1.449
+        },
+        {
+          "x": 0.3,
+          "y": 1.294
+        },
+        {
+          "x": 0.318,
+          "y": 1.089
+        },
+        {
+          "x": 0.471,
+          "y": 0.848
+        }
+      ],
+      "constraints": {
+        "velocity": 1.051,
+        "accel": 1.288
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.341,
+      "name": "resetLB"
+    },
+    {
+      "t": 0.942,
+      "name": "clamp"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "start_speed": 0.0,
+  "end_speed": 0.0,
+  "segments": [
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -0.563,
+          "y": -0.71
+        },
+        {
+          "x": -0.765,
+          "y": -0.667
+        },
+        {
+          "x": -1.279,
+          "y": -0.54
+        },
+        {
+          "x": -1.161,
+          "y": -0.827
+        }
+      ],
+      "constraints": {
+        "velocity": 0.951,
+        "accel": 1.894
+      }
+    },
+    {
+      "inverted": false,
+      "stop_end": false,
+      "path": [
+        {
+          "x": -1.161,
+          "y": -0.827
+        },
+        {
+          "x": -1.05,
+          "y": -1.097
+        },
+        {
+          "x": -1.127,
+          "y": -1.316
+        },
+        {
+          "x": -1.448,
+          "y": -1.549
+        }
+      ],
+      "constraints": {
+        "velocity": 0.526,
+        "accel": 1.515
+      }
+    }
+  ],
+  "commands": [
+    {
+      "t": 0.026,
+      "name": "intakeWithEject"
+    }
+  ]
+}
