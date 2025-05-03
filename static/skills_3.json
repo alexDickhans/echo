@@ -273,10 +273,6 @@
     {
       "t": 7.137,
       "name": "loadLB"
-    },
-    {
-      "t": 8.955,
-      "name": "intakeNoEject"
     }
   ]
 }
