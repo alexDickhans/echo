@@ -89,7 +89,7 @@ inline void initializeController()
            ->andOther(primary.getTrigger(DIGITAL_R2)->negate())
            ->andOther(negatedHang)
            ->andOther(negatedLBLoad)
-           ->whileTrue(liftSubsystem->positionCommand(200_deg, 0.0));
+           ->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));
     primary.getTrigger(DIGITAL_L2)
            ->andOther(primary.getTrigger(DIGITAL_L1)->negate())
            ->andOther(primary.getTrigger(DIGITAL_R1)->negate())
@@ -109,7 +109,7 @@ inline void initializeController()
            ->andOther(primary.getTrigger(DIGITAL_L1)->negate())
            ->andOther(primary.getTrigger(DIGITAL_L2)->negate())
            ->andOther(negatedHang)
-           ->whileTrue(bottomIntakeSubsystem->pctCommand(-1.0));;
+           ->toggleOnTrue(loadLB);
 
     primary.getTrigger(DIGITAL_LEFT)
     ->whileTrue(drivetrainSubsystem->characterizeAngular());
