@@ -8,6 +8,8 @@ have any questions, please take a look at this resource, we hope that it can be 
 
 ## Video Explainer Series
 
+[Explainer Series](https://www.youtube.com/playlist?list=PLGadt7ggrunwnJjiQv-7Nc3IBUHDh1rcb)
+
 For almost all the code in this codebase there will be or already is explainer videos. If you would be interested in
 other topics being covered, just [contact us](#contact-us)!
 
