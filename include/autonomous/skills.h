@@ -47,6 +47,7 @@ public:
             drivetrainSubsystem->pct(0.2, 0.2)->race(
                 SharedCommands::scoreWallStakesWithoutTopIntake()->asProxy())->andThen(
                 new ScheduleCommand(liftSubsystem->positionCommand(155_deg, 0.0))),
+            drivetrainSubsystem->pct(-0.4, -0.4)->withTimeout(0.2_s),
             new Ramsete(drivetrainSubsystem, &skills_4),
             drivetrainSubsystem->pct(0.0, 0.5)->withTimeout(0.2_s),
             new ScheduleCommand(hang),
