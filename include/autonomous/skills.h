@@ -29,7 +29,7 @@ public:
             SharedCommands::scoreAlliance()->asProxy(),
             new ScheduleCommand(liftSubsystem->positionCommand(180_deg, 0.0)),
             new Ramsete(drivetrainSubsystem, &skills_1),
-            drivetrainSubsystem->pct(0.4, 0.4)->race(
+            drivetrainSubsystem->pct(0.25, 0.25)->race(
                 SharedCommands::scoreWallStakes()->asProxy()),
             drivetrainSubsystem->pct(0.0, 0.0)->race(basicLoadLB->withTimeout(1500_ms)->asProxy()),
             drivetrainSubsystem->pct(0.4, 0.4)->race(
@@ -47,7 +47,7 @@ public:
             drivetrainSubsystem->pct(0.2, 0.2)->race(
                 SharedCommands::scoreWallStakesWithoutTopIntake()->asProxy())->andThen(
                 new ScheduleCommand(liftSubsystem->positionCommand(155_deg, 0.0))),
-            drivetrainSubsystem->pct(-0.4, -0.4)->withTimeout(0.2_s),
+            drivetrainSubsystem->pct(-0.5, -0.5)->withTimeout(0.24_s),
             new Ramsete(drivetrainSubsystem, &skills_4),
             drivetrainSubsystem->pct(0.0, 0.5)->withTimeout(0.2_s),
             new ScheduleCommand(hang),
