@@ -204,8 +204,8 @@ inline void initializeCommands() {
     bottomOuttakeWithEject = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(-1.0));
     cornerClearIntakeSequence =
         topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(10_ms)->andThen(
-            bottomIntakeSubsystem->pctCommand(-1.0)->withTimeout(200_ms)->andThen(
-                bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(390_ms))));
+            bottomIntakeSubsystem->pctCommand(-1.0)->withTimeout(300_ms)->andThen(
+                bottomIntakeSubsystem->pctCommand(1.0))));
 
     if (topIntakeSubsystem->visionConnected() && AUTON != SKILLS) {
         basicLoadLB = new Sequence({
@@ -224,6 +224,9 @@ inline void initializeCommands() {
                 topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
                 liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
             }),
+            new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
+                                   liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
+                                   new WaitCommand(150_ms)}),
         });
     } else {
         basicLoadLB = new Sequence({
