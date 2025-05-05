@@ -239,11 +239,11 @@
   ],
   "commands": [
     {
-      "t": 0.674,
+      "t": 0.332,
       "name": "liftZero"
     },
     {
-      "t": 1.277,
+      "t": 0.369,
       "name": "intakeWithEject"
     },
     {
