@@ -43,13 +43,13 @@ public:
             new TankMotionProfiling(drivetrainSubsystem, {50_in/second, 140_in/second/second}, -5.2_in, false, 0.0, 0.0, false),
             new Ramsete(drivetrainSubsystem, &skills_3),
             drivetrainSubsystem->pct(0.35, 0.35)->withTimeout(0.1_s),
-            new ScheduleCommand(intakeNoEject),
             drivetrainSubsystem->pct(0.2, 0.2)->race(
                 SharedCommands::scoreWallStakesWithoutTopIntake()->asProxy())->andThen(
                 new ScheduleCommand(liftSubsystem->positionCommand(155_deg, 0.0))),
             drivetrainSubsystem->pct(-0.5, -0.5)->withTimeout(0.27_s),
+            new ScheduleCommand(intakeNoEject),
             new Ramsete(drivetrainSubsystem, &skills_4),
-            drivetrainSubsystem->pct(0.0, 0.5)->withTimeout(0.4_s),
+            drivetrainSubsystem->pct(0.0, 0.5)->withTimeout(0.2_s),
             new ScheduleCommand(hang),
         });
     }
