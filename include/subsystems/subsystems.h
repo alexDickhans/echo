@@ -151,6 +151,14 @@ inline void initializeController() {
 
     primary.getTrigger(DIGITAL_B)->onTrue(
         liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
+
+    primary.getTrigger(DIGITAL_A)->whileTrue((new WaitCommand(200_ms))
+                                                 ->andThen(new InstantCommand(
+                                                     []() {
+                                                         auto newAlliance = OPPONENTS;
+                                                         ALLIANCE = newAlliance;
+                                                     },
+                                                     {})));
 }
 
 inline void initializePathCommands() {
