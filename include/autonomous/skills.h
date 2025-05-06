@@ -39,17 +39,17 @@ public:
             new ScheduleCommand(loadLB),
             new Ramsete(drivetrainSubsystem, &skills_2),
             drivetrainSubsystem->pct(0.3, 0.3)->withTimeout(500_ms),
-            new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0)->withTimeout(200_ms)->andThen(liftSubsystem->positionCommand(200_deg, 0.0))),
-            new TankMotionProfiling(drivetrainSubsystem, {50_in/second, 140_in/second/second}, -5.2_in, false, 0.0, 0.0, false),
+            new ScheduleCommand(liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0)->withTimeout(200_ms)->andThen(liftSubsystem->positionCommand(205_deg, 0.0))),
+            new TankMotionProfiling(drivetrainSubsystem, {50_in/second, 140_in/second/second}, -4.9_in, false, 0.0, 0.0, false),
             new Ramsete(drivetrainSubsystem, &skills_3),
-            drivetrainSubsystem->pct(0.35, 0.35)->withTimeout(0.1_s),
+            drivetrainSubsystem->pct(0.25, 0.2)->withTimeout(0.1_s),
             drivetrainSubsystem->pct(0.2, 0.2)->race(
                 SharedCommands::scoreWallStakesWithoutTopIntake()->asProxy())->andThen(
                 new ScheduleCommand(liftSubsystem->positionCommand(155_deg, 0.0))),
             drivetrainSubsystem->pct(-0.5, -0.5)->withTimeout(0.27_s),
             new ScheduleCommand(intakeNoEject),
             new Ramsete(drivetrainSubsystem, &skills_4),
-            drivetrainSubsystem->pct(0.0, 0.5)->withTimeout(0.2_s),
+            drivetrainSubsystem->pct(0.0, 0.5)->withTimeout(0.3_s),
             new ScheduleCommand(hang),
         });
     }
