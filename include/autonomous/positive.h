@@ -18,7 +18,7 @@ public:
         return new Sequence({
             drivetrainSubsystem->setNorm(startPose.head<2>(), Eigen::Matrix2f::Identity() * 0.05, startPose.z(), flip),
             new Ramsete(drivetrainSubsystem, flip ? &p_4_1_blue : &p_4_1_red),
-            (new Rotate(drivetrainSubsystem, 190_deg, flip))->withTimeout(700_ms),
+            (new Rotate(drivetrainSubsystem, 195_deg, flip))->withTimeout(700_ms),
             new Ramsete(drivetrainSubsystem, flip ? &p_4_2_blue : &p_4_2_red),
             SharedCommands::descoreCornerFull(),
             new ScheduleCommand(intakeWithEject),
@@ -38,7 +38,7 @@ public:
             new ScheduleCommand(liftSubsystem->positionCommand(180_deg, 0.0)),
             SharedCommands::driveToAlliance(),
             new Ramsete(drivetrainSubsystem, flip ? &p_4_1_blue : &p_4_1_red),
-            (new Rotate(drivetrainSubsystem, 190_deg, flip))->withTimeout(700_ms),
+            (new Rotate(drivetrainSubsystem, 195_deg, flip))->withTimeout(700_ms),
             new Ramsete(drivetrainSubsystem, flip ? &p_4_2_blue : &p_4_2_red),
             SharedCommands::descoreCornerFull(),
             new ScheduleCommand(intakeWithEject),

@@ -151,6 +151,14 @@ inline void initializeController() {
 
     primary.getTrigger(DIGITAL_B)->onTrue(
         liftSubsystem->positionCommand(10_deg)->withTimeout(1_s)->andThen(liftSubsystem->zero()));
+
+    primary.getTrigger(DIGITAL_A)->whileTrue((new WaitCommand(200_ms))
+                                                 ->andThen(new InstantCommand(
+                                                     []() {
+                                                         auto newAlliance = OPPONENTS;
+                                                         ALLIANCE = newAlliance;
+                                                     },
+                                                     {})));
 }
 
 inline void initializePathCommands() {
@@ -177,7 +185,7 @@ inline void initializePathCommands() {
     PathCommands::registerCommand("liftZero", liftSubsystem->positionCommand(6_deg));
     PathCommands::registerCommand("scoreAllianceStake", liftSubsystem->positionCommand(200_deg, 0.0));
     PathCommands::registerCommand("outtakeBottom", bottomIntakeSubsystem->pctCommand(-1.0));
-    PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(140_deg, 0.0));
+    PathCommands::registerCommand("LBdrop", liftSubsystem->positionCommand(100_deg, 0.0));
     PathCommands::registerCommand("lbTouch", liftSubsystem->positionCommand(150_deg, 0.0));
 }
 
@@ -203,11 +211,11 @@ inline void initializeCommands() {
     intakeWithEject = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0));
     bottomOuttakeWithEject = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(-1.0));
     cornerClearIntakeSequence =
-        topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(10_ms)->andThen(
+        topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(100_ms)->andThen(
             bottomIntakeSubsystem->pctCommand(-1.0)->withTimeout(200_ms)->andThen(
-                bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(390_ms))));
+                bottomIntakeSubsystem->pctCommand(1.0))));
 
-    if (topIntakeSubsystem->visionConnected()) {
+    if (topIntakeSubsystem->visionConnected() && AUTON != SKILLS) {
         basicLoadLB = new Sequence({
             new ParallelRaceGroup({
                 bottomIntakeSubsystem->pctCommand(1.0),
@@ -224,12 +232,6 @@ inline void initializeCommands() {
                 topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
                 liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
             }),
-            // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
-            //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-            //                        new WaitCommand(50_ms)}),
-            // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
-            //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-            //                        new WaitCommand(80_ms)}),
             new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
                                    liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
                                    new WaitCommand(150_ms)}),
@@ -246,12 +248,6 @@ inline void initializeCommands() {
                 topIntakeSubsystem->pctCommand(1.0)->until([]() { return topIntakeSubsystem->stalled(300_ms); }),
                 liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
             }),
-            // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
-            //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-            //                        new WaitCommand(50_ms)}),
-            // new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(1.0),
-            //                        liftSubsystem->positionCommand(CONFIG::WALL_STAKE_LOAD_HEIGHT, 0.0),
-            //                        new WaitCommand(80_ms)}),
             new ParallelRaceGroup({bottomIntakeSubsystem->pctCommand(1.0), topIntakeSubsystem->pctCommand(0.0),
                                    liftSubsystem->positionCommand(CONFIG::WALL_STAKE_PRIME_HEIGHT, 0.0),
                                    new WaitCommand(150_ms)}),
