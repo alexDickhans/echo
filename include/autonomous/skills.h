@@ -49,7 +49,7 @@ public:
             drivetrainSubsystem->pct(-0.5, -0.5)->withTimeout(0.27_s),
             new ScheduleCommand(intakeNoEject),
             new Ramsete(drivetrainSubsystem, &skills_4),
-            drivetrainSubsystem->pct(0.2, 0.5)->withTimeout(0.3_s),
+            drivetrainSubsystem->pct(0.25, 0.5)->withTimeout(0.3_s),
             new ScheduleCommand(hang),
         });
     }
