@@ -33,5 +33,5 @@ use for VEX to make sure my code stays reliable.
 If you have any additional questions about the code or our robot, contact one of us with the following ways to contact
 us:
 
-* [Alex Dickhans](alex.dickhans.net) ([adickhans@gmail.com](mailto:adickhans@gmail.com))
+* [Alex Dickhans](https://alex.dickhans.net) ([adickhans@gmail.com](mailto:adickhans@gmail.com))
     * Programmer
