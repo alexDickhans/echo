@@ -36,7 +36,7 @@ namespace CONFIG {
 
     constexpr Angle LIFT_IDLE_POSITION = 3_deg;
     constexpr Angle WALL_STAKE_LOAD_HEIGHT = 18_deg;
-    constexpr Angle WALL_STAKE_PRIME_HEIGHT = 80_deg;
+    constexpr Angle WALL_STAKE_PRIME_HEIGHT = 95_deg;
     constexpr Angle DESCORE_HEIGHT = 155_deg;
     constexpr Angle ALLIANCE_STAKE_SCORE_HEIGHT = 185_deg;
 

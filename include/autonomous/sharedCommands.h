@@ -52,7 +52,7 @@ public:
     static Command *cycleCorner() {
         return new Sequence({
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(300_ms),
-            drivetrainSubsystem->pct(0.30, 0.30)->withTimeout(300_ms),
+            drivetrainSubsystem->pct(0.3, 0.3)->withTimeout(300_ms),
         });
     }
 
