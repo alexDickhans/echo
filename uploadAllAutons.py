@@ -10,8 +10,7 @@ AUTONS = [
     "N_1_6P",
     "N_6",
     "P_4",
-    "P_1_3",
-    "SKILLS"
+    "P_1_3"
 ]
 
 OFFSET = 1
