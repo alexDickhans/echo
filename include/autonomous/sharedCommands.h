@@ -27,7 +27,7 @@ public:
     }
 
     static Command *driveToAlliance() {
-        return new TankMotionProfiling(drivetrainSubsystem, {10_in / second, 60_in / second / second}, 3_in, false, 0.0,
+        return new TankMotionProfiling(drivetrainSubsystem, {20_in / second, 100_in / second / second}, 3.0_in, false, 0.0,
                                        0.0, false);
     }
 
@@ -52,14 +52,14 @@ public:
     static Command *cycleCorner() {
         return new Sequence({
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(300_ms),
-            drivetrainSubsystem->pct(0.4, 0.4)->withTimeout(200_ms),
+            drivetrainSubsystem->pct(0.30, 0.30)->withTimeout(300_ms),
         });
     }
 
     static Command *oneRingOutOfCorner() {
         return new Sequence({
-            drivetrainSubsystem->pct(0.3, 0.3)->with(new ScheduleCommand(cornerClearIntakeSequence))->withTimeout(600_ms),
-            drivetrainSubsystem->pct(-0.3, -0.3)->with(new ScheduleCommand(bottomIntakeSubsystem->pctCommand(1.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.95, 0.0))))->withTimeout(400_ms),
+            drivetrainSubsystem->pct(0.4, 0.4)->with(new ScheduleCommand(cornerClearIntakeSequence))->withTimeout(350_ms),
+            drivetrainSubsystem->pct(-0.35, -0.35)->with(new ScheduleCommand(bottomIntakeSubsystem->pctCommand(1.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.95, 0.0))))->withTimeout(250_ms),
         });
     }
 };
