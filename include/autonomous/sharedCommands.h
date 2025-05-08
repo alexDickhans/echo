@@ -40,7 +40,7 @@ public:
     static Command *descoreCorner() {
         return new Sequence(
             {drivetrainSubsystem->pct(0.3, 0.3)->with(new ScheduleCommand(bottomOuttakeWithEject))->withTimeout(100_ms), drivetrainSubsystem->pct(1.0, 1.0)->with(new ScheduleCommand(bottomOuttakeWithEject))->withTimeout(150_ms),
-             oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner(), cycleCorner(), oneRingOutOfCorner()});
+             oneRingOutOfCorner()});
     }
 
     static Command *descoreCornerFull() {
@@ -52,14 +52,14 @@ public:
     static Command *cycleCorner() {
         return new Sequence({
             drivetrainSubsystem->pct(0.0, 0.0)->withTimeout(300_ms),
-            drivetrainSubsystem->pct(0.3, 0.3)->withTimeout(300_ms),
+            drivetrainSubsystem->pct(0.5, 0.5)->withTimeout(200_ms),
         });
     }
 
     static Command *oneRingOutOfCorner() {
         return new Sequence({
-            drivetrainSubsystem->pct(0.4, 0.4)->with(new ScheduleCommand(cornerClearIntakeSequence))->withTimeout(350_ms),
-            drivetrainSubsystem->pct(-0.35, -0.35)->with(new ScheduleCommand(bottomIntakeSubsystem->pctCommand(1.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.95, 0.0))))->withTimeout(250_ms),
+            drivetrainSubsystem->pct(0.5, 0.5)->with(new ScheduleCommand(cornerClearIntakeSequence))->withTimeout(250_ms),
+            drivetrainSubsystem->pct(-0.25, -0.25)->with(new ScheduleCommand(bottomIntakeSubsystem->pctCommand(1.0)->with(TopIntakePositionCommand::fromClosePositionCommand(topIntakeSubsystem, 0.95, 0.0))))->withTimeout(500_ms),
         });
     }
 };

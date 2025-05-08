@@ -211,8 +211,8 @@ inline void initializeCommands() {
     intakeWithEject = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0));
     bottomOuttakeWithEject = topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(-1.0));
     cornerClearIntakeSequence =
-        topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(100_ms)->andThen(
-            bottomIntakeSubsystem->pctCommand(-1.0)->withTimeout(200_ms)->andThen(
+        topIntakeWithEject->with(bottomIntakeSubsystem->pctCommand(1.0)->withTimeout(700_ms)->andThen(
+            bottomIntakeSubsystem->pctCommand(-1.0)->withTimeout(230_ms)->andThen(
                 bottomIntakeSubsystem->pctCommand(1.0))));
 
     if (topIntakeSubsystem->visionConnected() && AUTON != SKILLS) {
